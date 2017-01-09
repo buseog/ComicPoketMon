@@ -26,6 +26,7 @@ void CMainForm::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CMainForm, CFormView)
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CMainForm::OnTcnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -47,3 +48,9 @@ void CMainForm::Dump(CDumpContext& dc) const
 
 
 // CMainForm 메시지 처리기입니다.
+
+void CMainForm::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}

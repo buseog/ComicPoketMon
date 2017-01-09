@@ -215,7 +215,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
-	m_MainSplitter.CreateStatic(this, 1, 3);
+	m_MainSplitter.CreateStatic(this, 1, 2);
 
 	m_MainSplitter.CreateView(0,1, RUNTIME_CLASS(CToolView), CSize(WINCX, WINCY), pContext);
 
@@ -223,23 +223,16 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 		WS_CHILD | WS_VISIBLE, 
 		m_MainSplitter.IdFromRowCol(0, 0));
 
-	m_ThirdSplitter.CreateStatic(&m_MainSplitter, 2, 1, 
-		WS_CHILD | WS_VISIBLE, 
-		m_MainSplitter.IdFromRowCol(0, 2));
 
-	m_SecondSplitter.CreateView(0, 0, RUNTIME_CLASS(CMiniView), CSize(200, 150), pContext);
-	m_SecondSplitter.CreateView(1, 0, RUNTIME_CLASS(CMainForm), CSize(200, 450), pContext);
+	m_SecondSplitter.CreateView(0, 0, RUNTIME_CLASS(CMiniView), CSize(250, 150), pContext);
+	m_SecondSplitter.CreateView(1, 0, RUNTIME_CLASS(CMainForm), CSize(250, 450), pContext);
 
-	m_ThirdSplitter.CreateView(0, 0, RUNTIME_CLASS(CObjView), CSize(200, 600), pContext);
-	m_ThirdSplitter.CreateView(1, 0, RUNTIME_CLASS(COptionForm), CSize(200, 450), pContext);
-
-	m_MainSplitter.SetColumnInfo(0, 200, 10);
+	m_MainSplitter.SetColumnInfo(0, 250, 10);
 
 	m_pMainView = (CToolView*)m_MainSplitter.GetPane(0, 1);
 	m_pMiniView = (CMiniView*)m_SecondSplitter.GetPane(0, 0);
 	m_pMainForm = (CMainForm*)m_SecondSplitter.GetPane(1, 0);
-	m_pObjView = (CObjView*)m_ThirdSplitter.GetPane(0, 0);
-	m_pOptionForm = (COptionForm*)m_ThirdSplitter.GetPane(1, 0);
+
 
 	m_pGraphicDev->InitGraphicDev(Engine::CGraphicDev::MODE_WIN, g_hWnd, WINCX, WINCY);
 
