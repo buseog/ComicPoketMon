@@ -318,6 +318,42 @@
 					RelativePath=".\MainForm.h"
 					>
 				</File>
+				<Filter
+					Name="00. Map"
+					>
+					<File
+						RelativePath=".\MapTab.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MapTab.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="01. Object"
+					>
+					<File
+						RelativePath=".\ObjectTab.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ObjectTab.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="02 Unit"
+					>
+					<File
+						RelativePath=".\UnitTab.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\UnitTab.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="01. MiniVIew"
