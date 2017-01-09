@@ -21,6 +21,9 @@ class CBackground
 private:
 	LPDIRECT3DDEVICE9	m_pDeivce;
 
+private:
+
+
 public:
 	void	Initialize(void);
 	void	Render(void);

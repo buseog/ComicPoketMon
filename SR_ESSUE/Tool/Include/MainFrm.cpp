@@ -223,7 +223,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 		WS_CHILD | WS_VISIBLE, 
 		m_MainSplitter.IdFromRowCol(0, 0));
 
-	m_ThirdSplitter.CreateStatic(&m_MainSplitter, 1, 1, 
+	m_ThirdSplitter.CreateStatic(&m_MainSplitter, 2, 1, 
 		WS_CHILD | WS_VISIBLE, 
 		m_MainSplitter.IdFromRowCol(0, 2));
 
@@ -231,7 +231,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_SecondSplitter.CreateView(1, 0, RUNTIME_CLASS(CMainForm), CSize(200, 450), pContext);
 
 	m_ThirdSplitter.CreateView(0, 0, RUNTIME_CLASS(CObjView), CSize(200, 600), pContext);
-	//m_ThirdSplitter.CreateView(1, 0, RUNTIME_CLASS(COptionForm), CSize(200, 450), pContext);
+	m_ThirdSplitter.CreateView(1, 0, RUNTIME_CLASS(COptionForm), CSize(200, 450), pContext);
 
 	m_MainSplitter.SetColumnInfo(0, 200, 10);
 
@@ -239,7 +239,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_pMiniView = (CMiniView*)m_SecondSplitter.GetPane(0, 0);
 	m_pMainForm = (CMainForm*)m_SecondSplitter.GetPane(1, 0);
 	m_pObjView = (CObjView*)m_ThirdSplitter.GetPane(0, 0);
-	//m_pOptionForm = (COptionForm*)m_ThirdSplitter.GetPane(1, 0);
+	m_pOptionForm = (COptionForm*)m_ThirdSplitter.GetPane(1, 0);
 
 	m_pGraphicDev->InitGraphicDev(Engine::CGraphicDev::MODE_WIN, g_hWnd, WINCX, WINCY);
 
