@@ -24,13 +24,13 @@ HRESULT Engine::CVIBuffer::CreateBuffer( void )
 {
 	HRESULT	hr = NULL;
 
-	hr = m_pDevice->CreateVertexBuffer(m_dwVtxSize * m_dwVtxCnt, 0, m_dwVtxFVF, D3DPOOL_MANAGED, &m_pVB, NULL);
-
-	NULL_CHECK_RETURN_MSG(hr, E_FAIL, L"버텍스버퍼 생성실패");
+	hr = m_pDevice->CreateVertexBuffer(m_dwVtxSize * m_dwVtxCnt, 0, m_dwVtxFVF, 
+		D3DPOOL_MANAGED, &m_pVB, NULL);
+	//NULL_CHECK_RETURN_MSG(hr, E_FAIL, L"버텍스버퍼 생성실패");
 
 	hr = m_pDevice->CreateIndexBuffer(m_dwIdxSize * m_dwTriCnt, 0, m_IdxFmt, D3DPOOL_MANAGED, &m_pIB, NULL);
 
-	NULL_CHECK_RETURN_MSG(hr, E_FAIL, L"인덱스버퍼 생성실패");
+	//NULL_CHECK_RETURN_MSG(hr, E_FAIL, L"인덱스버퍼 생성실패");
 
 	return S_OK;
 }

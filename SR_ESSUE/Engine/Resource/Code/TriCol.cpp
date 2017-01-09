@@ -23,6 +23,8 @@ HRESULT Engine::CTriCol::CreateBuffer( void )
 	m_dwVtxCnt = 3;
 	m_dwVtxFVF = VTXFVF_COL;
 	m_dwTriCnt = 1;
+	m_dwIdxSize = sizeof(INDEX32);
+	m_IdxFmt = D3DFMT_INDEX32;
 
 	FAILED_CHECK(CVIBuffer::CreateBuffer());
 
