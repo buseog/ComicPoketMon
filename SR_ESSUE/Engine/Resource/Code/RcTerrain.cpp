@@ -92,3 +92,8 @@ Engine::CRcTerrain* Engine::CRcTerrain::Create(LPDIRECT3DDEVICE9 pDevice, const 
 
 	return pTerrain;
 }
+
+void Engine::CRcTerrain::Render( void )
+{
+	CVIBuffer::Render();
+}

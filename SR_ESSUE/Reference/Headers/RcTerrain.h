@@ -22,10 +22,13 @@ BEGIN(Engine)
 class ENGINE_DLL CRcTerrain
 	:public CVIBuffer
 {
+private:
+	void Release(void);
+
 public:
 	virtual HRESULT	CreateBuffer(const WORD& wCntX, const WORD& wCntZ, const WORD& wItv);
-	virtual void Release(void);
-
+	virtual void Render( void );
+	
 public:
 	static CRcTerrain* Create(LPDIRECT3DDEVICE9 pDevice, const WORD& wCntX, const WORD& wCntZ, const WORD& wItv);
 
@@ -33,6 +36,9 @@ private:
 	explicit CRcTerrain(LPDIRECT3DDEVICE9 pDevice);
 public:
 	virtual ~CRcTerrain(void);
+
+	
+
 };
 
 END

@@ -23,12 +23,14 @@ class ENGINE_DLL CRcTex
 	:public CVIBuffer
 {
 private:
+	void			Release(void);
+
+public:
 	virtual HRESULT	CreateBuffer(void);
+	virtual void	Render(void);
 
 public:
 	static CRcTex*	Create(LPDIRECT3DDEVICE9 pDevice);
-	void			Release(void);
-	void			Render(void);
 
 private:
 	explicit CRcTex(LPDIRECT3DDEVICE9 pDevice);

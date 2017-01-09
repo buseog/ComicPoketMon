@@ -230,7 +230,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="02 RcTerrain"
+					Name="02. RcTerrain"
 					>
 					<File
 						RelativePath="..\Code\RcTerrain.cpp"
@@ -274,6 +274,18 @@
 					</File>
 					<File
 						RelativePath="..\Code\CubeTex.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="06. CubeCol"
+					>
+					<File
+						RelativePath="..\Code\CubeCol.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\CubeCol.h"
 						>
 					</File>
 				</Filter>

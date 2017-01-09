@@ -391,18 +391,6 @@
 				RelativePath="..\Code\CubeObj.h"
 				>
 			</File>
-			<Filter
-				Name="00. CubeCol"
-				>
-				<File
-					RelativePath="..\Code\CubeCol.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Code\CubeCol.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="98. Headers"

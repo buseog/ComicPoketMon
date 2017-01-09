@@ -5,6 +5,10 @@
 
 #pragma once
 
+namespace	Engine
+{
+	class CGraphicDev;
+}
 
 class CBackground;
 class CToolDoc;
@@ -15,8 +19,12 @@ protected: // serialization에서만 만들어집니다.
 	DECLARE_DYNCREATE(CToolView)
 
 private:
-	LPDIRECT3DDEVICE9	m_pDevice;
-	CBackground*		m_pBack;
+	Engine::CGraphicDev*			m_pGraphicDev;
+	LPDIRECT3DDEVICE9				m_pDevice;
+	CBackground*					m_pBack;
+
+public:
+	CBackground*	GetBack(void);
 
 // 특성입니다.
 public:
@@ -52,6 +60,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 #ifndef _DEBUG  // ToolView.cpp의 디버그 버전

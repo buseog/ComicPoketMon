@@ -1,4 +1,6 @@
 #pragma once
+#include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CMapTab 대화 상자입니다.
@@ -18,4 +20,18 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	int m_iHeight;
+	CComboBox m_TextureContrl;
+	CSliderCtrl m_HeightSlider;
+
+	afx_msg void OnCreateMap();
+	afx_msg void OnHeightApply();
+	afx_msg void OnTextureApply();
+	afx_msg void OnSave();
+	afx_msg void OnLoad();
+	virtual BOOL OnInitDialog();
+	afx_msg void OnHeightSlider(NMHDR *pNMHDR, LRESULT *pResult);
+	int m_iCountX;
+	int m_iCountZ;
 };

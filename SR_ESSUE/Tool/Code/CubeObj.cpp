@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "CubeObj.h"
-#include "Engine_Include.h"
 #include "CubeCol.h"
 
 CCubeObj::CCubeObj( LPDIRECT3DDEVICE9 pDevice )

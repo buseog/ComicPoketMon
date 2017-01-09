@@ -9,11 +9,6 @@
 #include "MiniView.h"
 #include "Include.h"
 
-namespace Engine
-{
-	class CGraphicDev;
-}
-
 class CGraphicDev;
 class CMainFrame : public CFrameWndEx
 {
@@ -23,10 +18,6 @@ protected: // serialization에서만 만들어집니다.
 	DECLARE_DYNCREATE(CMainFrame)
 
 // 특성입니다.
-private:
-	Engine::CGraphicDev*	m_pGraphicDev;
-	LPDIRECT3DDEVICE9		m_pDevice;
-
 private:
 	CSplitterWnd			m_MainSplitter;
 	CSplitterWnd			m_SecondSplitter;
@@ -38,7 +29,7 @@ private:
 	CMainForm*				m_pMainForm;
 
 public:
-	LPDIRECT3DDEVICE9 GetDevice(void);
+	CToolView*			GetView(void);
 // 재정의입니다.
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

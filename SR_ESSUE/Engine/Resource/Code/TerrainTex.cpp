@@ -118,5 +118,10 @@ Engine::CTerrainTex* Engine::CTerrainTex::Create(LPDIRECT3DDEVICE9 pDevice, cons
 
 void Engine::CTerrainTex::Release(void)
 {
+	
+}
 
+void Engine::CTerrainTex::Render( void )
+{
+	CVIBuffer::Render();
 }

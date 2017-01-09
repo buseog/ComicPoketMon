@@ -23,13 +23,16 @@ class ENGINE_DLL CTerrainTex
 	: public CVIBuffer
 {
 private:
-	virtual HRESULT	CreateBuffer(const WORD& wCntX, const WORD& wCntZ, const WORD& wItv);
-
+	void	Release(void);
 	DWORD*	LoadImage(void);
 
 public:
+	virtual HRESULT	CreateBuffer(const WORD& wCntX, const WORD& wCntZ, const WORD& wItv);
+	virtual	void	Render(void);
+
+public:
 	static Engine::CTerrainTex*	 Create(LPDIRECT3DDEVICE9 pDevice, const WORD& wCntX, const WORD& wCntZ, const WORD& wItv);
-	void Release(void);
+	
 
 private:
 	explicit CTerrainTex(LPDIRECT3DDEVICE9 pDevice);

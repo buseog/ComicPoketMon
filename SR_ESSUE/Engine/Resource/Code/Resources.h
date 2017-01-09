@@ -28,8 +28,8 @@ protected:
 
 public:
 	virtual void Render(void) PURE;
-	virtual CResources* CloneResource(void) PURE;
 	virtual void Release(void) PURE;
+	virtual CResources* CloneResource(void) PURE;
 
 protected:
 	explicit CResources(LPDIRECT3DDEVICE9 pDevice);

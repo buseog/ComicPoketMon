@@ -6,8 +6,6 @@
 #include "Tool.h"
 
 #include "MainFrm.h"
-#include "Export_Function.h"
-#include "Engine_Include.h"
 
 
 #ifdef _DEBUG
@@ -41,7 +39,6 @@ static UINT indicators[] =
 // CMainFrame 생성/소멸
 
 CMainFrame::CMainFrame()
-:m_pGraphicDev(Engine::Get_GraphicDev())
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2005);
@@ -59,9 +56,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-LPDIRECT3DDEVICE9 CMainFrame::GetDevice( void )
+
+CToolView* CMainFrame::GetView( void )
 {
-	return m_pDevice;
+	return m_pMainView;
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
@@ -233,10 +231,5 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_pMiniView = (CMiniView*)m_SecondSplitter.GetPane(0, 0);
 	m_pMainForm = (CMainForm*)m_SecondSplitter.GetPane(1, 0);
 
-
-	m_pGraphicDev->InitGraphicDev(Engine::CGraphicDev::MODE_WIN, g_hWnd, WINCX, WINCY);
-
-	m_pDevice = m_pGraphicDev->GetDevice();
-	
 	return TRUE;
 }

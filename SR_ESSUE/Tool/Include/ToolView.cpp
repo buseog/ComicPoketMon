@@ -9,6 +9,9 @@
 #include "ToolView.h"
 #include "MainFrm.h"
 
+#include "Export_Function.h"
+#include "Engine_Include.h"
+
 #include "Background.h"
 
 #ifdef _DEBUG
@@ -25,6 +28,7 @@ BEGIN_MESSAGE_MAP(CToolView, CScrollView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CToolView::OnFilePrintPreview)
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
@@ -32,7 +36,8 @@ END_MESSAGE_MAP()
 HWND g_hWnd;
 
 CToolView::CToolView()
-: m_pDevice(NULL)
+: m_pGraphicDev(Engine::Get_GraphicDev())
+, m_pDevice(NULL)
 , m_pBack(NULL)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
@@ -41,6 +46,7 @@ CToolView::CToolView()
 
 CToolView::~CToolView()
 {
+
 }
 
 BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
@@ -121,6 +127,11 @@ void CToolView::Dump(CDumpContext& dc) const
 	CView::Dump(dc);
 }
 
+CBackground* CToolView::GetBack( void )
+{
+	return m_pBack;
+}
+
 CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지정됩니다.
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CToolDoc)));
@@ -136,8 +147,6 @@ void CToolView::OnInitialUpdate()
 	CScrollView::OnInitialUpdate();
 
 	SetScrollSizes(MM_TEXT, CSize(129 * 129, (129 / 2) * 129));
-
-	m_pDevice = ((CMainFrame*)AfxGetMainWnd())->GetDevice();
 
 	g_hWnd = m_hWnd;
 
@@ -157,10 +166,23 @@ void CToolView::OnInitialUpdate()
 
 	pMainFrm->SetWindowPos(NULL, 400, 100, int(WINCX + 440), int(WINCY + fColFrm), SWP_NOZORDER);
 
-	
+	Engine::CGraphicDev::GetInstance()->InitGraphicDev
+		(Engine::CGraphicDev::MODE_WIN, g_hWnd, WINCX, WINCY);
+
+	m_pDevice = m_pGraphicDev->GetDevice();
 	
 	m_pBack = CBackground::Create(m_pDevice);
 	m_pBack->Initialize();
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+}
+
+void CToolView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	m_pBack->KeyCheck();
+	Invalidate(FALSE);
+
+	CScrollView::OnKeyDown(nChar, nRepCnt, nFlags);
 }

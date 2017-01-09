@@ -1,7 +1,4 @@
-#include "stdafx.h"
 #include "CubeCol.h"
-#include "Engine_Include.h"
-
 
 CCubeCol::CCubeCol( LPDIRECT3DDEVICE9 pDevice )
 :CVIBuffer(pDevice)

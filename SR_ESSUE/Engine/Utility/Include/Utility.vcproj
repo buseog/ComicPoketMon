@@ -269,6 +269,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="02. Infomation"
+					>
+					<File
+						RelativePath="..\Code\Infomation.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Infomation.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="03. Camera"
@@ -348,6 +360,18 @@
 						RelativePath="..\Code\Subject.h"
 						>
 					</File>
+					<Filter
+						Name="00. InfoSubject"
+						>
+						<File
+							RelativePath="..\Code\InfoSubject.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\InfoSubject.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 		</Filter>

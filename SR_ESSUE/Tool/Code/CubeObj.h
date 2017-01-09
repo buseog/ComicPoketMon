@@ -15,8 +15,11 @@
 #ifndef CubeObj_h__
 #define CubeObj_h__
 
+#include "Component.h"
+
 class CCubeCol;
 class CCubeObj
+	:public Engine::CComponent
 {
 private:
 	typedef map<wstring, CCubeCol*>		MAPCUBE;
