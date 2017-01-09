@@ -13,6 +13,31 @@ CBackground::~CBackground( void )
 
 }
 
+void CBackground::Initialize( void )
+{
+
+}
+
+void CBackground::Render( void )
+{
+
+}
+
+void CBackground::Release( void )
+{
+
+}
+
+void CBackground::KeyCheck( void )
+{
+
+}
+
+void CBackground::Picking( void )
+{
+
+}
+
 CBackground* CBackground::Create( LPDIRECT3DDEVICE9 pDevice )
 {
 	CBackground* pBack = new CBackground(pDevice);

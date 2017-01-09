@@ -5,6 +5,10 @@
 #pragma once
 
 #include "ToolView.h"
+#include "ObjView.h"
+#include "MainForm.h"
+#include "MiniView.h"
+#include "OptionForm.h"
 #include "Include.h"
 
 namespace Engine
@@ -27,10 +31,16 @@ private:
 
 private:
 	CSplitterWnd			m_MainSplitter;
+	CSplitterWnd			m_SecondSplitter;
+	CSplitterWnd			m_ThirdSplitter;
 
 // 작업입니다.
 private:
 	CToolView*				m_pMainView;
+	CMiniView*				m_pMiniView;
+	CObjView*				m_pObjView;
+	CMainForm*				m_pMainForm;
+	COptionForm*			m_pOptionForm;
 
 public:
 	LPDIRECT3DDEVICE9 GetDevice(void);

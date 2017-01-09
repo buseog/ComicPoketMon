@@ -32,7 +32,7 @@ END_MESSAGE_MAP()
 HWND g_hWnd;
 
 CToolView::CToolView()
-: m_pDevice(((CMainFrame*)AfxGetMainWnd())->GetDevice())
+: m_pDevice(NULL)
 , m_pBack(NULL)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
@@ -134,6 +134,10 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지
 void CToolView::OnInitialUpdate()
 {
 	CScrollView::OnInitialUpdate();
+
+	SetScrollSizes(MM_TEXT, CSize(129 * 129, (129 / 2) * 129));
+
+	m_pDevice = ((CMainFrame*)AfxGetMainWnd())->GetDevice();
 
 	g_hWnd = m_hWnd;
 
