@@ -88,3 +88,8 @@ void Engine::CVIBuffer::GetVtxInfo(void* pVertex)
 
 	m_pVB->Unlock();
 }	
+
+void* Engine::CVIBuffer::GetOriginVtx( void )
+{
+	return m_pOriginVertex;
+}

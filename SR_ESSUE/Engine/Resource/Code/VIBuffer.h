@@ -30,6 +30,7 @@ public:
 
 	void	SetVtxInfo(void* pVertex);
 	void	GetVtxInfo(void* pVertex);
+	void*	GetOriginVtx(void);
 
 
 public:

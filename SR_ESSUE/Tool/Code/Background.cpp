@@ -122,6 +122,53 @@ void CBackground::Picking( void )
 	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRView);
 
 
+	Engine::VTXCOL*	pVertex = new Engine::VTXCOL[20 * 20];
+	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(pVertex);
+
+	float	fU, fV, fDist;
+	int VTXCNTZ = 20;
+	int VTXCNTX = 20;
+
+	D3DXVECTOR3 vOut;
+
+	for(int z = 0; z < VTXCNTZ - 1; ++z)
+	{
+		for(int x = 0; x < VTXCNTX - 1; ++x)
+		{
+			int iIndex = z * VTXCNTX + x;
+
+			// 오른쪽 위
+			if(D3DXIntersectTri(&pVertex[iIndex + VTXCNTX + 1].vPos,
+				&pVertex[iIndex + VTXCNTX].vPos,
+				&pVertex[iIndex + 1].vPos,
+				&vRayPos,
+				&vRayDir,
+				&fU, &fV, &fDist))
+			{
+				vOut = pVertex[iIndex + VTXCNTX + 1].vPos 
+					+ (pVertex[iIndex + VTXCNTX].vPos - pVertex[iIndex + VTXCNTX + 1].vPos) * fU
+					+ (pVertex[iIndex + 1].vPos - pVertex[iIndex + VTXCNTX + 1].vPos) * fV;
+
+				return;
+			}
+
+			// 왼쪽 아래
+			if(D3DXIntersectTri(&pVertex[iIndex].vPos,
+				&pVertex[iIndex + 1].vPos,
+				&pVertex[iIndex + VTXCNTX].vPos,
+				&vRayPos,
+				&vRayDir,
+				&fU, &fV, &fDist))
+			{
+				vOut = pVertex[iIndex].vPos 
+					+ (pVertex[iIndex + 1].vPos - pVertex[iIndex].vPos) * fU
+					+ (pVertex[iIndex +	VTXCNTX].vPos - pVertex[iIndex].vPos) * fV;
+
+				return;
+			}
+
+		}
+	}
 	
 }
 
