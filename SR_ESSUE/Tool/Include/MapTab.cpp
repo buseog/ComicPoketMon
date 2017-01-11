@@ -53,7 +53,7 @@ void CMapTab::OnCreateMap()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
-	((CMainFrame*)AfxGetMainWnd())->GetView()->GetBack()->AddTerrain(m_iCountX, m_iCountZ);
+	((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->AddTerrain(m_iCountX, m_iCountZ);
 	((CMainFrame*)AfxGetMainWnd())->GetView()->Invalidate(TRUE);
 
 	UpdateData(FALSE);
@@ -61,6 +61,9 @@ void CMapTab::OnCreateMap()
 
 void CMapTab::OnHeightApply()
 {
+	UpdateData(TRUE);
+
+	UpdateData(FALSE);
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 

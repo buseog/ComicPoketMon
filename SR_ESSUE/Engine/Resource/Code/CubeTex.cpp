@@ -53,7 +53,7 @@ HRESULT Engine::CCubeTex::CreateBuffer(void)
 	pVtxCube[7].vTex = pVtxCube[7].vPos;
 
 	m_pOriginVertex = new VTXCUBE[m_dwVtxCnt];
-	memcpy(&m_pOriginVertex, pVtxCube, sizeof(pVtxCube));
+	memcpy(m_pOriginVertex, pVtxCube, sizeof(pVtxCube));
 
 	m_pVB->Unlock();
 

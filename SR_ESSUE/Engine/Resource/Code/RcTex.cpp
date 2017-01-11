@@ -40,7 +40,7 @@ HRESULT Engine::CRcTex::CreateBuffer(void)
 	pVtxTex[3].vTex = D3DXVECTOR2(0.f, 1.f);
 
 	m_pOriginVertex = new VTXTEX[m_dwVtxCnt];
-	memcpy(&m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
+	memcpy(m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
 
 	m_pVB->Unlock();
 

@@ -23,7 +23,7 @@ private:
 	CSplitterWnd			m_SecondSplitter;
 
 // 작업입니다.
-private:
+public:
 	CToolView*				m_pMainView;
 	CMiniView*				m_pMiniView;
 	CMainForm*				m_pMainForm;

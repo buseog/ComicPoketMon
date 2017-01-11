@@ -7,14 +7,22 @@
 
 
 // CMainForm 폼 뷰입니다.
-
+namespace Engine
+{
+	class CResourceMgr;
+}
+class CToolView;
 class CMainForm : public CFormView
 {
 	DECLARE_DYNCREATE(CMainForm)
-private:
+public:
 	CMapTab		m_pMap;
 	CObjectTab	m_pObject;
 	CUnitTab	m_pUnit;
+	int			m_iType;
+
+	Engine::CResourceMgr*	m_pResourceMgr;
+	LPDIRECT3DDEVICE9*		m_pDevice;
 
 protected:
 	CMainForm();           // 동적 만들기에 사용되는 protected 생성자입니다.

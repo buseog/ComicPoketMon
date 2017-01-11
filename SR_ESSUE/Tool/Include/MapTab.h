@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
+#include "Resource.h"
 
 
 // CMapTab 대화 상자입니다.
@@ -21,6 +22,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	int m_iCountX;
+	int m_iCountZ;
 	int m_iHeight;
 	CComboBox m_TextureContrl;
 	CSliderCtrl m_HeightSlider;
@@ -32,6 +35,5 @@ public:
 	afx_msg void OnLoad();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnHeightSlider(NMHDR *pNMHDR, LRESULT *pResult);
-	int m_iCountX;
-	int m_iCountZ;
+	
 };

@@ -46,7 +46,7 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 	}
 
 	m_pOriginVertex = new VTXTEX[m_dwVtxCnt];
-	memcpy(&m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
+	memcpy(m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
 
 	m_pVB->Unlock();
 

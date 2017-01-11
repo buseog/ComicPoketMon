@@ -42,7 +42,7 @@ HRESULT Engine::CRcTerrain::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, c
 	}
 
 	m_pOriginVertex = new VTXCOL[m_dwVtxCnt];
-	memcpy(&m_pOriginVertex, pVtxCol, sizeof(pVtxCol));
+	memcpy(m_pOriginVertex, pVtxCol, sizeof(pVtxCol));
 
 	m_pVB->Unlock();
 

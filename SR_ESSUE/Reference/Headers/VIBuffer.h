@@ -15,6 +15,7 @@ protected:
 	LPDIRECT3DVERTEXBUFFER9		m_pVB;
 	LPDIRECT3DINDEXBUFFER9		m_pIB;
 	void*						m_pOriginVertex;
+	void*						m_pOriginIndex;
 
 	DWORD						m_dwVtxSize;
 	DWORD						m_dwVtxCnt;
@@ -30,8 +31,9 @@ public:
 
 	void	SetVtxInfo(void* pVertex);
 	void	GetVtxInfo(void* pVertex);
-	void*	GetOriginVtx(void);
-
+	void	GetOriginVtxInfo(void* pVertex);
+	void	SetOriginVtxInfo(void* pVertex);
+	void	GetIdxInfo(void* pIndex);
 
 public:
 	virtual HRESULT		CreateBuffer(void);

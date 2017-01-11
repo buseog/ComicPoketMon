@@ -19,6 +19,8 @@
 namespace Engine
 {
 	class CVIBuffer;
+	class CResourceMgr;
+	class CTexture;
 }
 
 class CBackground :
@@ -27,16 +29,25 @@ class CBackground :
 private:
 	LPDIRECT3DDEVICE9	m_pDeivce;
 	Engine::CVIBuffer*	m_pBuffer;
+	Engine::CTexture*	m_pTexture;
+
+	list<Engine::CTexture*>	m_pObjectTexturelist;
 
 	float		m_fAngle[Engine::ANGLE_END];
 	float		m_fDistance;
+
 	D3DXVECTOR3 m_vEye, m_vAt;
 	D3DXMATRIX	matView, matProj;
+
+	LPD3DXLINE	m_pLine;
+
+	Engine::CResourceMgr*		m_pResourceMgr;
 
 public:
 	void	Release(void);
 	void	KeyCheck(void);
 	void	Picking(void);
+	void	DrawLine(void);
 
 public:
 	void	AddTerrain(int iX, int iZ);
@@ -52,7 +63,7 @@ public:
 private:
 	explicit CBackground(LPDIRECT3DDEVICE9 pDevice);
 public:
-	~CBackground(void);
+	virtual ~CBackground(void);
 };
 
 #endif // Background_h__

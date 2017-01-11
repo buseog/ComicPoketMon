@@ -52,7 +52,7 @@ HRESULT Engine::CRcCol::CreateBuffer( void )
 	pVtxCol[5].dwColor = D3DCOLOR_ARGB(255, 0, 125, 255);
 
 	m_pOriginVertex = new VTXCOL[m_dwVtxCnt];
-	memcpy(&m_pOriginVertex, pVtxCol, sizeof(pVtxCol));
+	memcpy(m_pOriginVertex, pVtxCol, sizeof(pVtxCol));
 	m_pVB->Unlock();
 
 	return S_OK;

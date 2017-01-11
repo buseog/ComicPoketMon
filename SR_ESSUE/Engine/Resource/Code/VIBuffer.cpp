@@ -5,6 +5,7 @@ Engine::CVIBuffer::CVIBuffer( LPDIRECT3DDEVICE9 pDevice )
 , m_pVB(NULL)
 , m_pIB(NULL)
 , m_pOriginVertex(NULL)
+, m_pOriginIndex(NULL)
 , m_dwVtxSize(0)
 , m_dwVtxCnt(0)
 , m_dwTriCnt(0)
@@ -82,14 +83,38 @@ void Engine::CVIBuffer::SetVtxInfo(void* pVertex)
 
 void Engine::CVIBuffer::GetVtxInfo(void* pVertex)
 {
+	void*		pOriVertex = NULL;
+
+	m_pVB->Lock(0, 0, &pOriVertex, 0);
+
+	memcpy(pVertex, pOriVertex, m_dwVtxSize * m_dwVtxCnt);
+
+	m_pVB->Unlock();
+}	
+
+void Engine::CVIBuffer::GetIdxInfo( void* pIndex )
+{
+	m_pIB->Lock(0, 0, &m_pOriginIndex, 0);
+
+	memcpy(pIndex, m_pOriginIndex, m_dwIdxSize * m_dwTriCnt);
+
+	m_pIB->Unlock();
+}
+
+void Engine::CVIBuffer::GetOriginVtxInfo( void* pVertex )
+{
 	m_pVB->Lock(0, 0, &m_pOriginVertex, 0);
 
 	memcpy(pVertex, m_pOriginVertex, m_dwVtxSize * m_dwVtxCnt);
 
 	m_pVB->Unlock();
-}	
+}
 
-void* Engine::CVIBuffer::GetOriginVtx( void )
+void Engine::CVIBuffer::SetOriginVtxInfo( void* pVertex )
 {
-	return m_pOriginVertex;
+	m_pVB->Lock(0, 0, &m_pOriginVertex, 0);
+
+	memcpy(m_pOriginVertex, pVertex, m_dwVtxSize * m_dwVtxCnt);
+
+	m_pVB->Unlock();
 }

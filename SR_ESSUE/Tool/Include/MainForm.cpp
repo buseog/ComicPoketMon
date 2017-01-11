@@ -4,14 +4,20 @@
 #include "stdafx.h"
 #include "Tool.h"
 #include "MainForm.h"
-
-
+#include "MainFrm.h"
+#include "ToolView.h"
+#include "MapTab.h"
 // CMainForm
 
 IMPLEMENT_DYNCREATE(CMainForm, CFormView)
 
+#include "Export_Function.h"
+
+
 CMainForm::CMainForm()
 	: CFormView(CMainForm::IDD)
+	, m_iType(0)
+	, m_pResourceMgr(Engine::Get_ResourceMgr())
 {
 
 }
@@ -65,18 +71,27 @@ void CMainForm::ChangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_pMap.ShowWindow(SW_SHOW);
 		m_pObject.ShowWindow(SW_HIDE);
 		m_pUnit.ShowWindow(SW_HIDE);
+		m_iType = 0;
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_MAP);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 		break;
 
 	case 1:
 		m_pMap.ShowWindow(SW_HIDE);
 		m_pObject.ShowWindow(SW_SHOW);
 		m_pUnit.ShowWindow(SW_HIDE);
+		m_iType = 1;
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_OBJ);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 		break;
 
 	case 2:
 		m_pMap.ShowWindow(SW_HIDE);
 		m_pObject.ShowWindow(SW_HIDE);
 		m_pUnit.ShowWindow(SW_SHOW);
+		m_iType = 2;
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_UNIT);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 		break;
 
 	}
@@ -110,6 +125,21 @@ void CMainForm::OnInitialUpdate()
 	m_pUnit.GetWindowRect(&rect);
 	m_pUnit.MoveWindow(0,25, 250, 400);
 	m_pUnit.ShowWindow(SW_HIDE);
+
+	HRESULT hr = NULL;
+
+	int VtxcntX = ((CMapTab*)AfxGetMainWnd())->m_iCountX;
+	int VtxcntZ = ((CMapTab*)AfxGetMainWnd())->m_iCountZ;
+
+	
+
+	hr = m_pResourceMgr->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice, 
+		Engine::RESOURCE_DYNAMIC, 
+		Engine::TEX_NORMAL, 
+		L"Texture Terrain", 
+		L"../bin/Resources/Texture/Terrain/Terrain%d.png", 
+		1);
+	//FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
 
 	Invalidate(false);
 

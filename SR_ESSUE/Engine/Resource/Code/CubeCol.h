@@ -17,18 +17,21 @@
 
 #include "VIBuffer.h"
 
-class CCubeCol
+BEGIN(Engine)
+
+class ENGINE_DLL CCubeCol
 	:public Engine::CVIBuffer
 {
 private:
-	virtual HRESULT	CreateBuffer(D3DXVECTOR3 vScale, DWORD dwColor);
+	virtual HRESULT	CreateBuffer(void);
 
 public:
 	void			Release(void);
 	void			Render(void);
 
+
 public:
-	static CCubeCol*	Create(LPDIRECT3DDEVICE9 pDevice, D3DXVECTOR3 vScale, DWORD dwColor);
+	static CCubeCol*	Create(LPDIRECT3DDEVICE9 pDevice);
 
 private:
 	explicit CCubeCol(LPDIRECT3DDEVICE9 pDevice);
@@ -37,4 +40,5 @@ public:
 	virtual ~CCubeCol(void);
 };
 
+END
 #endif // CubeCol_h__

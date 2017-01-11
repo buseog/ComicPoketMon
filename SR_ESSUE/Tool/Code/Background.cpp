@@ -1,27 +1,38 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Background.h"
 #include "RcTerrain.h"
 #include "Resources.h"
 #include "VIBuffer.h"
 #include "Include.h"
+#include "ResourceMgr.h"
+#include "..\Include\MainFrm.h"
+#include "..\Include\MapTab.h"
+
+#include "Export_Function.h"
+#include "Texture.h"
+
+#include "CubeObj.h"
+#include "CubeCol.h"
+
 
 CBackground::CBackground( LPDIRECT3DDEVICE9 pDevice )
 : CGameObject(pDevice)
 , m_pBuffer(NULL)
 , m_fDistance(0)
+, m_pResourceMgr(Engine::Get_ResourceMgr())
 {
 
 }
 
 CBackground::~CBackground( void )
 {
-	Release();
+	CBackground::Release();
 }
 
 
 void CBackground::Release( void )
 {
-	
+	m_pResourceMgr->DestroyInstance();
 }
 
 void CBackground::KeyCheck( void )
@@ -40,15 +51,19 @@ void CBackground::KeyCheck( void )
 		m_vEye = m_vAt * -m_fDistance;
 	}
 
-	//if(GetAsyncKeyState('A') & 0x8000)
-	//{
-	//	m_vAt.x -= 5;
-	//}
+	/*if(GetAsyncKeyState('A') & 0x8000)
+	{
+		m_vAt.x -= 5;
+		D3DXVec3Normalize(&m_vAt, &m_vAt);
+		m_vEye = m_vAt * -m_fDistance;
+	}
 
-	//if(GetAsyncKeyState('D') & 0x8000)
-	//{
-	//	m_vAt.x += 5;
-	//}
+	if(GetAsyncKeyState('D') & 0x8000)
+	{
+		m_vAt.x += 5;
+		D3DXVec3Normalize(&m_vAt, &m_vAt);
+		m_vEye = m_vAt * -m_fDistance;
+	}*/
 
 	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
@@ -121,13 +136,22 @@ void CBackground::Picking( void )
 	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRView);
 	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRView);
 
+	D3DXMATRIX matRWorld;
+	D3DXMatrixIdentity(&matRWorld);
+	D3DXMatrixInverse(&matRWorld, 0, &matRWorld);
+	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRWorld);
+	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRWorld);
 
-	Engine::VTXCOL*	pVertex = new Engine::VTXCOL[20 * 20];
-	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(pVertex);
+
+	
 
 	float	fU, fV, fDist;
-	int VTXCNTZ = 20;
-	int VTXCNTX = 20;
+	int VTXCNTZ = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iCountZ;
+	int VTXCNTX = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iCountX;
+	int iHeight = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iHeight;
+
+	Engine::VTXCOL*	pVertex = new Engine::VTXCOL[VTXCNTX * VTXCNTZ];
+	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(pVertex);
 
 	D3DXVECTOR3 vOut;
 
@@ -145,9 +169,11 @@ void CBackground::Picking( void )
 				&vRayDir,
 				&fU, &fV, &fDist))
 			{
-				vOut = pVertex[iIndex + VTXCNTX + 1].vPos 
-					+ (pVertex[iIndex + VTXCNTX].vPos - pVertex[iIndex + VTXCNTX + 1].vPos) * fU
-					+ (pVertex[iIndex + 1].vPos - pVertex[iIndex + VTXCNTX + 1].vPos) * fV;
+				pVertex[iIndex + VTXCNTX + 1].vPos.y = (float)iHeight;
+				pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
+				pVertex[iIndex + 1].vPos.y = (float)iHeight;
+
+				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(pVertex);
 
 				return;
 			}
@@ -160,9 +186,11 @@ void CBackground::Picking( void )
 				&vRayDir,
 				&fU, &fV, &fDist))
 			{
-				vOut = pVertex[iIndex].vPos 
-					+ (pVertex[iIndex + 1].vPos - pVertex[iIndex].vPos) * fU
-					+ (pVertex[iIndex +	VTXCNTX].vPos - pVertex[iIndex].vPos) * fV;
+				pVertex[iIndex].vPos.y = (float)iHeight;
+				pVertex[iIndex + 1].vPos.y = (float)iHeight;
+				pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
+
+				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(pVertex);
 
 				return;
 			}
@@ -188,14 +216,14 @@ void CBackground::AddTerrain( int iX, int iZ )
 
 	m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pResources);
 
-	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Tex Terrain", pResources));	
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Tex Terrain", pResources));
 }
 
 HRESULT CBackground::Initialize( void )
 {
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-	m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	//m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	ZeroMemory(m_fAngle, sizeof(float) * 3);
 	m_fDistance = 10.f;
@@ -203,12 +231,11 @@ HRESULT CBackground::Initialize( void )
 	D3DXMatrixIdentity(&matView);
 	D3DXMatrixIdentity(&matProj);
 
+	m_vEye = D3DXVECTOR3(0.f, 10.f, -1.f);
 	m_vAt = D3DXVECTOR3(0.f, -1.f, 1.f);
 	D3DXVec3Normalize(&m_vAt, &m_vAt);
-
-	m_vEye = m_vAt * -m_fDistance;
 	
-	D3DXMatrixLookAtLH(&matView, &m_vEye, &D3DXVECTOR3(0.f, 0.f, 0.f), &D3DXVECTOR3(0.f, 1.f, 0.f));
+	D3DXMatrixLookAtLH(&matView, &m_vEye, &m_vAt, &D3DXVECTOR3(0.f, 1.f, 0.f));
 
 	m_pDevice->SetTransform(D3DTS_VIEW, &matView);
 
@@ -221,6 +248,8 @@ HRESULT CBackground::Initialize( void )
 
 	m_pDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
+	DrawLine();
+
 	return S_OK;
 }
 
@@ -231,8 +260,14 @@ void CBackground::Update( void )
 
 void CBackground::Render( void )
 {
+	
+
 	if (m_pBuffer != NULL)
+	{
+		//m_pTexture->Render(0);
 		m_pBuffer->Render();
+		DrawLine();
+	}
 }
 
 CBackground* CBackground::Create( LPDIRECT3DDEVICE9 pDevice )
@@ -243,4 +278,46 @@ CBackground* CBackground::Create( LPDIRECT3DDEVICE9 pDevice )
 		Engine::Safe_Delete(pBack);
 
 	return pBack;
+}
+
+
+void CBackground::DrawLine( void )
+{
+	D3DXMATRIX	matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	matWorld = matView * matProj;
+
+	D3DXCreateLine(m_pDevice, &m_pLine);
+
+	m_pLine->SetWidth(5.f);
+	m_pLine->SetAntialias(TRUE);
+	m_pLine->Begin();
+
+	D3DXVECTOR3 vLinePosX[2] = {D3DXVECTOR3(-0.01f, 0.f, 0.f), D3DXVECTOR3(2.f, 0.f, 0.f)};
+	m_pLine->DrawTransform(vLinePosX, 2, &matWorld, 0xff0000ff);
+
+	m_pLine->End();
+	m_pLine->Release();
+
+	D3DXCreateLine(m_pDevice, &m_pLine);
+	m_pLine->SetWidth(5.f);
+	m_pLine->SetAntialias(TRUE);
+	m_pLine->Begin();
+
+	D3DXVECTOR3 vLinePosY[2] = {D3DXVECTOR3(0.f, -0.01f, 0.f), D3DXVECTOR3(0.f, 2.f, 0.f)};
+	m_pLine->DrawTransform(vLinePosY, 2, &matWorld, 0xffff0000);
+
+	m_pLine->End();
+	m_pLine->Release();
+
+	D3DXCreateLine(m_pDevice, &m_pLine);
+	m_pLine->SetWidth(5.f);
+	m_pLine->SetAntialias(TRUE);
+	m_pLine->Begin();
+
+	D3DXVECTOR3 vLinePosZ[2] = {D3DXVECTOR3(0.f, 0.f, -0.01f), D3DXVECTOR3(0.f, 0.f, 2.f)};
+	m_pLine->DrawTransform(vLinePosZ, 2, &matWorld, 0xff00ff00);
+
+	m_pLine->End();
+	m_pLine->Release();
 }
