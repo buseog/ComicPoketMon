@@ -9,15 +9,17 @@
 #include "MapTab.h"
 // CMainForm
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 IMPLEMENT_DYNCREATE(CMainForm, CFormView)
-
-#include "Export_Function.h"
-
 
 CMainForm::CMainForm()
 	: CFormView(CMainForm::IDD)
 	, m_iType(0)
-	, m_pResourceMgr(Engine::Get_ResourceMgr())
 {
 
 }
@@ -71,6 +73,7 @@ void CMainForm::ChangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_pMap.ShowWindow(SW_SHOW);
 		m_pObject.ShowWindow(SW_HIDE);
 		m_pUnit.ShowWindow(SW_HIDE);
+		m_pAnimation.ShowWindow(SW_HIDE);
 		m_iType = 0;
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_MAP);
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
@@ -80,6 +83,7 @@ void CMainForm::ChangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_pMap.ShowWindow(SW_HIDE);
 		m_pObject.ShowWindow(SW_SHOW);
 		m_pUnit.ShowWindow(SW_HIDE);
+		m_pAnimation.ShowWindow(SW_HIDE);
 		m_iType = 1;
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_OBJ);
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
@@ -89,7 +93,19 @@ void CMainForm::ChangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_pMap.ShowWindow(SW_HIDE);
 		m_pObject.ShowWindow(SW_HIDE);
 		m_pUnit.ShowWindow(SW_SHOW);
+		m_pAnimation.ShowWindow(SW_HIDE);
 		m_iType = 2;
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_UNIT);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+		break;
+
+	case 3:
+		m_pMap.ShowWindow(SW_HIDE);
+		m_pObject.ShowWindow(SW_HIDE);
+		m_pUnit.ShowWindow(SW_HIDE);
+		m_pAnimation.ShowWindow(SW_SHOW);
+		m_iType = 2;
+		m_iType = 3;
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->SetBack(((CMainFrame*)AfxGetMainWnd())->m_pMainView->BK_UNIT);
 		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 		break;
@@ -107,39 +123,32 @@ void CMainForm::OnInitialUpdate()
 	m_TabControl.InsertItem(0, L"Map");
 	m_TabControl.InsertItem(1, L"Object");
 	m_TabControl.InsertItem(2, L"Unit");
+	m_TabControl.InsertItem(3, L"Animation");
 
-	CRect rect;
-	m_TabControl.GetClientRect(&rect);
+	CRect rc;
+	m_TabControl.GetClientRect(&rc);
 
 	m_pMap.Create(IDD_MAPTAB, &m_TabControl );
-	m_pMap.GetWindowRect(&rect);
-	m_pMap.MoveWindow(0,25, 250, 400);
+	m_pMap.SetWindowPos(NULL, 0, 25, rc.Width() - 5, rc.Height() - 5, SWP_SHOWWINDOW);
 	m_pMap.ShowWindow(SW_SHOW);
 
 	m_pObject.Create(IDD_OBJECTTAB, &m_TabControl );
-	m_pObject.GetWindowRect(&rect);
-	m_pObject.MoveWindow(0,25, 250, 400);
+	m_pObject.SetWindowPos(NULL, 0, 25, rc.Width() - 5, rc.Height() - 5, SWP_SHOWWINDOW);
 	m_pObject.ShowWindow(SW_HIDE);
 
 	m_pUnit.Create(IDD_UNITTAB, &m_TabControl );
-	m_pUnit.GetWindowRect(&rect);
-	m_pUnit.MoveWindow(0,25, 250, 400);
+	m_pUnit.SetWindowPos(NULL, 0, 25, rc.Width() - 5, rc.Height() - 5, SWP_SHOWWINDOW);
 	m_pUnit.ShowWindow(SW_HIDE);
+
+	m_pAnimation.Create(IDD_ANIMATION, &m_TabControl );
+	m_pAnimation.SetWindowPos(NULL, 0, 25, rc.Width() - 5, rc.Height() - 5, SWP_SHOWWINDOW);
+	m_pAnimation.ShowWindow(SW_HIDE);
 
 	HRESULT hr = NULL;
 
 	int VtxcntX = ((CMapTab*)AfxGetMainWnd())->m_iCountX;
 	int VtxcntZ = ((CMapTab*)AfxGetMainWnd())->m_iCountZ;
 
-	
-
-	hr = m_pResourceMgr->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice, 
-		Engine::RESOURCE_DYNAMIC, 
-		Engine::TEX_NORMAL, 
-		L"Texture Terrain", 
-		L"../bin/Resources/Texture/Terrain/Terrain%d.png", 
-		1);
-	//FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
 
 	Invalidate(false);
 

@@ -314,6 +314,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="03. CubeMotion"
+				>
+				<File
+					RelativePath="..\Code\CubeMotion.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\CubeMotion.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="99. Export"

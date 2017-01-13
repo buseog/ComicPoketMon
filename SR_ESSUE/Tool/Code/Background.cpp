@@ -14,12 +14,21 @@
 #include "CubeObj.h"
 #include "CubeCol.h"
 
+#include "TerrainTex.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 CBackground::CBackground( LPDIRECT3DDEVICE9 pDevice )
 : CGameObject(pDevice)
 , m_pBuffer(NULL)
 , m_fDistance(0)
 , m_pResourceMgr(Engine::Get_ResourceMgr())
+, m_iIndex(0)
+, m_pVertex(NULL)
 {
 
 }
@@ -115,6 +124,9 @@ void CBackground::KeyCheck( void )
 
 void CBackground::Picking( void )
 {
+	if (m_mapComponent.size() == 0)
+		return;
+
 	POINT	pt;
 
 	GetCursorPos(&pt);
@@ -150,9 +162,6 @@ void CBackground::Picking( void )
 	int VTXCNTX = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iCountX;
 	int iHeight = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iHeight;
 
-	Engine::VTXCOL*	pVertex = new Engine::VTXCOL[VTXCNTX * VTXCNTZ];
-	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(pVertex);
-
 	D3DXVECTOR3 vOut;
 
 	for(int z = 0; z < VTXCNTZ - 1; ++z)
@@ -162,35 +171,35 @@ void CBackground::Picking( void )
 			int iIndex = z * VTXCNTX + x;
 
 			// 오른쪽 위
-			if(D3DXIntersectTri(&pVertex[iIndex + VTXCNTX + 1].vPos,
-				&pVertex[iIndex + VTXCNTX].vPos,
-				&pVertex[iIndex + 1].vPos,
+			if(D3DXIntersectTri(&m_pVertex[iIndex + VTXCNTX + 1].vPos,
+				&m_pVertex[iIndex + VTXCNTX].vPos,
+				&m_pVertex[iIndex + 1].vPos,
 				&vRayPos,
 				&vRayDir,
 				&fU, &fV, &fDist))
 			{
-				pVertex[iIndex + VTXCNTX + 1].vPos.y = (float)iHeight;
-				pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
-				pVertex[iIndex + 1].vPos.y = (float)iHeight;
+				m_pVertex[iIndex + VTXCNTX + 1].vPos.y = (float)iHeight;
+				m_pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
+				m_pVertex[iIndex + 1].vPos.y = (float)iHeight;
 
-				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(pVertex);
+				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 
 				return;
 			}
 
 			// 왼쪽 아래
-			if(D3DXIntersectTri(&pVertex[iIndex].vPos,
-				&pVertex[iIndex + 1].vPos,
-				&pVertex[iIndex + VTXCNTX].vPos,
+			if(D3DXIntersectTri(&m_pVertex[iIndex].vPos,
+				&m_pVertex[iIndex + 1].vPos,
+				&m_pVertex[iIndex + VTXCNTX].vPos,
 				&vRayPos,
 				&vRayDir,
 				&fU, &fV, &fDist))
 			{
-				pVertex[iIndex].vPos.y = (float)iHeight;
-				pVertex[iIndex + 1].vPos.y = (float)iHeight;
-				pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
+				m_pVertex[iIndex].vPos.y = (float)iHeight;
+				m_pVertex[iIndex + 1].vPos.y = (float)iHeight;
+				m_pVertex[iIndex + VTXCNTX].vPos.y = (float)iHeight;
 
-				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(pVertex);
+				((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 
 				return;
 			}
@@ -212,15 +221,29 @@ void CBackground::AddTerrain( int iX, int iZ )
 
 	Engine::CComponent*		pResources = NULL;
 
-	pResources = Engine::CRcTerrain::Create(m_pDevice, iX, iZ, 1);
+	pResources = Engine::CTerrainTex::Create(m_pDevice, iX, iZ, 1);
 
 	m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pResources);
 
 	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Tex Terrain", pResources));
+
+	m_pVertex = new Engine::VTXTEX[iX * iZ];
+
+	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
 }
 
 HRESULT CBackground::Initialize( void )
 {
+	HRESULT hr = NULL;
+
+	hr = m_pResourceMgr->AddTexture(m_pDevice, 
+		Engine::RESOURCE_DYNAMIC, 
+		Engine::TEX_NORMAL, 
+		L"Texture Terrain", 
+		L"../bin/Resources/Texture/Terrain/Terrain%d.png", 
+		3);
+	FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
+
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	//m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
@@ -250,6 +273,14 @@ HRESULT CBackground::Initialize( void )
 
 	DrawLine();
 
+	Engine::CComponent*		pComponent = NULL;
+
+	pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_DYNAMIC, L"Texture Terrain");
+	m_pTexture = dynamic_cast<Engine::CTexture*>(pComponent);
+	NULL_CHECK_RETURN(m_pTexture, E_FAIL);
+
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Texture", pComponent));
+
 	return S_OK;
 }
 
@@ -264,7 +295,7 @@ void CBackground::Render( void )
 
 	if (m_pBuffer != NULL)
 	{
-		//m_pTexture->Render(0);
+		m_pTexture->Render(m_iIndex);
 		m_pBuffer->Render();
 		DrawLine();
 	}
@@ -320,4 +351,20 @@ void CBackground::DrawLine( void )
 
 	m_pLine->End();
 	m_pLine->Release();
+}
+
+
+void CBackground::SetIndex( int iIndex )
+{
+	m_iIndex = iIndex;
+}
+
+Engine::VTXTEX* CBackground::GetVtxcol( void )
+{
+	return m_pVertex;
+}
+
+void CBackground::SetVtxcol( Engine::VTXTEX* pVertex )
+{
+	m_pVertex = pVertex;
 }

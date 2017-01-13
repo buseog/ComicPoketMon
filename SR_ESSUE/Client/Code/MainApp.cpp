@@ -7,6 +7,7 @@
 CMainApp::CMainApp()
 : m_pGraphicDev(Engine::Get_GraphicDev())
 , m_pManagement(Engine::Get_Management())
+, m_pTimeMgr(Engine::Get_TimeMgr())
 , m_pDevice(NULL)
 {
 
@@ -35,12 +36,15 @@ HRESULT CMainApp::Initialize( void )
 	hr = m_pManagement->SceneChange(CSceneSelector(SC_LOGO));
 	FAILED_CHECK_MSG(hr, L"CSceneSelector Failed");
 
+	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	return S_OK;
 }
 
 void CMainApp::Release( void )
 {
+	Engine::Safe_Single_Destory(m_pTimeMgr);
 	Engine::Safe_Single_Destory(m_pManagement);
+	Engine::CResourceMgr::GetInstance()->DestroyInstance();
 	Engine::Safe_Single_Destory(m_pGraphicDev);
 }
 

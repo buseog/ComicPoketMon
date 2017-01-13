@@ -8,13 +8,20 @@
 #include "Texture.h"
 #include "CubeObj.h"
 #include "CubeCol.h"
+#include "CubeTex.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 
 CObjBack::CObjBack(LPDIRECT3DDEVICE9 pDevice)
 : CGameObject(pDevice)
 , m_pBuffer(NULL)
 , m_fDistance(0)
+, m_pVertex(NULL)
 {
 
 }
@@ -26,11 +33,11 @@ CObjBack::~CObjBack(void)
 
 void CObjBack::Release( void )
 {
-	for (list<Engine::CComponent*>::iterator iter = m_pCubeList.begin(); iter != m_pCubeList.end(); ++iter)
-	{
-		Engine::Safe_Delete(*iter);
-	}
-	m_pCubeList.clear();
+	for_each (m_mapChar.begin(), m_mapChar.end(), Engine::CDeleteMap());
+	m_mapChar.clear();
+
+	Engine::Safe_Delete_Array(m_pVertex);
+	Engine::Safe_Delete_Array(m_pIndex);
 }
 
 void CObjBack::KeyCheck( void )
@@ -49,21 +56,7 @@ void CObjBack::KeyCheck( void )
 		m_vEye = m_vAt * -m_fDistance;
 	}
 
-	/*if(GetAsyncKeyState('A') & 0x8000)
-	{
-		m_vAt.x -= 5;
-		D3DXVec3Normalize(&m_vAt, &m_vAt);
-		m_vEye = m_vAt * -m_fDistance;
-	}
-
-	if(GetAsyncKeyState('D') & 0x8000)
-	{
-		m_vAt.x += 5;
-		D3DXVec3Normalize(&m_vAt, &m_vAt);
-		m_vEye = m_vAt * -m_fDistance;
-	}*/
-
-	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
+	if(GetAsyncKeyState('A') & 0x8000)
 	{
 		m_fAngle[Engine::ANGLE_Y] = D3DXToRadian(-5.f);
 		D3DXMATRIX matRotY;
@@ -73,7 +66,7 @@ void CObjBack::KeyCheck( void )
 		m_vEye = -m_vAt * m_fDistance;
 	}
 
-	if(GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	if(GetAsyncKeyState('D') & 0x8000)
 	{
 		m_fAngle[Engine::ANGLE_Y] = D3DXToRadian(5.f);
 		D3DXMATRIX matRotY;
@@ -83,7 +76,7 @@ void CObjBack::KeyCheck( void )
 		m_vEye = -m_vAt * m_fDistance;
 	}
 
-	if(GetAsyncKeyState(VK_UP) & 0x8000)
+	if(GetAsyncKeyState('Q') & 0x8000)
 	{
 		m_fAngle[Engine::ANGLE_X] = D3DXToRadian(5.f);
 		D3DXMATRIX matAxis;
@@ -95,7 +88,7 @@ void CObjBack::KeyCheck( void )
 
 	}
 
-	if(GetAsyncKeyState(VK_DOWN) & 0x8000)
+	if(GetAsyncKeyState('E') & 0x8000)
 	{
 		m_fAngle[Engine::ANGLE_X] = D3DXToRadian(-5.f);
 		D3DXMATRIX matAxis;
@@ -141,21 +134,19 @@ void CObjBack::DeletePicking( void )
 
 
 	float	fU, fV, fDist;
-	Engine::VTXCOL*		pVertex = new Engine::VTXCOL[8];
-	Engine::INDEX32*	pIndex = new Engine::INDEX32[12];
 
-	for (list<Engine::CComponent*>::iterator iter = m_pCubeList.begin(); iter != m_pCubeList.end(); ++iter)
+	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
 	{
-		((Engine::CVIBuffer*)*iter)->GetVtxInfo(pVertex);
-		((Engine::CVIBuffer*)*iter)->GetIdxInfo(pIndex);
+		((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter->second)->GetIdxInfo(m_pIndex);
 
 		for (int i = 0; i < 12; ++i)
 		{
-			if(D3DXIntersectTri(&pVertex[pIndex[i]._2].vPos, &pVertex[pIndex[i]._1].vPos,	&pVertex[pIndex[i]._3].vPos,
+			if(D3DXIntersectTri(&m_pVertex[m_pIndex[i]._2].vPos, &m_pVertex[m_pIndex[i]._1].vPos,	&m_pVertex[m_pIndex[i]._3].vPos,
 				&vRayPos, &vRayDir, &fU, &fV, &fDist))
 			{
-				Engine::Safe_Delete(*iter);
-				iter = m_pCubeList.erase(iter);
+				Engine::Safe_Delete(iter->second);
+				iter = m_mapChar.erase(iter);
 				
 				return;
 			}
@@ -194,99 +185,136 @@ void CObjBack::AddPicking( void )
 
 
 	float	fU, fV, fDist;
-	Engine::VTXCOL*		pVertex = new Engine::VTXCOL[8];
-	Engine::INDEX32*	pIndex = new Engine::INDEX32[12];
+	
 
-	for (list<Engine::CComponent*>::iterator iter = m_pCubeList.begin(); iter != m_pCubeList.end(); ++iter)
+	multimap<float, map<Engine::CComponent*, int>> multimapTemp; 
+	
+
+	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
 	{
-		((Engine::CVIBuffer*)*iter)->GetVtxInfo(pVertex);
-		((Engine::CVIBuffer*)*iter)->GetIdxInfo(pIndex);
+		((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter->second)->GetIdxInfo(m_pIndex);
 
 		for (int i = 0; i < 12; ++i)
 		{
-			if(D3DXIntersectTri(&pVertex[pIndex[i]._2].vPos, &pVertex[pIndex[i]._1].vPos,	&pVertex[pIndex[i]._3].vPos,
+			if(D3DXIntersectTri(&m_pVertex[m_pIndex[i]._2].vPos, &m_pVertex[m_pIndex[i]._1].vPos,	&m_pVertex[m_pIndex[i]._3].vPos,
 				&vRayPos, &vRayDir, &fU, &fV, &fDist))
 			{
-				if (i <= 1)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
+				map<Engine::CComponent*, int> mapTemp;
 
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(2.f, 0.f, 0.f);
+				mapTemp.insert(make_pair(iter->second, i));
 
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-
-				}
-				else if (i <= 3)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
-
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(-2.f, 0.f, 0.f);
-
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-				}
-
-				else if (i <= 5)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
-
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(0.f, 2.f, 0.f);
-
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-				}
-
-				else if (i <= 7)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
-
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(0.f, -2.f, 0.f);
-
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-				}
-
-				else if (i <= 9)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
-
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, 2.f);
-
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-				}
-
-				else if (i <= 11)
-				{
-					m_pCubeList.push_back(Engine::CCubeCol::Create(m_pDevice));
-					Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
-					((Engine::CVIBuffer*)m_pCubeList.back())->GetVtxInfo(pNew);
-
-					for (int p = 0; p < 8 ; ++p)
-						pNew[p].vPos = pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, -2.f);
-
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetVtxInfo(pNew);
-					((Engine::CVIBuffer*)m_pCubeList.back())->SetOriginVtxInfo(pNew);
-				}
-				return;
+				multimapTemp.insert(make_pair(fDist, mapTemp));
 			}
 		}
+	}
+
+	if (multimapTemp.empty())
+		return;
+
+	 map<Engine::CComponent*, int>::iterator				iter = multimapTemp.begin()->second.begin();
+
+	wstring wstrName = (LPWSTR)((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_strKey.operator LPCWSTR();
+
+	if (((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_iCubetype == 0)
+	{
+		m_mapChar.insert(make_pair(wstrName, Engine::CCubeCol::Create(m_pDevice)));
+
+		Engine::VTXCOL*		pNew = new Engine::VTXCOL[8];
+
+		map<wstring, Engine::CResources*>::iterator iter2 = m_mapChar.find(wstrName);
+		((Engine::CVIBuffer*)iter->first)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter2->second)->GetVtxInfo(pNew);
+
+		if (iter->second <= 1)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(2.f, 0.f, 0.f);
+		}
+		else if (iter->second <= 3)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(-2.f, 0.f, 0.f);
+		}
+
+		else if (iter->second <= 5)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 2.f, 0.f);
+		}
+
+		else if (iter->second <= 7)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, -2.f, 0.f);
+		}
+
+		else if (iter->second <= 9)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, 2.f);
+		}
+
+		else if (iter->second <= 11)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, -2.f);
+		}
+
+		((Engine::CVIBuffer*)iter2->second)->SetVtxInfo(pNew);
+		((Engine::CVIBuffer*)iter2->second)->SetOriginVtxInfo(pNew);
+
+		Engine::Safe_Delete_Array(pNew);
+	}
+	else if (((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_iCubetype == 1)
+	{
+		m_mapChar.insert(make_pair(wstrName, Engine::CCubeTex::Create(m_pDevice)));
+
+		Engine::VTXCUBE*	pNew = new Engine::VTXCUBE[8];
+
+		map<wstring, Engine::CResources*>::iterator iter2 = m_mapChar.find(wstrName);
+		((Engine::CVIBuffer*)iter->first)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter2->second)->GetVtxInfo(pNew);
+
+		if (iter->second <= 1)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(2.f, 0.f, 0.f);
+		}
+		else if (iter->second <= 3)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(-2.f, 0.f, 0.f);
+		}
+
+		else if (iter->second <= 5)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 2.f, 0.f);
+		}
+
+		else if (iter->second <= 7)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, -2.f, 0.f);
+		}
+
+		else if (iter->second <= 9)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, 2.f);
+		}
+
+		else if (iter->second <= 11)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, -2.f);
+		}
+
+		((Engine::CVIBuffer*)iter2->second)->SetVtxInfo(pNew);
+		((Engine::CVIBuffer*)iter2->second)->SetOriginVtxInfo(pNew);
+
+		Engine::Safe_Delete_Array(pNew);
 	}
 }
 
@@ -321,24 +349,23 @@ void CObjBack::SelectPicking( void )
 
 
 	float	fU, fV, fDist;
-	Engine::VTXCOL*		pVertex = new Engine::VTXCOL[8];
-	Engine::INDEX32*	pIndex = new Engine::INDEX32[12];
+	
 
-	for (list<Engine::CComponent*>::iterator iter = m_pCubeList.begin(); iter != m_pCubeList.end(); ++iter)
+	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
 	{
-		((Engine::CVIBuffer*)*iter)->GetVtxInfo(pVertex);
-		((Engine::CVIBuffer*)*iter)->GetIdxInfo(pIndex);
+		((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter->second)->GetIdxInfo(m_pIndex);
 
 		for (int i = 0; i < 12; ++i)
 		{
-			if(D3DXIntersectTri(&pVertex[pIndex[i]._2].vPos, &pVertex[pIndex[i]._1].vPos,	&pVertex[pIndex[i]._3].vPos,
+			if(D3DXIntersectTri(&m_pVertex[m_pIndex[i]._2].vPos, &m_pVertex[m_pIndex[i]._1].vPos,	&m_pVertex[m_pIndex[i]._3].vPos,
 				&vRayPos, &vRayDir, &fU, &fV, &fDist))
 			{
-				m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(*iter);
+				m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(iter->second);
 				D3DXVECTOR3 vTemp;
-				vTemp.x = (pVertex[0].vPos.x + pVertex[1].vPos.x) / 2;
-				vTemp.y = (pVertex[0].vPos.y + pVertex[3].vPos.y) / 2;
-				vTemp.z = (pVertex[0].vPos.z + pVertex[5].vPos.z) / 2;
+				vTemp.x = (m_pVertex[0].vPos.x + m_pVertex[1].vPos.x) / 2;
+				vTemp.y = (m_pVertex[0].vPos.y + m_pVertex[3].vPos.y) / 2;
+				vTemp.z = (m_pVertex[0].vPos.z + m_pVertex[5].vPos.z) / 2;
 				
 				((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.SetPos(vTemp);
 
@@ -348,31 +375,91 @@ void CObjBack::SelectPicking( void )
 	}
 }
 
-void CObjBack::SetTransCube( D3DXVECTOR3 vPos )
+void CObjBack::SetTransCube( D3DXVECTOR3 vPos, D3DXVECTOR3 vScale )
 {
 	if (m_pBuffer == NULL)
 		return;
 
-	Engine::VTXCOL*		pVertex = new Engine::VTXCOL[8];
-	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(pVertex);
+	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
 
-	pVertex[0].vPos = D3DXVECTOR3(-1.f, 1.f, -1.f) + vPos;
+	m_pVertex[0].vPos = D3DXVECTOR3(-1.f, 1.f, -1.f) + vPos;
 
-	pVertex[1].vPos = D3DXVECTOR3(1.f, 1.f ,-1.f) + vPos;
+	m_pVertex[1].vPos = D3DXVECTOR3(1.f, 1.f ,-1.f) + vPos;
 
-	pVertex[2].vPos = D3DXVECTOR3(1.f, -1.f ,-1.f) + vPos;
+	m_pVertex[2].vPos = D3DXVECTOR3(1.f, -1.f ,-1.f) + vPos;
 
-	pVertex[3].vPos = D3DXVECTOR3(-1.f, -1.f ,-1.f) + vPos;
+	m_pVertex[3].vPos = D3DXVECTOR3(-1.f, -1.f ,-1.f) + vPos;
 
-	pVertex[4].vPos = D3DXVECTOR3(-1.f, 1.f ,1.f) + vPos;
+	m_pVertex[4].vPos = D3DXVECTOR3(-1.f, 1.f ,1.f) + vPos;
 
-	pVertex[5].vPos = D3DXVECTOR3(1.f, 1.f ,1.f) + vPos;
+	m_pVertex[5].vPos = D3DXVECTOR3(1.f, 1.f ,1.f) + vPos;
 
-	pVertex[6].vPos = D3DXVECTOR3(1.f, -1.f ,1.f) + vPos;
+	m_pVertex[6].vPos = D3DXVECTOR3(1.f, -1.f ,1.f) + vPos;
 
-	pVertex[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f) + vPos;
+	m_pVertex[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f) + vPos;
 
-	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(pVertex);
+	for (int i = 0; i < 8; ++i)
+	{
+		m_pVertex[i].vPos.x *= vScale.x;
+		m_pVertex[i].vPos.y *= vScale.y;
+		m_pVertex[i].vPos.z *= vScale.z;
+	}
+
+	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+}
+
+void CObjBack::SetRotationCube( int iFlag, float fAngle )
+{
+	if (m_pBuffer == NULL)
+		return;
+
+	((Engine::CVIBuffer*)m_pBuffer)->GetOriginVtxInfo(m_pVertex);
+
+	D3DXMATRIX matRot;
+
+	switch (iFlag)
+	{
+	case 0:
+		D3DXMatrixRotationX(&matRot, D3DXToRadian(fAngle));
+		break;
+	case 1:
+		D3DXMatrixRotationY(&matRot, D3DXToRadian(fAngle));
+		break;
+	case 2:
+		D3DXMatrixRotationZ(&matRot, D3DXToRadian(fAngle));
+		break;
+	}
+	
+	
+	for (int i = 0; i < 8; ++i)
+	{
+		
+		D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+	}
+
+	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+}
+
+void CObjBack::SetApplyCube( void )
+{
+	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+}
+
+void CObjBack::SetColor( DWORD dwColor )
+{
+	if (m_pBuffer == NULL)
+		return;
+
+	((Engine::CVIBuffer*)m_pBuffer)->GetOriginVtxInfo(m_pVertex);
+
+	for (int i = 0; i < 8; ++i)
+	{
+		m_pVertex[i].dwColor = dwColor;
+	}
+	
+	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
 }
 
 void CObjBack::DrawLine( void )
@@ -387,7 +474,7 @@ void CObjBack::DrawLine( void )
 	m_pLine->SetAntialias(TRUE);
 	m_pLine->Begin();
 
-	D3DXVECTOR3 vLinePosX[2] = {D3DXVECTOR3(-0.01f, 0.f, 0.f), D3DXVECTOR3(2.f, 0.f, 0.f)};
+	D3DXVECTOR3 vLinePosX[2] = {D3DXVECTOR3(-0.01f, 0.f, 0.f), D3DXVECTOR3(10.f, 0.f, 0.f)};
 	m_pLine->DrawTransform(vLinePosX, 2, &matWorld, 0xff0000ff);
 
 	m_pLine->End();
@@ -398,7 +485,7 @@ void CObjBack::DrawLine( void )
 	m_pLine->SetAntialias(TRUE);
 	m_pLine->Begin();
 
-	D3DXVECTOR3 vLinePosY[2] = {D3DXVECTOR3(0.f, -0.01f, 0.f), D3DXVECTOR3(0.f, 2.f, 0.f)};
+	D3DXVECTOR3 vLinePosY[2] = {D3DXVECTOR3(0.f, -0.01f, 0.f), D3DXVECTOR3(0.f, 10.f, 0.f)};
 	m_pLine->DrawTransform(vLinePosY, 2, &matWorld, 0xffff0000);
 
 	m_pLine->End();
@@ -409,7 +496,7 @@ void CObjBack::DrawLine( void )
 	m_pLine->SetAntialias(TRUE);
 	m_pLine->Begin();
 
-	D3DXVECTOR3 vLinePosZ[2] = {D3DXVECTOR3(0.f, 0.f, -0.01f), D3DXVECTOR3(0.f, 0.f, 2.f)};
+	D3DXVECTOR3 vLinePosZ[2] = {D3DXVECTOR3(0.f, 0.f, -0.01f), D3DXVECTOR3(0.f, 0.f, 10.f)};
 	m_pLine->DrawTransform(vLinePosZ, 2, &matWorld, 0xff00ff00);
 
 	m_pLine->End();
@@ -426,7 +513,7 @@ void CObjBack::AddObject( wstring wstrTetureKey, D3DXVECTOR3 vScale, D3DXVECTOR3
 
 	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Col Cube3", pResources));	
 
-	//Engine::CCubeCol::Create(m_pDevice, D3DXVECTOR3(pVertex[pIndex[i]._1].vPos.x, 0.f, 0.f))
+	//Engine::CCubeCol::Create(m_pDevice, D3DXVECTOR3(pVertex[m_pIndex[i]._1].vPos.x, 0.f, 0.f))
 }
 
 HRESULT CObjBack::Initialize( void )
@@ -434,6 +521,10 @@ HRESULT CObjBack::Initialize( void )
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+	m_pVertex = new Engine::VTXCOL[8];
+	m_pIndex = new Engine::INDEX32[12];
+	
 
 	ZeroMemory(m_fAngle, sizeof(float) * 3);
 	m_fDistance = 10.f;
@@ -458,15 +549,15 @@ HRESULT CObjBack::Initialize( void )
 
 	m_pDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
-	Engine::CComponent*		pResources = NULL;
+	Engine::CResources*		pResources = NULL;
 
 	pResources = Engine::CCubeCol::Create(m_pDevice);
 
-	m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pResources);
-
-	m_pCubeList.push_back(pResources);	
+	m_mapChar.insert(make_pair(L"Default", pResources));	
 
 	DrawLine();
+
+
 
 	return S_OK;
 }
@@ -478,8 +569,12 @@ void CObjBack::Update( void )
 
 void CObjBack::Render( void )
 {
-	for (list<Engine::CComponent*>::iterator iter = m_pCubeList.begin(); iter != m_pCubeList.end(); ++iter)
-		((Engine::CVIBuffer*)(*iter))->Render();
+	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
+	{
+		((Engine::CVIBuffer*)(iter->second))->Render();
+	}
+
+	DrawLine();
 }
 
 CObjBack* CObjBack::Create( LPDIRECT3DDEVICE9 pDevice )

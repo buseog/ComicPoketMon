@@ -6,7 +6,6 @@
 namespace Engine
 {
 	class CManagement;
-	class CTriCol;
 }
 
 class CLogo
@@ -14,7 +13,6 @@ class CLogo
 {
 private:
 	Engine::CManagement*	m_pManagement;
-	Engine::CTriCol*		m_pTriCol;
 
 
 public:

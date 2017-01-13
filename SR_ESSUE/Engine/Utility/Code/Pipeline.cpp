@@ -128,30 +128,30 @@ void Engine::CPipeline::MyTransformCoord(D3DXVECTOR3* vOut, const D3DXVECTOR3* v
 {
 	D3DXVECTOR3 vTemp;
 
-	vTemp.x = (vVec->x * matWorld->_11) + (vVec->x * matWorld->_21) + (vVec->x * matWorld->_31) + matWorld->_41;
-	vTemp.y = (vVec->y * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->y * matWorld->_32) + matWorld->_42;
-	vTemp.z = (vVec->z * matWorld->_13) + (vVec->z * matWorld->_23) + (vVec->z * matWorld->_33) + matWorld->_43;
-	float w = (vVec->z * matWorld->_14) + (vVec->z * matWorld->_24) + (vVec->z * matWorld->_34) + matWorld->_44;
+	vTemp.x = (vVec->x * matWorld->_11) + (vVec->y * matWorld->_21) + (vVec->z * matWorld->_31) + matWorld->_41;
+	vTemp.y = (vVec->x * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->z * matWorld->_32) + matWorld->_42;
+	vTemp.z = (vVec->x * matWorld->_13) + (vVec->y * matWorld->_23) + (vVec->z * matWorld->_33) + matWorld->_43;
+	float w = (vVec->x * matWorld->_14) + (vVec->y * matWorld->_24) + (vVec->z * matWorld->_34) + matWorld->_44;
 
 	vTemp.x = vTemp.x / w;
 	vTemp.y = vTemp.y / w;
 	vTemp.z = vTemp.z / w;
 
-	vOut = &vTemp;
+	*vOut = vTemp;
 
 }
 
-void Engine::CPipeline::MyTransformNormal(D3DXVECTOR3* vOut, const D3DXVECTOR3* vVec, const D3DXMATRIX* matWorld)
-{
-	D3DXVECTOR3 vTemp;
-
-	vTemp.x = vVec->x;
-	vTemp.y = vVec->y;
-	vTemp.z = vVec->z;
-
-	vTemp.x = (vVec->x * matWorld->_11) + (vVec->x * matWorld->_21) + (vVec->x * matWorld->_31);
-	vTemp.x = (vVec->y * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->y * matWorld->_32);
-	vTemp.x = (vVec->z * matWorld->_13) + (vVec->z * matWorld->_23) + (vVec->z * matWorld->_33);
-
-	vOut = &vTemp;
-}
+//void Engine::CPipeline::MyTransformNormal(D3DXVECTOR3* vOut, const D3DXVECTOR3* vVec, const D3DXMATRIX* matWorld)
+//{
+//	D3DXVECTOR3 vTemp;
+//
+//	vTemp.x = vVec->x;
+//	vTemp.y = vVec->y;
+//	vTemp.z = vVec->z;
+//
+//	vTemp.x = (vVec->x * matWorld->_11) + (vVec->y * matWorld->_21) + (vVec->x * matWorld->_31);
+//	vTemp.x = (vVec->x * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->y * matWorld->_32);
+//	vTemp.x = (vVec->x * matWorld->_13) + (vVec->y * matWorld->_23) + (vVec->z * matWorld->_33);
+//
+//	vOut = &vTemp;
+//}

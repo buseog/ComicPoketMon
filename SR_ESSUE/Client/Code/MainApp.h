@@ -7,6 +7,7 @@ namespace Engine
 {
 	class CGraphicDev;
 	class CManagement;
+	class CTimeMgr;
 }
 
 class CMainApp
@@ -15,6 +16,7 @@ private:
 	Engine::CGraphicDev*			m_pGraphicDev;
 	Engine::CManagement*			m_pManagement;
 	LPDIRECT3DDEVICE9				m_pDevice;
+	Engine::CTimeMgr*				m_pTimeMgr;
 
 private:
 	HRESULT	Initialize(void);

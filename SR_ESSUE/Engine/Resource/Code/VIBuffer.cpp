@@ -53,7 +53,8 @@ void Engine::CVIBuffer::Release( void )
 	{
 		Engine::Safe_Release(m_pVB);
 		Engine::Safe_Release(m_pIB);
-
+		Engine::Safe_Delete_Array(m_pOriginVertex);
+		Engine::Safe_Delete_Array(m_pOriginIndex);
 		Engine::CResources::Release();
 	}
 	else
@@ -94,27 +95,21 @@ void Engine::CVIBuffer::GetVtxInfo(void* pVertex)
 
 void Engine::CVIBuffer::GetIdxInfo( void* pIndex )
 {
-	m_pIB->Lock(0, 0, &m_pOriginIndex, 0);
+	void*		pOriIndex = NULL;
 
-	memcpy(pIndex, m_pOriginIndex, m_dwIdxSize * m_dwTriCnt);
+	m_pIB->Lock(0, 0, &pOriIndex, 0);
+
+	memcpy(pIndex, pOriIndex, m_dwIdxSize * m_dwTriCnt);
 
 	m_pIB->Unlock();
 }
 
 void Engine::CVIBuffer::GetOriginVtxInfo( void* pVertex )
 {
-	m_pVB->Lock(0, 0, &m_pOriginVertex, 0);
-
 	memcpy(pVertex, m_pOriginVertex, m_dwVtxSize * m_dwVtxCnt);
-
-	m_pVB->Unlock();
 }
 
 void Engine::CVIBuffer::SetOriginVtxInfo( void* pVertex )
 {
-	m_pVB->Lock(0, 0, &m_pOriginVertex, 0);
-
 	memcpy(m_pOriginVertex, pVertex, m_dwVtxSize * m_dwVtxCnt);
-
-	m_pVB->Unlock();
 }

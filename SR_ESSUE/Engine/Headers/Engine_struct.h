@@ -44,16 +44,6 @@ namespace Engine
 
 	const DWORD VTXFVF_CUBE = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0);
 
-	typedef struct VertexCubeCol
-	{
-		D3DXVECTOR3 vPos;
-		DWORD dwColor;
-	}VTXCUBECOL;
-
-	const DWORD VTXFVF_CUBECOL = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX0;
-
-
-
 	typedef	struct tagIndex16
 	{
 		WORD	_1, _2, _3;
@@ -74,6 +64,21 @@ namespace Engine
 		D3DXMATRIX		matWorld;
 
 	}INFO;
+
+	typedef struct tagSaveFile
+	{
+		VTXCOL VtxInfo[8];
+		wstring wstrName;
+	}SAVEFILE;
+
+	typedef struct tagSaveFrame
+	{
+		wstring wstrStateKey;
+		wstring wstrPartsKey;
+		int		FrameKey;
+		VTXCOL	VtxInfo[8];
+	
+	}SAVEFRAME;
 
 }
 

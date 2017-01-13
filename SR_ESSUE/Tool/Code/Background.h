@@ -27,8 +27,7 @@ class CBackground :
 	public Engine::CGameObject
 {
 private:
-	LPDIRECT3DDEVICE9	m_pDeivce;
-	Engine::CVIBuffer*	m_pBuffer;
+	//LPDIRECT3DDEVICE9	m_pDeivce;
 	Engine::CTexture*	m_pTexture;
 
 	list<Engine::CTexture*>	m_pObjectTexturelist;
@@ -41,7 +40,13 @@ private:
 
 	LPD3DXLINE	m_pLine;
 
+	int			m_iIndex;
+
 	Engine::CResourceMgr*		m_pResourceMgr;
+	Engine::VTXTEX*				m_pVertex;
+
+public:
+	Engine::CVIBuffer*	m_pBuffer;
 
 public:
 	void	Release(void);
@@ -51,6 +56,11 @@ public:
 
 public:
 	void	AddTerrain(int iX, int iZ);
+
+	void	SetIndex(int iIndex);
+
+	Engine::VTXTEX* GetVtxcol(void);
+	void			SetVtxcol(Engine::VTXTEX* pVertex);
 
 public:
 	virtual HRESULT Initialize( void );

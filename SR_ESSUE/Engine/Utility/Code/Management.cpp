@@ -45,3 +45,10 @@ void Engine::CManagement::Render( void )
 		m_pRenderer->Render();
 }
 
+const Engine::VTXTEX* Engine::CManagement::GetTerrainVertex(const WORD& LayerID, 
+															const wstring& wstrObjKey)
+{
+	return m_pScene->GetTerrainVertex(LayerID, wstrObjKey);
+}
+
+  

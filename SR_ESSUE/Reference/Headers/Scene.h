@@ -21,6 +21,9 @@ public:
 	virtual	void	Update(void);
 	virtual void	Render(void);
 
+public:
+	const Engine::VTXTEX*		GetTerrainVertex(const WORD& LayerID, const wstring& wstrObjKey);
+
 protected:
 	explicit CScene(LPDIRECT3DDEVICE9 _pDeivce);
 public:

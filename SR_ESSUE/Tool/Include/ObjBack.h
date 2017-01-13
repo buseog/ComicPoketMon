@@ -7,6 +7,7 @@ namespace Engine
 {
 	class CVIBuffer;
 	class CResourceMgr;
+	class CResources;
 	class CTexture;
 }
 
@@ -19,7 +20,7 @@ public:
 	Engine::CVIBuffer*	m_pBuffer;
 	Engine::CTexture*	m_pTexture;
 
-	list<Engine::CComponent*>	m_pCubeList;
+	map<wstring, Engine::CResources*>	m_mapChar;
 
 	float		m_fAngle[Engine::ANGLE_END];
 	float		m_fDistance;
@@ -27,13 +28,19 @@ public:
 	D3DXMATRIX	matView, matProj;
 	LPD3DXLINE	m_pLine;
 
+	Engine::VTXCOL*		m_pVertex;
+	Engine::INDEX32*	m_pIndex;
+
 public:
 	void	Release(void);
 	void	KeyCheck(void);
 	void	DeletePicking(void);
 	void	SelectPicking(void);
 	void	AddPicking(void);
-	void	SetTransCube(D3DXVECTOR3 vPos);
+	void	SetTransCube(D3DXVECTOR3 vPos, D3DXVECTOR3 vScale);
+	void	SetRotationCube(int iFlag, float fAngle);
+	void	SetApplyCube(void);
+	void	SetColor(DWORD dwColor);
 	void	DrawLine(void);
 
 public:

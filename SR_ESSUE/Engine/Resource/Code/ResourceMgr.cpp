@@ -91,11 +91,9 @@ void Engine::CResourceMgr::Release(void)
 {
 	for(int i = 0; i < RESOURCE_END; ++i)
 	{
-			for_each(m_MapResource[i].begin(), m_MapResource[i].end(), CDeleteMap());
-			m_MapResource[i].clear();
-				
+		for_each(m_MapResource[i].begin(), m_MapResource[i].end(), CDeleteMap());
+		m_MapResource[i].clear();	
 	}
-	
 }
 
 HRESULT Engine::CResourceMgr::AddTexture(LPDIRECT3DDEVICE9 pDevice, 

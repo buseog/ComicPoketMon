@@ -24,7 +24,7 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 
 	FAILED_CHECK(CVIBuffer::CreateBuffer());
 
-	DWORD*		pdwPixel = LoadImage();
+	//DWORD*		pdwPixel = LoadImage();
 
 	VTXTEX*		pVtxTex = NULL;
 
@@ -39,7 +39,7 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 			iIndex = z * wCntX + x;
 
 			pVtxTex[iIndex].vPos    = D3DXVECTOR3(float(x) * wItv, 
-				(pdwPixel[iIndex] & 0x000000ff) / 100.f,
+				0.f,
 				float(z) * wItv);
 			pVtxTex[iIndex].vTex    = D3DXVECTOR2(x / (wCntX - 1.f), z / (wCntZ - 1.f));
 		}
@@ -78,7 +78,10 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 
 	m_pIB->Unlock();
 
-	Engine::Safe_Delete_Array(pdwPixel);
+	m_pOriginIndex = new INDEX32[m_dwTriCnt];
+	memcpy(m_pOriginIndex, pIndex, m_dwIdxSize * m_dwTriCnt);
+
+	//Engine::Safe_Delete_Array(pdwPixel);
 
 	return S_OK;
 

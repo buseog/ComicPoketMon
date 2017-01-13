@@ -38,6 +38,7 @@ public:
 	void						Render(void);
 	HRESULT						AddObject(const wstring& wstrObjKey, CGameObject*	pGameObject);
 	const CComponent*			GetComponent(const wstring& wstrObjKey, const wstring& wstrComponentKey);
+	const Engine::VTXTEX*		GetTerrainVertex(const wstring& wstrObjKey);
 
 public:
 	static CLayer* Create(LPDIRECT3DDEVICE9 pDevice);

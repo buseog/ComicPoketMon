@@ -27,6 +27,10 @@ protected:
 	MAPCOMPONENT							m_mapComponent;
 	LPDIRECT3DDEVICE9						m_pDevice;
 
+public:
+	virtual const Engine::VTXTEX*	GetTerrainVertex(void);
+
+
 private:
 	void	Release(void);
 

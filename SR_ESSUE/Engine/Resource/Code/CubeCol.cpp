@@ -13,9 +13,9 @@ Engine::CCubeCol::~CCubeCol( void )
 
 HRESULT Engine::CCubeCol::CreateBuffer( void )
 {
-	m_dwVtxSize = sizeof(Engine::VTXCUBECOL);
+	m_dwVtxSize = sizeof(Engine::VTXCOL);
 	m_dwVtxCnt = 8;
-	m_dwVtxFVF = Engine::VTXFVF_CUBECOL;
+	m_dwVtxFVF = Engine::VTXFVF_COL;
 	m_dwTriCnt = 12;
 	m_dwIdxSize = sizeof(Engine::INDEX32);
 	m_IdxFmt = D3DFMT_INDEX32;
@@ -26,7 +26,7 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 	DWORD Green = D3DCOLOR_ARGB(255, 0, 255, 0);
 	DWORD Blue = D3DCOLOR_ARGB(255, 0, 0, 255);
 
-	Engine::VTXCUBECOL* pVtxCubeCol = NULL;
+	Engine::VTXCOL* pVtxCubeCol = NULL;
 
 	m_pVB->Lock(0,0,(void**)&pVtxCubeCol,0);
 
@@ -54,7 +54,7 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 	pVtxCubeCol[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f);
 	pVtxCubeCol[7].dwColor = Green;
 
-	m_pOriginVertex = new VTXCUBECOL[m_dwVtxCnt];
+	m_pOriginVertex = new VTXCOL[m_dwVtxCnt];
 	memcpy(m_pOriginVertex, pVtxCubeCol, m_dwVtxSize * m_dwVtxCnt);
 
 	m_pVB->Unlock();
@@ -116,10 +116,10 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 	pIndex[11]._2 = 2;
 	pIndex[11]._3 = 3;
 
+	m_pIB->Unlock();
+
 	m_pOriginIndex = new INDEX32[m_dwTriCnt];
 	memcpy(m_pOriginIndex, pIndex, m_dwIdxSize * m_dwTriCnt);
-	
-	m_pIB->Unlock();
 
 
 	return S_OK;
@@ -127,7 +127,7 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 
 void Engine::CCubeCol::Release( void )
 {
-
+	
 }
 
 void Engine::CCubeCol::Render( void )

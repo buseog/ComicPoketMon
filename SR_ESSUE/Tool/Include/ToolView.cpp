@@ -14,6 +14,8 @@
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 #include "Export_Function.h"
@@ -155,7 +157,6 @@ void CToolView::SetBack( BACKID eBack )
 		if(m_pBackground[eBack] == NULL)
 		{
 			m_pBackground[BK_MAP]  = CBackground::Create(m_pDevice);
-			m_pBackground[BK_MAP]->Initialize();
 		}
 		m_eBACK = eBack;
 		break;
@@ -164,7 +165,6 @@ void CToolView::SetBack( BACKID eBack )
 		if(m_pBackground[eBack] == NULL)
 		{
 			m_pBackground[BK_UNIT]  = CObjBack::Create(m_pDevice);
-			m_pBackground[BK_UNIT]->Initialize();
 		}
 		m_eBACK = eBack;
 		break;
@@ -185,7 +185,7 @@ void CToolView::OnInitialUpdate()
 {
 	CScrollView::OnInitialUpdate();
 	m_eBACK = BK_MAP;
-	SetScrollSizes(MM_TEXT, CSize(129 * 129, (129 / 2) * 129));
+	SetScrollSizes(MM_TEXT, CSize(129, 129));
 
 	g_hWnd = m_hWnd;
 
@@ -203,7 +203,7 @@ void CToolView::OnInitialUpdate()
 	float		fRowFrm = float(rcWindow.right - rcMainView.right);
 	float		fColFrm = float(rcWindow.bottom - rcMainView.bottom);
 
-	pMainFrm->SetWindowPos(NULL, 400, 100, int(WINCX + fRowFrm), int(WINCY + fColFrm), SWP_NOZORDER);
+	pMainFrm->SetWindowPos(NULL, 50, 0, int(WINCX + fRowFrm), int(WINCY + fColFrm), SWP_NOZORDER);
 
 	Engine::CGraphicDev::GetInstance()->InitGraphicDev
 		(Engine::CGraphicDev::MODE_WIN, g_hWnd, WINCX, WINCY);
@@ -265,6 +265,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		break;
 	}
 	Invalidate(FALSE);
+	return;
 
 	CScrollView::OnLButtonDown(nFlags, point);
 
@@ -274,8 +275,8 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
-	if (GetAsyncKeyState(VK_LBUTTON))
-		OnLButtonDown(nFlags, point);
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+		//OnLButtonDown(nFlags, point);
 
 	CScrollView::OnMouseMove(nFlags, point);
 }

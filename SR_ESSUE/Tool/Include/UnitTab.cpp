@@ -7,6 +7,13 @@
 #include "Export_Function.h"
 #include "ObjBack.h"
 #include "MainFrm.h"
+#include "CubeCol.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 
 // CUnitTab 대화 상자입니다.
@@ -27,6 +34,10 @@ CUnitTab::CUnitTab(CWnd* pParent /*=NULL*/)
 	, m_iRed(0)
 	, m_iGreen(0)
 	, m_iBlue(0)
+	, m_iCubetype(0)
+	, m_fAngleX(0)
+	, m_fAngleY(0)
+	, m_fAngleZ(0)
 {
 
 }
@@ -50,18 +61,37 @@ void CUnitTab::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT10, m_iRed);
 	DDX_Text(pDX, IDC_EDIT11, m_iGreen);
 	DDX_Text(pDX, IDC_EDIT12, m_iBlue);
+	DDX_Text(pDX, IDC_EDIT9, m_fAngleX);
+	DDX_Text(pDX, IDC_EDIT14, m_fAngleY);
+	DDX_Text(pDX, IDC_EDIT15, m_fAngleZ);
 	DDX_Radio(pDX, IDC_RADIO3, m_iActionRadio);
+	DDX_Radio(pDX, IDC_RADIO1, m_iCubetype);
+	DDX_Control(pDX, IDC_LIST1, m_TexListControl);
+	DDX_Control(pDX, IDC_SLIDER2, m_XRotSlider);
+	DDX_Control(pDX, IDC_SLIDER3, m_YRotSlider);
+	DDX_Control(pDX, IDC_SLIDER4, m_ZRotSlider);
 }
 
 
 BEGIN_MESSAGE_MAP(CUnitTab, CDialog)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO3, IDC_RADIO5, OnBnClickedRadio)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO3, IDC_RADIO5, OnActionRadio)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO1, IDC_RADIO2, OnCubeTypeRadio)
 	ON_BN_CLICKED(IDC_BUTTON2, &CUnitTab::OnColorControl)
 	ON_BN_CLICKED(IDC_BUTTON3, &CUnitTab::OnSave)
 	ON_BN_CLICKED(IDC_BUTTON4, &CUnitTab::OnLoad)
-	ON_BN_CLICKED(IDC_BUTTON1, &CUnitTab::OnScaleApply)
-	ON_BN_CLICKED(IDC_BUTTON6, &CUnitTab::OnTransApply)
-	ON_BN_CLICKED(IDC_RADIO3, &CUnitTab::OnTransApply)
+	ON_BN_CLICKED(IDC_BUTTON1, &CUnitTab::OnColTexApply)
+	ON_BN_CLICKED(IDC_BUTTON6, &CUnitTab::OnSTApply)
+	ON_LBN_SELCHANGE(IDC_LIST1, &CUnitTab::OnTextureListBox)
+	ON_BN_CLICKED(IDC_BUTTON8, &CUnitTab::OnDelete)
+	ON_BN_CLICKED(IDC_BUTTON9, &CUnitTab::OnClear)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER2, &CUnitTab::OnRotXSlider)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER3, &CUnitTab::OnRotYSlider)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER4, &CUnitTab::OnRotZSlider)
+	ON_BN_CLICKED(IDC_BUTTON7, &CUnitTab::OnApplyCube)
+	ON_EN_CHANGE(IDC_EDIT9, &CUnitTab::OnEidtRotX)
+	ON_EN_CHANGE(IDC_EDIT14, &CUnitTab::OnEidtRotY)
+	ON_EN_CHANGE(IDC_EDIT15, &CUnitTab::OnEidtRotZ)
+	ON_EN_CHANGE(IDC_EDIT5, &CUnitTab::OnChangeName)
 END_MESSAGE_MAP()
 
 
@@ -73,7 +103,7 @@ void CUnitTab::Release(void)
 	m_MapUnitData.clear();
 }
 
-void CUnitTab::SetPos( D3DXVECTOR3 vPos )
+void CUnitTab::SetPos( D3DXVECTOR3 vPos)
 {
 	UpdateData(TRUE);
 
@@ -81,10 +111,11 @@ void CUnitTab::SetPos( D3DXVECTOR3 vPos )
 	m_fPosY = vPos.y;
 	m_fPosZ = vPos.z;
 
+	/*m_iRed = (dwColor && 0x00FF0000) >> 16;
+	m_iGreen = (dwColor && 0x0000FF00) >> 8;
+	m_iBlue = dwColor && 0x000000FF;*/
+
 	UpdateData(FALSE);
-
-	Invalidate(TRUE);
-
 }
 
 void CUnitTab::SetDesign( D3DXVECTOR3 vScale, DWORD dwColor )
@@ -97,6 +128,31 @@ BOOL CUnitTab::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+
+	UpdateData(TRUE);
+
+	m_XRotSlider.SetRange(0, 359);
+	m_XRotSlider.SetRangeMin(0);
+	m_XRotSlider.SetRangeMax(359);
+	m_XRotSlider.SetPos(0);
+	m_XRotSlider.SetTicFreq(10);
+	m_XRotSlider.SetPageSize(10);
+
+	m_YRotSlider.SetRange(0, 359);
+	m_YRotSlider.SetRangeMin(0);
+	m_YRotSlider.SetRangeMax(359);
+	m_YRotSlider.SetPos(0);
+	m_YRotSlider.SetTicFreq(10);
+	m_YRotSlider.SetPageSize(10);
+
+	m_ZRotSlider.SetRange(0, 359);
+	m_ZRotSlider.SetRangeMin(0);
+	m_ZRotSlider.SetRangeMax(359);
+	m_ZRotSlider.SetPos(0);
+	m_ZRotSlider.SetTicFreq(10);
+	m_ZRotSlider.SetPageSize(10);
+
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -112,15 +168,10 @@ void CUnitTab::OnColorControl()
 	if (colorDlg.DoModal() == IDOK)
 	{
 		COLORREF color = colorDlg.GetColor();
-
-		CString strTemp;
-		strTemp.Format((L"R: %u, G: %u, B: %u"), GetRValue(color), GetGValue(color), GetBValue(color));
-
+		
 		m_iRed = GetRValue(color);
-		m_iGreen = GetRValue(color);
+		m_iGreen = GetGValue(color);
 		m_iBlue = GetBValue(color);
-
-		//AfxMessageBox(strTemp);
 
 		CDC*	Box = m_ColorBox.GetWindowDC();
 		CBrush	Fill(color);
@@ -137,6 +188,8 @@ void CUnitTab::OnColorControl()
 void CUnitTab::OnSave()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
+	
 	CFileDialog		Dlg(FALSE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
 
 	if(Dlg.DoModal() == IDCANCEL)
@@ -162,10 +215,14 @@ void CUnitTab::OnSave()
 		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
-	for(map<CString, UNITDATA*>::iterator	iter = m_MapUnitData.begin();
-		iter != m_MapUnitData.end(); ++iter)
+	for (map<wstring, Engine::CResources*>::iterator iter = mapChar->begin();
+		iter != mapChar->end(); ++iter)
 	{
-		WriteFile(hFile, iter->second, sizeof(UNITDATA), &dwByte, NULL);
+		Engine::SAVEFILE tSave;
+		tSave.wstrName = iter->first;
+		((Engine::CVIBuffer*)iter->second)->GetOriginVtxInfo(&tSave.VtxInfo);
+
+		WriteFile(hFile, &tSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
 	}
 	CloseHandle(hFile);
 }
@@ -174,6 +231,8 @@ void CUnitTab::OnLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
+
+	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
 
 	CFileDialog		Dlg(TRUE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
 
@@ -202,45 +261,67 @@ void CUnitTab::OnLoad()
 		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
+	Engine::VTXCOL*		pVtx = new Engine::VTXCOL[8];
+
 	while(true)
 	{
-		UNITDATA*			pUnitData = new UNITDATA;
-		ReadFile(hFile, pUnitData, sizeof(UNITDATA), &dwByte, NULL);
+		Engine::SAVEFILE* pSave = new Engine::SAVEFILE;
+		ReadFile(hFile, pSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
 
 		if(dwByte == 0)
 		{
-			Engine::Safe_Delete(pUnitData);
+			Engine::Safe_Delete(pSave);
 			break;
 		}
-		m_MapUnitData.insert(map<CString, UNITDATA*>
-			::value_type(pUnitData->wstrName.c_str(), pUnitData));
+
+		Engine::CResources* pResource = Engine::CCubeCol::Create(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice);
+
+		for (int i = 0; i < 8; ++i)
+			pVtx[i] = pSave->VtxInfo[i];
+
+		((Engine::CVIBuffer*)pResource)->SetOriginVtxInfo(pVtx);
+		((Engine::CVIBuffer*)pResource)->SetVtxInfo(pVtx);
+
+		mapChar->insert(make_pair(pSave->wstrName, pResource));
+		Engine::Safe_Delete(pSave);
 
 	}
 
 	CloseHandle(hFile);
 
+	Engine::Safe_Delete_Array(pVtx);
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 	UpdateData(FALSE);
 }
 
-void CUnitTab::OnScaleApply()
+void CUnitTab::OnColTexApply()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
+	switch (m_iCubetype)
+	{
+	case 0:
+		((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetColor(D3DCOLOR_ARGB(255, m_iRed, m_iGreen, m_iBlue));
+		break;
+	case 1:
+		break;
+	}
 	UpdateData(FALSE);
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 }
 
-void CUnitTab::OnTransApply()
+void CUnitTab::OnSTApply()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
-	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetTransCube(D3DXVECTOR3(m_fPosX, m_fPosY, m_fPosZ));
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetTransCube(D3DXVECTOR3(m_fPosX, m_fPosY, m_fPosZ), D3DXVECTOR3(m_fScaleX, m_fScaleY, m_fScaleZ));
 	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 
 	UpdateData(FALSE);
 }
 
-void CUnitTab::OnBnClickedRadio(UINT msg)
+void CUnitTab::OnActionRadio(UINT msg)
 
 {
 
@@ -262,4 +343,161 @@ void CUnitTab::OnBnClickedRadio(UINT msg)
 
 	UpdateData(FALSE);
 
+}
+
+
+void CUnitTab::OnCubeTypeRadio(UINT msg)
+
+{
+	UpdateData(TRUE);
+
+	switch (m_iCubetype)
+	{
+	case 0:
+		break;
+
+	case 1:
+		break;
+
+	case 2:
+		break;
+	}
+
+	UpdateData(FALSE);
+
+}
+
+
+void CUnitTab::OnTextureListBox()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnDelete()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnClear()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnRotXSlider(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	UpdateData(TRUE);
+
+	if (GetAsyncKeyState(VK_LBUTTON))
+		m_fAngleX = (float)m_XRotSlider.GetPos();
+
+	UpdateData(FALSE);
+
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetRotationCube(0, m_fAngleX);
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+	*pResult = 0;
+}
+
+void CUnitTab::OnRotYSlider(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	UpdateData(TRUE);
+
+	if (GetAsyncKeyState(VK_LBUTTON))
+		m_fAngleY = (float)m_YRotSlider.GetPos();
+
+	UpdateData(FALSE);
+
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetRotationCube(1, m_fAngleY);
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+
+	*pResult = 0;
+}
+
+void CUnitTab::OnRotZSlider(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	UpdateData(TRUE);
+
+	if (GetAsyncKeyState(VK_LBUTTON))
+		m_fAngleZ = (float)m_ZRotSlider.GetPos();
+
+	UpdateData(FALSE);
+
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetRotationCube(2, m_fAngleZ);
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+
+	*pResult = 0;
+}
+
+void CUnitTab::OnApplyCube()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetApplyCube();
+
+}
+
+void CUnitTab::OnEidtRotX()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	UpdateData(TRUE);
+
+	m_XRotSlider.SetPos((int)m_fAngleX);
+
+	UpdateData(FALSE);
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnEidtRotY()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	UpdateData(TRUE);
+
+	m_YRotSlider.SetPos((int)m_fAngleY);
+
+	UpdateData(FALSE);
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnEidtRotZ()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	UpdateData(TRUE);
+
+	m_ZRotSlider.SetPos((int)m_fAngleZ);
+
+	UpdateData(FALSE);
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CUnitTab::OnChangeName()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+	UpdateData(TRUE);
+	UpdateData(FALSE);
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

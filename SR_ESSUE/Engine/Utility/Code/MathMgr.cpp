@@ -37,9 +37,9 @@ D3DXVECTOR3 Engine::CMathMgr::MyCross(D3DXVECTOR3* vDest, D3DXVECTOR3* vDepa)
 {
 	D3DXVECTOR3 vTemp = D3DXVECTOR3(0.f, 0.f, 0.f);
 
-	vTemp.x = (vDest->y * vDepa->z) + (vDest->z * vDepa->y);
-	vTemp.y = (vDest->x * vDepa->z) + (vDest->z * vDepa->x);
-	vTemp.z = (vDest->x * vDepa->y) + (vDest->y * vDepa->x);
+	vTemp.x = (vDest->y * vDepa->z) - (vDest->z * vDepa->y);
+	vTemp.y = (vDest->z * vDepa->x) - (vDest->x * vDepa->z);
+	vTemp.z = (vDest->x * vDepa->y) - (vDest->y * vDepa->x);
 
 	return vTemp;
 }
@@ -129,8 +129,8 @@ void Engine::CMathMgr::MyRotationX(D3DXMATRIX* matRotX, float fAngle)
 	D3DXVECTOR3 vTemp;
 
 	matRotX->_12 = cosf(fAngle);
-	matRotX->_13 = -sinf(fAngle);
-	matRotX->_22 = sinf(fAngle);
+	matRotX->_13 = sinf(fAngle);
+	matRotX->_22 = -sinf(fAngle);
 	matRotX->_23 = cosf(fAngle);
 }
 
@@ -139,9 +139,9 @@ void Engine::CMathMgr::MyRotationY(D3DXMATRIX* matRotY, float fAngle)
 	CMathMgr::MyIdentity(matRotY);
 
 	matRotY->_11 = cosf(fAngle);
-	matRotY->_13 = sinf(fAngle);
-	matRotY->_21 = -sinf(fAngle);
-	matRotY->_23 = cosf(fAngle);
+	matRotY->_13 = -sinf(fAngle);
+	matRotY->_31 = sinf(fAngle);
+	matRotY->_33 = cosf(fAngle);
 }
 
 void Engine::CMathMgr::MyRotationZ(D3DXMATRIX* matRotZ, float fAngle)
@@ -149,8 +149,8 @@ void Engine::CMathMgr::MyRotationZ(D3DXMATRIX* matRotZ, float fAngle)
 	CMathMgr::MyIdentity(matRotZ);
 
 	matRotZ->_11 = cosf(fAngle);
-	matRotZ->_12 = -sinf(fAngle);
-	matRotZ->_21 = sinf(fAngle);
+	matRotZ->_12 = sinf(fAngle);
+	matRotZ->_21 = -sinf(fAngle);
 	matRotZ->_22 = cosf(fAngle);
 }
 

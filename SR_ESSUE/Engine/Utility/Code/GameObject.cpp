@@ -49,3 +49,9 @@ const Engine::CComponent* Engine::CGameObject::GetComponent(const wstring& wstrC
 	return iter->second;
 }
 
+const Engine::VTXTEX* Engine::CGameObject::GetTerrainVertex(void)
+{
+	return NULL;
+}
+
+

@@ -6,7 +6,7 @@
 namespace Engine
 {
 	class CManagement;
-	class CRcCol;
+	class CResourceMgr;
 }
 
 class CStage
@@ -14,12 +14,22 @@ class CStage
 {
 private:
 	Engine::CManagement*		m_pManagement;
-	Engine::CRcCol*				m_pRcCol;
+	Engine::CResourceMgr*		m_pResourceMgr;
+
+public:
+	enum LAYERID { LAYER_ENVIRONMENT, LAYER_GAMELOGIC, LAYER_UI };
 
 public:
 	virtual HRESULT InitScene(void);
 	virtual void Update(void);
 	virtual void Render(void);
+
+private:
+	HRESULT		Add_Environment_Layer(void);
+	HRESULT		Add_GameLogic_Layer(void);
+	HRESULT		Add_UI_Layer(void);
+	void		Release(void);
+
 
 public:
 	static CStage*	Create(LPDIRECT3DDEVICE9 pDevice);

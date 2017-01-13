@@ -1,16 +1,13 @@
 #include "CubeObj.h"
-#include "Transform.h"
-
-
-Engine::CCubeObj::~CCubeObj( void )
-{
-
-}
 
 Engine::CCubeObj::CCubeObj( LPDIRECT3DDEVICE9 pDevice )
 : CResources(pDevice)
 {
-	m_pInfo = Engine::CTransform::Create(D3DXVECTOR3(0.f, 0.f, 1.f ));
+}
+
+Engine::CCubeObj::~CCubeObj( void )
+{
+	Release();
 }
 
 
@@ -21,7 +18,11 @@ void Engine::CCubeObj::Render( void )
 
 void Engine::CCubeObj::Release( void )
 {
-	delete m_pInfo;
+	for (size_t i = 0 ; i < m_vecFrame.size() ; ++i)
+	{
+		Engine::Safe_Delete(m_vecFrame[i]);
+	}
+	m_vecFrame.clear();
 }
 
 void Engine::CCubeObj::Update( void )
@@ -31,32 +32,37 @@ void Engine::CCubeObj::Update( void )
 
 Engine::CResources* Engine::CCubeObj::CloneResource( void )
 {
-	return NULL;
+	++(*m_pwRefCnt);
+
+	return new CCubeObj(*this);
 }
 
-void Engine::CCubeObj::AddParts(const wstring& wstrName, CComponent* pComponent )
+void Engine::CCubeObj::AddSprite(const wstring& wstrName, SAVEFRAME* pSave )
 {
-	MAPCOMPONENT::iterator iter = m_MapComponent.find(wstrName);
+	for (size_t i = 0 ; i < m_vecFrame.size() ; ++i)
+	{
+		if (m_vecFrame[i]->wstrPartsKey == wstrName)
+			return;
+	}
 
-	if (iter != m_MapComponent.end())
-		return;
-
-	m_MapComponent.insert(MAPCOMPONENT::value_type(wstrName, pComponent));
+	m_vecFrame.push_back(pSave);
 }
 
-void Engine::CCubeObj::RemoveParts( const wstring& wstrName )
+void Engine::CCubeObj::RemoveSprite( const wstring& wstrName )
 {
-	MAPCOMPONENT::iterator iter = m_MapComponent.find(wstrName);
-
-	if (iter == m_MapComponent.end())
-		return
-
-	Engine::Safe_Delete(iter->second);
-	m_MapComponent.erase(iter);
+	for (size_t i = 0 ; i < m_vecFrame.size() ; ++i)
+	{
+		if (m_vecFrame[i]->wstrPartsKey == wstrName)
+			return;
+	}
 }
 
-void Engine::CCubeObj::PikingPlane( void )
+Engine::CCubeObj* Engine::CCubeObj::Create( LPDIRECT3DDEVICE9 pDevice )
 {
-	//POINT	pt;
+	return new CCubeObj(pDevice);
 }
 
+Engine::CCubeObj::VECTORFRAME* Engine::CCubeObj::GetVecPart( void )
+{
+	return &m_vecFrame;
+}

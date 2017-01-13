@@ -220,6 +220,70 @@
 		<Filter
 			Name="02. Object"
 			>
+			<Filter
+				Name="00. SingleObject"
+				>
+				<File
+					RelativePath="..\Code\SingleGameObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\SingleGameObject.h"
+					>
+				</File>
+				<Filter
+					Name="01. StaticCamera"
+					>
+					<File
+						RelativePath="..\Code\StaticCamera.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\StaticCamera.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="00. Terrain"
+					>
+					<File
+						RelativePath="..\Code\Terrain.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Terrain.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="01. MultiObject"
+				>
+				<File
+					RelativePath="..\Code\MultiGameObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\MultiGameObject.h"
+					>
+				</File>
+				<Filter
+					Name="00. Player"
+					>
+					<File
+						RelativePath="..\Code\Player.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Player.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="01. Poketmon"
+					>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="96. Mgr"
@@ -228,6 +292,18 @@
 		<Filter
 			Name="97. Design"
 			>
+			<Filter
+				Name="00. CameraObserver"
+				>
+				<File
+					RelativePath="..\Code\CameraObserver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\CameraObserver.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="98. Headers"

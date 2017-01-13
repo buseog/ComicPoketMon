@@ -2,7 +2,7 @@
 
 extern HWND g_hWnd;
 
-const int WINCX = 800;
-const int WINCY = 600;
+const int WINCX = 1024;
+const int WINCY = 768;
 
 #include "struct.h"

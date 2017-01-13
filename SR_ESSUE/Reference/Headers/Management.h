@@ -24,6 +24,8 @@ public:
 	HRESULT	InitManagement(LPDIRECT3DDEVICE9	_pDevice);
 	void	Update(void);
 	void	Render(void);
+	const Engine::VTXTEX*		GetTerrainVertex(const WORD& LayerID, const wstring& wstrObjKey);
+
 
 public:
 	template <typename T>

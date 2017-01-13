@@ -4,13 +4,10 @@
 #include "MapTab.h"
 #include "ObjectTab.h"
 #include "UnitTab.h"
-
+#include "Animation.h"
 
 // CMainForm Æû ºäÀÔ´Ï´Ù.
-namespace Engine
-{
-	class CResourceMgr;
-}
+
 class CToolView;
 class CMainForm : public CFormView
 {
@@ -19,9 +16,10 @@ public:
 	CMapTab		m_pMap;
 	CObjectTab	m_pObject;
 	CUnitTab	m_pUnit;
+	CAnimation	m_pAnimation;
+
 	int			m_iType;
 
-	Engine::CResourceMgr*	m_pResourceMgr;
 	LPDIRECT3DDEVICE9*		m_pDevice;
 
 protected:

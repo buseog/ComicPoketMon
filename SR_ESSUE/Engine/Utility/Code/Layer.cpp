@@ -109,3 +109,14 @@ const Engine::CComponent* Engine::CLayer::GetComponent(const wstring& wstrObjKey
 
 	return NULL;
 }
+
+const Engine::VTXTEX* Engine::CLayer::GetTerrainVertex(const wstring& wstrObjKey)
+{
+	MAPOBJLIST::iterator	iter = m_mapObjList.find(wstrObjKey);
+
+	if(iter == m_mapObjList.end())
+		return NULL;
+
+	return iter->second.front()->GetTerrainVertex();
+}
+

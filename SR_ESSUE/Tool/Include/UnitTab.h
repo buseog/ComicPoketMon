@@ -2,6 +2,7 @@
 #include "Resource.h"
 #include "afxwin.h"
 #include "Include.h"
+#include "afxcmn.h"
 
 // CUnitTab 대화 상자입니다.
 
@@ -31,11 +32,23 @@ public:
 	float m_fPosY;
 	float m_fPosZ;
 
+	float m_fAngleX;
+	float m_fAngleY;
+	float m_fAngleZ;
+
+	int m_iActionRadio;
+	int m_iCubetype;
+
 	int m_iRed;
 	int m_iGreen;
 	int m_iBlue;
-	int m_iActionRadio;
+
 	CStatic m_ColorBox;
+	CListBox m_TexListControl;
+
+	CSliderCtrl m_XRotSlider;
+	CSliderCtrl m_YRotSlider;
+	CSliderCtrl m_ZRotSlider;
 
 public:
 	map<CString, UNITDATA*>		m_MapUnitData;
@@ -50,7 +63,21 @@ public:
 	afx_msg void OnColorControl();
 	afx_msg void OnSave();
 	afx_msg void OnLoad();
-	afx_msg void OnScaleApply();
-	afx_msg void OnTransApply();
-	afx_msg void OnBnClickedRadio(UINT msg);
+	afx_msg void OnColTexApply();
+	afx_msg void OnSTApply();
+	afx_msg void OnActionRadio(UINT msg);
+	afx_msg void OnCubeTypeRadio(UINT msg);
+	afx_msg void OnTextureListBox();
+	
+	afx_msg void OnDelete();
+	afx_msg void OnClear();
+	
+	afx_msg void OnRotXSlider(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnRotYSlider(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnRotZSlider(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnApplyCube();
+	afx_msg void OnEidtRotX();
+	afx_msg void OnEidtRotY();
+	afx_msg void OnEidtRotZ();
+	afx_msg void OnChangeName();
 };

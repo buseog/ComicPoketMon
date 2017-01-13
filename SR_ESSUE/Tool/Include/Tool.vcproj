@@ -26,6 +26,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -203,10 +204,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\res\Tool.rc2"
-					>
-				</File>
-				<File
 					RelativePath=".\res\Toolbar.bmp"
 					>
 				</File>
@@ -351,6 +348,18 @@
 					</File>
 					<File
 						RelativePath=".\UnitTab.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="03. Animation"
+					>
+					<File
+						RelativePath=".\Animation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Animation.h"
 						>
 					</File>
 				</Filter>

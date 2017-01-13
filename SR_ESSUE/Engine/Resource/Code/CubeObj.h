@@ -15,23 +15,17 @@
 #ifndef CubeObj_h__
 #define CubeObj_h__
 
+
 #include "Resources.h"
-namespace Engine
-{
-	class CTransform;
-}
+
 BEGIN(Engine)
 
 class ENGINE_DLL CCubeObj
 	:public CResources
 {
 private:
-	typedef map<wstring, CComponent*>	MAPCOMPONENT;
-	MAPCOMPONENT						m_MapComponent;
-
-public:
-	void	AddParts(const wstring& wstrName, CComponent* pComponent);
-	void	RemoveParts(const wstring& wstrName);
+	typedef vector<SAVEFRAME*>		VECTORFRAME;
+	VECTORFRAME						m_vecFrame;
 
 public:
 	virtual void Render( void );
@@ -39,17 +33,21 @@ public:
 	virtual void Update( void );
 	virtual CResources* CloneResource( void );
 
-	void	PikingPlane(void);
+	void AddSprite(const wstring& wstrName, SAVEFRAME* pSave );
+	void RemoveSprite( const wstring& wstrName );
 
-private:
-	CTransform*			m_pInfo;
+	VECTORFRAME* GetVecPart(void);
+
+public:
+	static CCubeObj* Create(LPDIRECT3DDEVICE9 pDevice);
 
 private:
 	explicit	CCubeObj(LPDIRECT3DDEVICE9 pDevice);
 public:
-	~CCubeObj(void);
+	virtual ~CCubeObj(void);
 
 };
 
 END
+
 #endif // CubeObj_h__

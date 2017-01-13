@@ -20,7 +20,7 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 private:
 	CSplitterWnd			m_MainSplitter;
-	CSplitterWnd			m_SecondSplitter;
+	//CSplitterWnd			m_SecondSplitter;
 
 // 작업입니다.
 public:
