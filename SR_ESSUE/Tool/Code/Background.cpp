@@ -42,11 +42,12 @@ CBackground::~CBackground( void )
 void CBackground::Release( void )
 {
 	m_pResourceMgr->DestroyInstance();
+	Engine::Safe_Delete_Array(m_pVertex);
 }
 
 void CBackground::KeyCheck( void )
 {
-	if(GetAsyncKeyState('W') & 0x8000)
+	/*if(GetAsyncKeyState('W') & 0x8000)
 	{
 		m_fDistance -= 1.f;
 		D3DXVec3Normalize(&m_vAt, &m_vAt);
@@ -58,21 +59,31 @@ void CBackground::KeyCheck( void )
 		m_fDistance += 1.f;
 		D3DXVec3Normalize(&m_vAt, &m_vAt);
 		m_vEye = m_vAt * -m_fDistance;
+	}*/
+
+	if(GetAsyncKeyState('W') & 0x8000)
+	{
+		m_vAt.z -= 5;
+		m_vEye.z -=5;
 	}
 
-	/*if(GetAsyncKeyState('A') & 0x8000)
+	if(GetAsyncKeyState('S') & 0x8000)
 	{
-		m_vAt.x -= 5;
-		D3DXVec3Normalize(&m_vAt, &m_vAt);
-		m_vEye = m_vAt * -m_fDistance;
+		m_vAt.z += 5;
+		m_vEye.z += 5;
+	}
+
+	if(GetAsyncKeyState('A') & 0x8000)
+	{
+		m_vAt.x += 5;
+		m_vEye.x +=5;
 	}
 
 	if(GetAsyncKeyState('D') & 0x8000)
 	{
-		m_vAt.x += 5;
-		D3DXVec3Normalize(&m_vAt, &m_vAt);
-		m_vEye = m_vAt * -m_fDistance;
-	}*/
+		m_vAt.x -= 5;
+		m_vEye.x -=5;
+	}
 
 	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
@@ -124,7 +135,7 @@ void CBackground::KeyCheck( void )
 
 void CBackground::Picking( void )
 {
-	if (m_mapComponent.size() == 0)
+	if (m_pVertex == NULL)
 		return;
 
 	POINT	pt;
@@ -158,8 +169,8 @@ void CBackground::Picking( void )
 	
 
 	float	fU, fV, fDist;
-	int VTXCNTZ = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iCountZ;
-	int VTXCNTX = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iCountX;
+	int VTXCNTZ = 257;
+	int VTXCNTX = 257;
 	int iHeight = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iHeight;
 
 	D3DXVECTOR3 vOut;
@@ -245,7 +256,7 @@ HRESULT CBackground::Initialize( void )
 	FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
 
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	ZeroMemory(m_fAngle, sizeof(float) * 3);
@@ -366,5 +377,5 @@ Engine::VTXTEX* CBackground::GetVtxcol( void )
 
 void CBackground::SetVtxcol( Engine::VTXTEX* pVertex )
 {
-	m_pVertex = pVertex;
+	memcpy(m_pVertex, pVertex, sizeof(Engine::VTXTEX) * (257*257));
 }

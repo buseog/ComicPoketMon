@@ -11,6 +11,7 @@ Engine::CVIBuffer::CVIBuffer( LPDIRECT3DDEVICE9 pDevice )
 , m_dwTriCnt(0)
 , m_dwVtxFVF(0)
 , m_dwIdxSize(0)
+, m_vScale(D3DXVECTOR3(1.f, 1.f, 1.f))
 {
 
 }
@@ -112,4 +113,14 @@ void Engine::CVIBuffer::GetOriginVtxInfo( void* pVertex )
 void Engine::CVIBuffer::SetOriginVtxInfo( void* pVertex )
 {
 	memcpy(m_pOriginVertex, pVertex, m_dwVtxSize * m_dwVtxCnt);
+}
+
+D3DXVECTOR3* Engine::CVIBuffer::GetScale( void )
+{
+	return &m_vScale;
+}
+
+void Engine::CVIBuffer::SetScale( D3DXVECTOR3 vScale )
+{
+	m_vScale = vScale;
 }

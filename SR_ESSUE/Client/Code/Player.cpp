@@ -5,27 +5,40 @@
 #include "ResourceMgr.h"
 #include "TimeMgr.h"
 #include "Include.h"
-#include "Texture.h"
+
 #include "Transform.h"
 #include "Pipeline.h"
 #include "CameraObserver.h"
 #include "InfoSubject.h"
 #include "Stage.h"
-#include "Pipeline.h"
+#include "TerrainCol.h"
+#include "MouseCol.h"
+#include "CollisionMgr.h"
+#include "CubeTex.h"
+#include "Action.h"
+#include "CubeMotion.h"
+#include "CubeObj.h"
+#include "Status.h"
+#include "Sprite.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pDevice)
-: Engine::CGameObject(pDevice)
+: CMultiGameObject(pDevice)
 , m_pResourceMgr(Engine::Get_ResourceMgr())
 , m_pTimeMgr(Engine::Get_TimeMgr())
 , m_pInfoSubject(Engine::Get_InfoSubject())
 , m_pManagement(Engine::Get_Management())
-, m_pVertex(NULL)
-, m_pConvertVertex(NULL)
+, m_pCollisionMgr(CCollisionMgr::GetInstance())
 , m_pCameraObserver(NULL)
 , m_pTerrainVtx(NULL)
 , m_pStat(NULL)
+, m_pSprite(NULL)
+, m_pResource(NULL)
+, m_pTerrainCol(NULL)
+, m_pMouseCol(NULL)
 , m_fSpeed(0.f)
 , m_bMove(false)
+
+
 {
 }
 
@@ -36,21 +49,17 @@ CPlayer::~CPlayer(void)
 
 HRESULT CPlayer::Initialize(void)
 {
-
+	
 	m_pCameraObserver = CCameraObserver::Create();
 	m_pInfoSubject->Subscribe(m_pCameraObserver);
 
-	m_dwVtxCnt			= 4;
-	m_pVertex			= new Engine::VTXTEX[m_dwVtxCnt];
-	m_pConvertVertex	= new Engine::VTXTEX[m_dwVtxCnt];
-
-	m_pResourceMgr->GetVtxInfo(Engine::RESOURCE_DYNAMIC, L"Buffer Player", m_pVertex);
-
+	//m_pResourceMgr->GetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer Player", m_pVertex);
 
 	m_fSpeed = 40.f;
 
-	FAILED_CHECK(AddComponent());
+	Load();
 
+	FAILED_CHECK(AddComponent());
 
 	return S_OK;
 }
@@ -71,12 +80,12 @@ void CPlayer::KeyInput(void)
 
 	if(GetAsyncKeyState('A') & 0X8000)
 	{
-		m_pInfo->fAngle[Engine::ANGLE_Y] += D3DXToRadian(90.f) * fTime;
+		m_pInfo->fAngle[Engine::ANGLE_Y] -= D3DXToRadian(90.f) * fTime;
 	}
 
 	if(GetAsyncKeyState('D') & 0X8000)
 	{
-		m_pInfo->fAngle[Engine::ANGLE_Y] -= D3DXToRadian(90.f) * fTime;
+		m_pInfo->fAngle[Engine::ANGLE_Y] += D3DXToRadian(90.f) * fTime;
 	}
 
 	if(GetAsyncKeyState(VK_LBUTTON)  & 0x8000)
@@ -115,47 +124,30 @@ void CPlayer::Update(void)
 		Move();
 
 	m_pTerrainVtx = m_pManagement->GetTerrainVertex(CStage::LAYER_GAMELOGIC, L"Terrain");
+	m_pTerrainCol->SetColInfo(&m_pInfo->vPos, m_pTerrainVtx);
 
 	Engine::CGameObject::Update();
 
-	SetTransform();
+	D3DXMATRIX*		pMatView = m_pCameraObserver->GetView();
+	NULL_CHECK(pMatView);
+
+	D3DXMATRIX*		pMatProj = m_pCameraObserver->GetProj();
+	NULL_CHECK(pMatProj);
+
+	m_pResource->Update(L"Stand", &m_pInfo->matWorld, pMatView, pMatProj);
 }
 
 void CPlayer::Render(void)
 {
-	/*m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	m_pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	m_pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-	m_pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	m_pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00000088);
-	m_pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
-
-	//m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-	m_pResourceMgr->SetVtxInfo(Engine::RESOURCE_DYNAMIC, L"Buffer Player", m_pConvertVertex);
-
-	m_pTexture->Render(0);
-	m_pBuffer->Render();
-
-	/*m_pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);*/
+	m_pResource->Render(0);
 }
 
 void CPlayer::Release(void)
 {
-	if(m_pVertex)
-	{
-		Engine::Safe_Delete_Array(m_pVertex);
-	}
-
-	if(m_pConvertVertex)
-	{
-		Engine::Safe_Delete_Array(m_pConvertVertex);
-	}
-
 	Engine::Safe_Delete(m_pCameraObserver);
+
+	if (m_pResource)
+		Engine::Safe_Delete(m_pResource);
 }
 
 HRESULT CPlayer::AddComponent(void)
@@ -167,11 +159,28 @@ HRESULT CPlayer::AddComponent(void)
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Transform", pComponent));
 
-	//// Collision Terrain
-	//pComponent = m_pCollisionMgr->CloneColObject(CCollisionMgr::COL_TERRAIN);
-	//m_pTerrainCol = dynamic_cast<CTerrainCol*>(pComponent);
-	//NULL_CHECK_RETURN(m_pTerrainCol, E_FAIL);
-	//m_mapComponent.insert(MAPCOMPONENT::value_type(L"TerrainCol", pComponent));
+	// Collision Terrain
+	pComponent = m_pCollisionMgr->CloneColObject(CCollisionMgr::COL_TERRAIN);
+	m_pTerrainCol = dynamic_cast<CTerrainCol*>(pComponent);
+	NULL_CHECK_RETURN(m_pTerrainCol, E_FAIL);
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"TerrainCol", pComponent));
+
+	// Action
+	pComponent = CAction::Create(this);
+	NULL_CHECK_RETURN(pComponent, E_FAIL);
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Player Action", pComponent));
+
+	// Stat
+	pComponent = m_pStat = Engine::CStatus::Create();
+	NULL_CHECK_RETURN(pComponent, E_FAIL);
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Status", pComponent));
+	
+	// Sprite
+	pComponent = m_pSprite = Engine::CSprite::Create();
+	NULL_CHECK_RETURN(pComponent, E_FAIL);
+	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Sprite", pComponent));
+
+
 
 	//// Collision Mouse
 	//pComponent = m_pCollisionMgr->CloneColObject(CCollisionMgr::COL_MOUSE);
@@ -179,48 +188,7 @@ HRESULT CPlayer::AddComponent(void)
 	//NULL_CHECK_RETURN(m_pMouseCol, E_FAIL);
 	//m_mapComponent.insert(MAPCOMPONENT::value_type(L"MouseCol", pComponent));
 
-	// Buffer
-	pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_DYNAMIC, L"Buffer Player");
-	m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pComponent);
-	NULL_CHECK_RETURN(m_pBuffer, E_FAIL);
-	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Buffer", pComponent));
-
-	//Texture
-	pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_DYNAMIC, L"Texture Player");
-	m_pTexture = dynamic_cast<Engine::CTexture*>(pComponent);
-	NULL_CHECK_RETURN(m_pTexture, E_FAIL);
-	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Texture", pComponent));
-
 	return S_OK;
-}
-
-void CPlayer::SetTransform(void)
-{
-	const D3DXMATRIX*		pMatView = m_pCameraObserver->GetView();
-	NULL_CHECK(pMatView);
-	
-	const D3DXMATRIX*		pMatProj = m_pCameraObserver->GetProj();
-	NULL_CHECK(pMatProj);
-
-	for(size_t i = 0; i < m_dwVtxCnt; ++i)
-	{
-		m_pConvertVertex[i] = m_pVertex[i];
-
-		Engine::CPipeline::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-								&m_pConvertVertex[i].vPos, 
-								&m_pInfo->matWorld);
-
-		Engine::CPipeline::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-			&m_pConvertVertex[i].vPos, 
-			pMatView);
-
-		if(m_pConvertVertex[i].vPos.z < 1.f)
-			m_pConvertVertex[i].vPos.z = 1.f;
-
-		Engine::CPipeline::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-			&m_pConvertVertex[i].vPos, 
-			pMatProj);
-	}
 }
 
 void CPlayer::Move(void)
@@ -235,5 +203,63 @@ void CPlayer::Move(void)
 
 	if(fDistance < 1.f)
 		m_bMove = false;
+}
+
+void CPlayer::Load( void )
+{
+	DWORD	dwByte = 0;
+
+	HANDLE	hFile  = CreateFile(L"../../Data/b.dat", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	Engine::VTXCUBE*		pVtx = new Engine::VTXCUBE[8];
+	Engine::CCubeMotion*	pMotion = Engine::CCubeMotion::Create(m_pDevice);
+	Engine::CCubeObj*		pCube = Engine::CCubeObj::Create(m_pDevice);
+	wstring wstrStateKey = L"";
+
+	int iFrame = 0;
+	while(true)
+	{
+		Engine::SAVEFRAME* pSave = new Engine::SAVEFRAME;
+		ReadFile(hFile, pSave, sizeof(Engine::SAVEFRAME), &dwByte, NULL);
+
+		if(dwByte == 0)
+		{
+			pMotion->AddSprite(wstrStateKey, pCube);
+
+			Engine::Safe_Delete(pSave);
+			break;
+		}
+		wstrStateKey = pSave->wstrStateKey;
+
+		TCHAR szBuf[255] = L"";
+		wsprintf(szBuf, L"%s%s", pSave->wstrPartsKey.c_str(), L".dds");
+
+		Engine::CVIBuffer* pResource = Engine::CCubeTex::Create(m_pDevice, szBuf);
+
+		for (int i = 0; i < 8; ++i)
+			pVtx[i] = pSave->VtxInfo[i];
+
+		pResource->SetOriginVtxInfo(pVtx);
+		pResource->SetVtxInfo(pVtx);
+
+		if (iFrame == pSave->FrameKey)
+		{
+			pCube->AddCube(pResource);
+		}
+		else
+		{
+			pMotion->AddSprite(wstrStateKey, pCube);
+
+			iFrame = pSave->FrameKey;
+			pCube = Engine::CCubeObj::Create(m_pDevice);
+			pCube->AddCube(pResource);
+		}
+		Engine::Safe_Delete(pSave);
+
+	}
+	
+	m_pResource = pMotion;
+	CloseHandle(hFile);
+	Engine::Safe_Delete_Array(pVtx);
 }
 

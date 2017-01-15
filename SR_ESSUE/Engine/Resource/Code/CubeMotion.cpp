@@ -1,4 +1,5 @@
 #include "CubeMotion.h"
+#include "CubeObj.h"
 
 Engine::CCubeMotion::CCubeMotion( LPDIRECT3DDEVICE9 pDevice )
 : CResources(pDevice)
@@ -11,9 +12,27 @@ Engine::CCubeMotion::~CCubeMotion( void )
 	Release();
 }
 
+void Engine::CCubeMotion::Update( const wstring& wstrStateKey, D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj )
+{
+	m_wstrKey = wstrStateKey;
+
+	for (size_t i = 0; i < m_SpriteMap[m_wstrKey].size(); ++i)
+	{
+		m_SpriteMap[m_wstrKey][i]->Update(matWorld, matView, matProj);
+	}
+}
+
+void Engine::CCubeMotion::Render( const DWORD& Frame )
+{
+	for (size_t i = 0; i < m_SpriteMap[m_wstrKey].size(); ++i)
+	{
+		m_SpriteMap[m_wstrKey][i]->Render();
+	}
+}
+
 void Engine::CCubeMotion::Render( void )
 {
-
+	
 }
 
 void Engine::CCubeMotion::Release( void )
@@ -23,8 +42,8 @@ void Engine::CCubeMotion::Release( void )
 
 	for ( ; iter != iter_end; ++iter)
 	{
-		vector<CResources*>::iterator veciter = iter->second.begin();
-		vector<CResources*>::iterator veciter_end = iter->second.end();
+		vector<Engine::CCubeObj*>::iterator veciter = iter->second.begin();
+		vector<Engine::CCubeObj*>::iterator veciter_end = iter->second.end();
 
 		for ( ; veciter != veciter_end; ++veciter)
 		{
@@ -36,18 +55,13 @@ void Engine::CCubeMotion::Release( void )
 	
 }
 
-void Engine::CCubeMotion::Update( void )
-{
-
-}
-
-void Engine::CCubeMotion::AddSprite( const wstring& wstrName, CResources* pComponent )
+void Engine::CCubeMotion::AddSprite( const wstring& wstrName, Engine::CCubeObj* pComponent )
 {
 	MAPVECTOR::iterator iter = m_SpriteMap.find(wstrName);
 
 	if (iter == m_SpriteMap.end())
 	{
-		m_SpriteMap[wstrName] = vector<CResources*>();
+		m_SpriteMap[wstrName] = vector<Engine::CCubeObj*>();
 	}
 
 	m_SpriteMap[wstrName].push_back(pComponent);

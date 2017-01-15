@@ -11,6 +11,7 @@
 #include "CubeMotion.h"
 #include "CubeObj.h"
 #include "Resources.h"
+#include "CubeTex.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -87,8 +88,8 @@ void CAnimation::OnFrameAdd()
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
 	m_pCubeMotion->AddSprite(wstrState, m_pCUbeObj);
-	map<wstring, vector<Engine::CResources*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
-	map<wstring, vector<Engine::CResources*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
 
 	for (map<wstring, Engine::CResources*>::iterator iter = mapChar->begin(); iter != mapChar->end(); ++iter)
 	{
@@ -97,6 +98,8 @@ void CAnimation::OnFrameAdd()
 		pSave->wstrStateKey = wstrState;
 		pSave->FrameKey = Spriteiter->second.size() - 1;
 		pSave->wstrPartsKey = iter->first;
+		
+
 		((Engine::CVIBuffer*)iter->second)->GetOriginVtxInfo(pSave->VtxInfo);
 
 		for (size_t i = 0 ; i < pvecParts->size() ; ++i)
@@ -135,13 +138,13 @@ void CAnimation::OnFrameDelete()
 
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();;
 
-	map<wstring, vector<Engine::CResources*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pMapSprite->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pMapSprite->find(wstrState);
 
 	int iCount = m_FrameListCtrl.GetCurSel();
 	int iStart = iCount;
 
-	for (vector<Engine::CResources*>::iterator veciter = iter->second.begin(); veciter != iter->second.end(); ++veciter)
+	for (vector<Engine::CCubeObj*>::iterator veciter = iter->second.begin(); veciter != iter->second.end(); ++veciter)
 	{
 		if (iCount == 0)
 		{
@@ -202,17 +205,17 @@ void CAnimation::OnSave()
 		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
-	map<wstring, vector<Engine::CResources*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
 
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pMapSprite->begin();
-	map<wstring, vector<Engine::CResources*>>::iterator iter_end = pMapSprite->end();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pMapSprite->begin();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter_end = pMapSprite->end();
 
 	int iCount = 0;
 
 	for ( ; iter != iter_end; ++iter)
 	{
-		vector<Engine::CResources*>::iterator veciter = iter->second.begin();
-		vector<Engine::CResources*>::iterator veciter_end = iter->second.end();
+		vector<Engine::CCubeObj*>::iterator veciter = iter->second.begin();
+		vector<Engine::CCubeObj*>::iterator veciter_end = iter->second.end();
 	
 		for ( ; veciter != veciter_end; ++veciter)
 		{
@@ -224,7 +227,8 @@ void CAnimation::OnSave()
 				tSave.wstrStateKey = (*pvecFrame)[i]->wstrStateKey;
 				tSave.FrameKey = (*pvecFrame)[i]->FrameKey;
 				tSave.wstrPartsKey = (*pvecFrame)[i]->wstrPartsKey;
-				memcpy(&(tSave.VtxInfo), &((*pvecFrame)[i]->VtxInfo), sizeof(Engine::VTXCOL) * 8);
+
+				memcpy(&(tSave.VtxInfo), &((*pvecFrame)[i]->VtxInfo), sizeof(Engine::VTXCUBE) * 8);
 				WriteFile(hFile, &tSave, sizeof(Engine::SAVEFRAME), &dwByte, NULL);
 			}
 		}
@@ -266,8 +270,8 @@ void CAnimation::OnStateList()
 
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
-	map<wstring, vector<Engine::CResources*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pSpriteMap->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pSpriteMap->find(wstrState);
 
 	// 프레임 숫자 지정
 
@@ -334,8 +338,8 @@ void CAnimation::OnUp()
 
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
-	map<wstring, vector<Engine::CResources*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pMapSprite->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pMapSprite->find(wstrState);
 	
 	for (vector<Engine::SAVEFRAME*>::iterator iter2 = ((Engine::CCubeObj*)iter->second[m_FrameListCtrl.GetCurSel()])->GetVecPart()->begin();
 		iter2 != ((Engine::CCubeObj*)iter->second[m_FrameListCtrl.GetCurSel()])->GetVecPart()->end(); ++iter2)
@@ -369,8 +373,8 @@ void CAnimation::OnDown()
 
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
-	map<wstring, vector<Engine::CResources*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pMapSprite->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>* pMapSprite = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pMapSprite->find(wstrState);
 
 	
 	for (vector<Engine::SAVEFRAME*>::iterator iter2 = ((Engine::CCubeObj*)iter->second[m_FrameListCtrl.GetCurSel()])->GetVecPart()->begin();
@@ -446,7 +450,7 @@ void CAnimation::OnLoad()
 
 		if (iFlag == pSave->FrameKey)
 		{
-			m_pCUbeObj->AddSprite(pSave->wstrPartsKey, pSave);
+			m_pCUbeObj->AddFrame(pSave);
 		}
 		else
 		{
@@ -454,17 +458,17 @@ void CAnimation::OnLoad()
 			
 			iFlag = pSave->FrameKey;
 			m_pCUbeObj = Engine::CCubeObj::Create(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice);
-			m_pCUbeObj->AddSprite(pSave->wstrPartsKey, pSave);
+			m_pCUbeObj->AddFrame(pSave);
 		}
 	}
 
 	CloseHandle(hFile);
 
 
-	map<wstring, vector<Engine::CResources*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
 
-	map<wstring, vector<Engine::CResources*>>::iterator iter = pSpriteMap->begin();
-	map<wstring, vector<Engine::CResources*>>::iterator iter_end = pSpriteMap->end();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pSpriteMap->begin();
+	map<wstring, vector<Engine::CCubeObj*>>::iterator iter_end = pSpriteMap->end();
 
 	for ( ; iter != iter_end; ++iter)
 	{
@@ -494,13 +498,13 @@ void CAnimation::OnFrameList()
 	UpdateData(TRUE);
 
 	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
-	map<wstring, vector<Engine::CResources*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
 
 	CString strTemp;
 	m_StateListCtrl.GetText(m_StateListCtrl.GetCurSel(), strTemp);
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
-	map<wstring, vector<Engine::CResources*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
 	Engine::CResources* pCubeObj = Spriteiter->second[m_FrameListCtrl.GetCurSel()];
 
 	vector<Engine::SAVEFRAME*>* pVecParts = ((Engine::CCubeObj*)pCubeObj)->GetVecPart();
@@ -543,13 +547,13 @@ void CAnimation::PlayAnimation( void )
 	UpdateData(TRUE);
 
 	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
-	map<wstring, vector<Engine::CResources*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
 
 	CString strTemp;
 	m_StateListCtrl.GetText(m_StateListCtrl.GetCurSel(), strTemp);
 	wstring wstrState = (LPWSTR)strTemp.operator LPCWSTR();
 
-	map<wstring, vector<Engine::CResources*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
+	map<wstring, vector<Engine::CCubeObj*>>::iterator Spriteiter = pSpriteMap->find(wstrState);
 	Engine::CResources* pCubeObj = Spriteiter->second[m_FrameListCtrl.GetCurSel()];
 
 	vector<Engine::SAVEFRAME*>* pVecParts = ((Engine::CCubeObj*)pCubeObj)->GetVecPart();

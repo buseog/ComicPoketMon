@@ -3,7 +3,7 @@
 #include "afxwin.h"
 #include "Include.h"
 #include "afxcmn.h"
-
+#include "FileInfo.h"
 // CUnitTab 대화 상자입니다.
 
 class CUnitTab : public CDialog
@@ -23,6 +23,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	CFileInfo					m_FileInfo;
+	map<CString, CString>		m_mapPng;
+
+	wstring wstrTexKey;
+
 	CString m_strKey;
 	float m_fScaleX;
 	float m_fScaleY;
@@ -56,7 +61,7 @@ public:
 
 public:
 	void		Release(void);
-	void		SetPos(D3DXVECTOR3 vPos);
+	void		SetPos(D3DXVECTOR3 vPos, D3DXVECTOR3 vScale);
 	void		SetDesign(D3DXVECTOR3 vScale, DWORD dwColor);
 public:
 	virtual BOOL OnInitDialog();
@@ -80,4 +85,5 @@ public:
 	afx_msg void OnEidtRotY();
 	afx_msg void OnEidtRotZ();
 	afx_msg void OnChangeName();
+	afx_msg void OnDropFiles(HDROP hDropInfo);
 };

@@ -17,24 +17,33 @@
 
 #include "Resources.h"
 
+namespace Engine
+{
+	class CCubeObj;
+}
+
 BEGIN(Engine)
 
 class ENGINE_DLL CCubeMotion
 	:public CResources
 {
 private:
-	typedef map<wstring, vector<CResources*>>	MAPVECTOR;
-	MAPVECTOR									m_SpriteMap;
+	typedef vector<Engine::CCubeObj*>	VECVERTEX;
+	typedef map<wstring, VECVERTEX>		MAPVECTOR;
+	MAPVECTOR							m_SpriteMap;
+	wstring								m_wstrKey;
 
 public:
-	void		AddSprite(const wstring& wstrName, CResources* pComponent);
+	void		AddSprite(const wstring& wstrName, Engine::CCubeObj* pComponent);
 	void		RemoveSprite(const wstring& wstrName);
 	MAPVECTOR*	GetSpriteMap(void);
 
 public:
-	virtual void Render( void );
+	virtual void Update( const wstring& wstrStateKey, D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj );
+	void Render( const DWORD& Frame );
+	void Render( void );
+
 	virtual void Release( void );
-	virtual void Update( void );
 	virtual CResources* CloneResource( void );
 
 public:

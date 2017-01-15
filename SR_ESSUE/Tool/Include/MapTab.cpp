@@ -171,23 +171,21 @@ void CMapTab::OnLoad()
 	int i = 0;
 	while(true)
 	{
-		Engine::VTXTEX*		pVTXCOL2 = new Engine::VTXTEX;
-		ReadFile(hFile, pVTXCOL2, sizeof(Engine::VTXTEX), &dwByte, NULL);
-
+		ReadFile(hFile, &pVTXCOL[i], sizeof(Engine::VTXTEX), &dwByte, NULL);
 		if(dwByte == 0)
 		{
-			((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->SetVtxcol(pVTXCOL);
-			//Engine::Safe_Delete(*pVTXCOL2);
 			break;
 		}
-		pVTXCOL[i] = *pVTXCOL2;
 		++i;
-
 	}
 
 	CloseHandle(hFile);
 	((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->m_pBuffer->SetVtxInfo(pVTXCOL);
+	((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->m_pBuffer->SetOriginVtxInfo(pVTXCOL);
 
+	((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->SetVtxcol(pVTXCOL);
+
+	Engine::Safe_Delete_Array(pVTXCOL);
 	((CMainFrame*)AfxGetMainWnd())->GetView()->Invalidate(TRUE);
 }
 

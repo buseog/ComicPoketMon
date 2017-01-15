@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include "MainApp.h"
+#include "Include.h"
 
 #define MAX_LOADSTRING 100
 
@@ -12,7 +13,7 @@ HINSTANCE hInst;								// 현재 인스턴스입니다.
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 HWND g_hWnd;
-
+float	g_fWheelControl = 0.f;
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -176,6 +177,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			break;
 		}
+		break;
+	case WM_MOUSEWHEEL:               //마우스 휠 이벤트 발생시 들어오는 case문
+			((short)HIWORD(wParam)<0)? g_fWheelControl+=2 : g_fWheelControl-=2;
 		break;
 
 	case WM_DESTROY:

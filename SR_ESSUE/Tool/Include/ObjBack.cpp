@@ -99,6 +99,87 @@ void CObjBack::KeyCheck( void )
 		m_vEye = -m_vAt * m_fDistance;
 	}
 
+	if (m_pBuffer != NULL)
+	{
+		if(GetAsyncKeyState(VK_NUMPAD4) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(-0.5f, 0.f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+
+		if(GetAsyncKeyState(VK_NUMPAD6) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.5f, 0.f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+
+		if(GetAsyncKeyState(VK_NUMPAD2) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, -0.5f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+
+		if(GetAsyncKeyState(VK_NUMPAD8) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.5f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+
+		if(GetAsyncKeyState(VK_NUMPAD5) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, 0.5f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+
+		if(GetAsyncKeyState(VK_NUMPAD0) & 0x8000)
+		{
+			((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, -0.5f);
+			}
+
+			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
 	D3DXMatrixLookAtLH(&matView, &m_vEye, &m_vAt, &D3DXVECTOR3(0.f,1.f,0.f));
 	m_pDevice->SetTransform(D3DTS_VIEW, &matView);
 }
@@ -268,7 +349,7 @@ void CObjBack::AddPicking( void )
 	}
 	else if (((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_iCubetype == 1)
 	{
-		m_mapChar.insert(make_pair(wstrName, Engine::CCubeTex::Create(m_pDevice)));
+ 		m_mapChar.insert(make_pair(wstrName, Engine::CCubeTex::Create(m_pDevice, ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.wstrTexKey)));
 
 		Engine::VTXCUBE*	pNew = new Engine::VTXCUBE[8];
 
@@ -367,7 +448,7 @@ void CObjBack::SelectPicking( void )
 				vTemp.y = (m_pVertex[0].vPos.y + m_pVertex[3].vPos.y) / 2;
 				vTemp.z = (m_pVertex[0].vPos.z + m_pVertex[5].vPos.z) / 2;
 				
-				((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.SetPos(vTemp);
+				((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.SetPos(vTemp, *m_pBuffer->GetScale());
 
 				return;
 			}
@@ -404,12 +485,13 @@ void CObjBack::SetTransCube( D3DXVECTOR3 vPos, D3DXVECTOR3 vScale )
 		m_pVertex[i].vPos.y *= vScale.y;
 		m_pVertex[i].vPos.z *= vScale.z;
 	}
-
+	
+	m_pBuffer->SetScale(vScale);
 	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
 }
 
-void CObjBack::SetRotationCube( int iFlag, float fAngle )
+void CObjBack::SetRotationCube( int iFlag, float fAngle, D3DXVECTOR3 vPos )
 {
 	if (m_pBuffer == NULL)
 		return;
@@ -431,11 +513,11 @@ void CObjBack::SetRotationCube( int iFlag, float fAngle )
 		break;
 	}
 	
-	
 	for (int i = 0; i < 8; ++i)
 	{
-		
+		m_pVertex[i].vPos -= vPos;
 		D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+		m_pVertex[i].vPos += vPos;
 	}
 
 	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -453,10 +535,10 @@ void CObjBack::SetColor( DWORD dwColor )
 
 	((Engine::CVIBuffer*)m_pBuffer)->GetOriginVtxInfo(m_pVertex);
 
-	for (int i = 0; i < 8; ++i)
+	/*for (int i = 0; i < 8; ++i)
 	{
 		m_pVertex[i].dwColor = dwColor;
-	}
+	}*/
 	
 	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
@@ -522,7 +604,7 @@ HRESULT CObjBack::Initialize( void )
 	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
-	m_pVertex = new Engine::VTXCOL[8];
+	m_pVertex = new Engine::VTXCUBE[8];
 	m_pIndex = new Engine::INDEX32[12];
 	
 
@@ -551,7 +633,7 @@ HRESULT CObjBack::Initialize( void )
 
 	Engine::CResources*		pResources = NULL;
 
-	pResources = Engine::CCubeCol::Create(m_pDevice);
+	pResources = Engine::CCubeTex::Create(m_pDevice);
 
 	m_mapChar.insert(make_pair(L"Default", pResources));	
 

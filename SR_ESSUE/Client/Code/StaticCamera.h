@@ -24,6 +24,8 @@ public:
 
 	void	SetCameraTarget(const Engine::CTransform* pTargetInfo);
 
+	POINT GetMousePos(void);
+
 public:
 	virtual HRESULT		Initialize(void);
 	virtual void		Update(void);
@@ -37,10 +39,18 @@ private:
 	const Engine::CTransform*		m_pTargetInfo;
 	Engine::CInfoSubject*			m_pInfoSubject;
 
+
 private:
+	bool							m_bRbuttonDown;
+	POINT							m_ptOriginPos;
 	float		m_fTargetDistance;
+	float       m_fCameraDistance;
 	float		m_fCameraSpeed;
 	float		m_fAngle;
+	float		m_fAngleY;
+	float		m_fMaxDitance;
+	float		m_fNearDist;
+	float		m_fFarDist;
 };
 
 #endif // StaticCamera_h__

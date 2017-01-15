@@ -19,7 +19,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CComponent abstract
+class ENGINE_DLL CComponent
 {
 public:
 	virtual void Update(void) {};
@@ -28,7 +28,7 @@ protected:
 	CComponent(void);
 
 public:
-	virtual ~CComponent(void);
+	virtual ~CComponent(void) = 0;
 };
 
 END

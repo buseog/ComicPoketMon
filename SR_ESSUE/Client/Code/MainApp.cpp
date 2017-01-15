@@ -33,7 +33,7 @@ HRESULT CMainApp::Initialize( void )
 	hr = m_pManagement->InitManagement(m_pDevice);
 	FAILED_CHECK_MSG(hr, L"managment Init Failed");
 
-	hr = m_pManagement->SceneChange(CSceneSelector(SC_LOGO));
+	hr = m_pManagement->SceneChange(CSceneSelector(SC_LOGO), SC_LOGO);
 	FAILED_CHECK_MSG(hr, L"CSceneSelector Failed");
 
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -51,12 +51,14 @@ void CMainApp::Release( void )
 
 void CMainApp::Update( void )
 {
+	m_pTimeMgr->SetTime();
+
 	m_pManagement->Update();
 }
 
 void CMainApp::Render( void )
 {
-	m_pManagement->Render();
+	m_pManagement->Render(m_pTimeMgr->GetTime());
 }
 
 CMainApp* CMainApp::Create( void )

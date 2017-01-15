@@ -48,7 +48,7 @@ void Engine::CMathMgr::MyIdentity(D3DXMATRIX* matWorld)
 {
 	ZeroMemory(matWorld, sizeof(D3DXMATRIX));
 
-	matWorld->_11 = matWorld->_22 = matWorld->_33 = matWorld->_44 = 0; 
+	matWorld->_11 = matWorld->_22 = matWorld->_33 = matWorld->_44 = 1; 
 }
 
 void Engine::CMathMgr::MyScaling(D3DXMATRIX* matScale, float fX, float fY, float fZ)

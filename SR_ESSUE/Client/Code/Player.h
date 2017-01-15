@@ -15,7 +15,7 @@
 #ifndef Player_h__
 #define Player_h__
 
-#include "GameObject.h"
+#include "MultiGameObject.h"
 
 namespace Engine
 {
@@ -24,9 +24,11 @@ namespace Engine
 	class CManagement;
 	class CTexture;
 	class CVIBuffer;
+	class CCubeMotion;
 
 	class CTransform;
-	class CInfomation;
+	class CStatus;
+	class CSprite;
 	class CInfoSubject;
 }
 
@@ -35,41 +37,44 @@ class CCameraObserver;
 class CCollisionMgr;
 class CTerrainCol;
 class CMouseCol;
+class CAction;
+
 class CPlayer 
-	: public Engine::CGameObject
+	: public CMultiGameObject
 {
 private:
 	Engine::CResourceMgr*		m_pResourceMgr;
 	Engine::CManagement*		m_pManagement;
 	Engine::CTimeMgr*			m_pTimeMgr;
+
 	Engine::CTransform*			m_pInfo;
-	Engine::CInfomation*		m_pStat;
-	Engine::CVIBuffer*			m_pBuffer;
-	Engine::CTexture*			m_pTexture;
+	Engine::CStatus*			m_pStat;
+	Engine::CSprite*			m_pSprite;
+
 	Engine::CInfoSubject*		m_pInfoSubject;
+	Engine::CCubeMotion*		m_pResource;
+	const Engine::VTXTEX*		m_pTerrainVtx;
+
 	CCameraObserver*			m_pCameraObserver;
 
 	float						m_fSpeed;
 	bool						m_bMove;
 
+	CCollisionMgr*				m_pCollisionMgr;
+	CTerrainCol*				m_pTerrainCol;
+	CMouseCol*					m_pMouseCol;
+
 	D3DXVECTOR3					m_vDestPos;
-	const Engine::VTXTEX*		m_pTerrainVtx;
+	
 
 private:
-	Engine::VTXTEX*			m_pVertex;
-	Engine::VTXTEX*			m_pConvertVertex;
-	DWORD					m_dwVtxCnt;
-
-private:
-	void		SetTransform(void);
 	void		Move(void);
 
 private:
 	HRESULT		Initialize(void);
 	void		KeyInput(void);
 	void		SetDirection(void);
-
-	void		StaticCamera(void);
+	void		Load(void);
 
 public:
 	void		Update(void);
@@ -83,7 +88,7 @@ public:
 private:
 	explicit	CPlayer(LPDIRECT3DDEVICE9 pDevice);
 public:
-	~CPlayer(void);
+	virtual ~CPlayer(void);
 
 };
 

@@ -12,10 +12,15 @@ private:
 	LPDIRECT3DDEVICE9		m_pDevice;
 	CScene*					m_pScene;
 
+	ID3DXFont*				m_pD3DXFont;
+	float					m_fTime;
+	WORD					m_wFramCnt;
+	TCHAR					m_szFPS[128];
+
 public:
 	static	CRenderer*	Create(LPDIRECT3DDEVICE9 pDevice);
 	HRESULT				InitRenderer(void);
-	void				Render(void);
+	void				Render(float fTime );
 
 public:
 	void				SetScene(CScene* _pScene);

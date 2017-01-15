@@ -28,7 +28,7 @@ public:
 	D3DXMATRIX	matView, matProj;
 	LPD3DXLINE	m_pLine;
 
-	Engine::VTXCOL*		m_pVertex;
+	Engine::VTXCUBE*		m_pVertex;
 	Engine::INDEX32*	m_pIndex;
 
 public:
@@ -38,7 +38,7 @@ public:
 	void	SelectPicking(void);
 	void	AddPicking(void);
 	void	SetTransCube(D3DXVECTOR3 vPos, D3DXVECTOR3 vScale);
-	void	SetRotationCube(int iFlag, float fAngle);
+	void	SetRotationCube(int iFlag, float fAngle, D3DXVECTOR3 vPos);
 	void	SetApplyCube(void);
 	void	SetColor(DWORD dwColor);
 	void	DrawLine(void);

@@ -20,8 +20,8 @@ const WORD	WINCY = 600;
 
 const D3DXVECTOR3	g_vLook = D3DXVECTOR3(0.f, 0.f, 1.f);
 
-const WORD		VTXCNTX = 129;
-const WORD		VTXCNTZ = 129;
+const WORD		VTXCNTX = 257;
+const WORD		VTXCNTZ = 257;
 const WORD		VTXITV  = 1;
 
 #endif // value_h__

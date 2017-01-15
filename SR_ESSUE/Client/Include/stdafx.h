@@ -31,6 +31,8 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
+#include <process.h>
+
 #ifdef _DEBUG
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif

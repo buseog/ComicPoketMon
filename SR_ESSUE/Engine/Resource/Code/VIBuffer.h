@@ -17,6 +17,8 @@ protected:
 	void*						m_pOriginVertex;
 	void*						m_pOriginIndex;
 
+	D3DXVECTOR3					m_vScale;
+
 	DWORD						m_dwVtxSize;
 	DWORD						m_dwVtxCnt;
 	DWORD						m_dwVtxFVF;
@@ -29,6 +31,8 @@ public:
 	void	Render(void);
 	void	Release(void);
 
+	void	SetScale(D3DXVECTOR3 vScale);
+	D3DXVECTOR3*	GetScale(void);
 	void	SetVtxInfo(void* pVertex);
 	void	GetVtxInfo(void* pVertex);
 	void	GetOriginVtxInfo(void* pVertex);

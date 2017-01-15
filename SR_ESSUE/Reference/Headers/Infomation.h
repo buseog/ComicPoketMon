@@ -24,12 +24,18 @@ class ENGINE_DLL CInfomation
 {
 public:
 	wstring wstrObjKey;
+
 	float	fHp;
+	float	fFullHp;
+
+	float	fMp;
+	float	fFullMp;
+
 	float	fSpeed;
 	float	fAttack;
 
 public:
-	static CInfomation* Create(const D3DXVECTOR3& vLook);
+	static CInfomation* Create(void);
 
 private:
 	CInfomation(void);

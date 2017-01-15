@@ -9,7 +9,7 @@ Engine::CResources::CResources(LPDIRECT3DDEVICE9 pDevice)
 
 Engine::CResources::~CResources(void)
 {
-
+	
 }
 
 void Engine::CResources::Release(void)
@@ -23,4 +23,3 @@ void Engine::CResources::Release(void)
 		--(*m_pwRefCnt);
 	}
 }
-

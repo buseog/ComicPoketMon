@@ -93,53 +93,53 @@ void Engine::CPipeline::MakeProjectionMatrix(D3DXMATRIX* pOut, const float& fFov
 	pOut->_44 = 0.f;
 }
 
-//void Engine::CPipeline::MyTransformCoord(D3DXVECTOR3* pOut, const D3DXVECTOR3* pVector, const D3DXMATRIX* pMatrix)
-//{
-//	D3DXVECTOR4	vVector(pVector->x, pVector->y, pVector->z, 1.f);
-//
-//	pOut->x = vVector.x * pMatrix->_11 
-//		+ vVector.y * pMatrix->_21 
-//		+ vVector.z * pMatrix->_31  
-//		+ vVector.w * pMatrix->_41;
-//
-//	pOut->y = vVector.x * pMatrix->_12 
-//		+ vVector.y * pMatrix->_22 
-//		+ vVector.z * pMatrix->_32  
-//		+ vVector.w * pMatrix->_42;
-//
-//	pOut->z = vVector.x * pMatrix->_13 
-//		+ vVector.y * pMatrix->_23 
-//		+ vVector.z * pMatrix->_33  
-//		+ vVector.w * pMatrix->_43;
-//
-//	float	fZ = vVector.x * pMatrix->_14 
-//		+ vVector.y * pMatrix->_24 
-//		+ vVector.z * pMatrix->_34  
-//		+ vVector.w * pMatrix->_44;
-//
-//
-//	pOut->x /= fZ;
-//	pOut->y /= fZ;
-//	pOut->z /= fZ;
-//
-//}
-
-void Engine::CPipeline::MyTransformCoord(D3DXVECTOR3* vOut, const D3DXVECTOR3* vVec, const D3DXMATRIX* matWorld)
+void Engine::CPipeline::MyTransformCoord(D3DXVECTOR3* pOut, const D3DXVECTOR3* pVector, const D3DXMATRIX* pMatrix)
 {
-	D3DXVECTOR3 vTemp;
+	D3DXVECTOR4	vVector(pVector->x, pVector->y, pVector->z, 1.f);
 
-	vTemp.x = (vVec->x * matWorld->_11) + (vVec->y * matWorld->_21) + (vVec->z * matWorld->_31) + matWorld->_41;
-	vTemp.y = (vVec->x * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->z * matWorld->_32) + matWorld->_42;
-	vTemp.z = (vVec->x * matWorld->_13) + (vVec->y * matWorld->_23) + (vVec->z * matWorld->_33) + matWorld->_43;
-	float w = (vVec->x * matWorld->_14) + (vVec->y * matWorld->_24) + (vVec->z * matWorld->_34) + matWorld->_44;
+	pOut->x = vVector.x * pMatrix->_11 
+		+ vVector.y * pMatrix->_21 
+		+ vVector.z * pMatrix->_31  
+		+ vVector.w * pMatrix->_41;
 
-	vTemp.x = vTemp.x / w;
-	vTemp.y = vTemp.y / w;
-	vTemp.z = vTemp.z / w;
+	pOut->y = vVector.x * pMatrix->_12 
+		+ vVector.y * pMatrix->_22 
+		+ vVector.z * pMatrix->_32  
+		+ vVector.w * pMatrix->_42;
 
-	*vOut = vTemp;
+	pOut->z = vVector.x * pMatrix->_13 
+		+ vVector.y * pMatrix->_23 
+		+ vVector.z * pMatrix->_33  
+		+ vVector.w * pMatrix->_43;
+
+	float	fZ = vVector.x * pMatrix->_14 
+		+ vVector.y * pMatrix->_24 
+		+ vVector.z * pMatrix->_34  
+		+ vVector.w * pMatrix->_44;
+
+
+	pOut->x /= fZ;
+	pOut->y /= fZ;
+	pOut->z /= fZ;
 
 }
+//
+//void Engine::CPipeline::MyTransformCoord(D3DXVECTOR3* vOut, const D3DXVECTOR3* vVec, const D3DXMATRIX* matWorld)
+//{
+//	D3DXVECTOR3 vTemp;
+//
+//	vTemp.x = (vVec->x * matWorld->_11) + (vVec->y * matWorld->_21) + (vVec->z * matWorld->_31) + matWorld->_41;
+//	vTemp.y = (vVec->x * matWorld->_12) + (vVec->y * matWorld->_22) + (vVec->z * matWorld->_32) + matWorld->_42;
+//	vTemp.z = (vVec->x * matWorld->_13) + (vVec->y * matWorld->_23) + (vVec->z * matWorld->_33) + matWorld->_43;
+//	float w = (vVec->x * matWorld->_14) + (vVec->y * matWorld->_24) + (vVec->z * matWorld->_34) + matWorld->_44;
+//
+//	vTemp.x = vTemp.x / w;
+//	vTemp.y = vTemp.y / w;
+//	vTemp.z = vTemp.z / w;
+//
+//	*vOut = vTemp;
+//
+//}
 
 //void Engine::CPipeline::MyTransformNormal(D3DXVECTOR3* vOut, const D3DXVECTOR3* vVec, const D3DXMATRIX* matWorld)
 //{

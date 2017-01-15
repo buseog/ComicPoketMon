@@ -8,6 +8,7 @@ Engine::CManagement::CManagement(void)
 : m_pDevice(NULL)
 , m_pRenderer(NULL)
 , m_pScene(NULL)
+, m_iScene(0)
 {
 
 }
@@ -39,10 +40,10 @@ void Engine::CManagement::Update( void )
 		m_pScene->Update();
 }
 
-void Engine::CManagement::Render( void )
+void Engine::CManagement::Render( float fTime )
 {
-	if (m_pRenderer != NULL)
-		m_pRenderer->Render();
+	if (m_pRenderer != NULL && m_iScene != 0)
+		m_pRenderer->Render(fTime);
 }
 
 const Engine::VTXTEX* Engine::CManagement::GetTerrainVertex(const WORD& LayerID, 

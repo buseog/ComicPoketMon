@@ -18,8 +18,8 @@ public:
 
 
 public:
-	const D3DXMATRIX*	GetView(void);
-	const D3DXMATRIX*	GetProj(void);
+	D3DXMATRIX*	GetView(void);
+	D3DXMATRIX*	GetProj(void);
 	static CCameraObserver*	Create(void);
 
 public:

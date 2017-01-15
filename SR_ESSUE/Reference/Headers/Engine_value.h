@@ -17,6 +17,9 @@
 
 namespace Engine
 {
+	const int WINCX = 800;
+	const int WINCY = 600;
+
 	const int KEYPORT	= 10;
 	const int KEYMAX	= 255;
 }

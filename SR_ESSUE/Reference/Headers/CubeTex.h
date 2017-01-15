@@ -19,12 +19,24 @@
 
 BEGIN(Engine)
 
+class CTexture;
 class ENGINE_DLL CCubeTex
 	: public CVIBuffer
 {
+private:
+	Engine::CTexture*	m_pTexture;
+	wstring m_wstrKey;
+
 public:
+	wstring		GetKey(void);
+
 	HRESULT		CreateBuffer(void);
+	HRESULT		CreateBuffer(const wstring& wstrKey);
+
 	static CCubeTex*	Create(LPDIRECT3DDEVICE9 pDevice);
+	static CCubeTex*	Create(LPDIRECT3DDEVICE9 pDevice, const wstring& wstrKey);
+
+	void	SetTexutre(void);
 
 private:
 	void Release(void);

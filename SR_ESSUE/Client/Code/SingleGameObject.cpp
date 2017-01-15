@@ -23,7 +23,6 @@ HRESULT CSingleGameObject::Initialize( void )
 
 void CSingleGameObject::Update( void )
 {
-
 }
 
 void CSingleGameObject::Render( void )

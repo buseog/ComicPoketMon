@@ -255,6 +255,70 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="02. SkyBox"
+					>
+					<File
+						RelativePath="..\Code\SkyBox.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\SkyBox.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="03. UI"
+					>
+					<Filter
+						Name="00. Inven"
+						>
+						<File
+							RelativePath="..\Code\Inven.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Inven.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. HpBar"
+						>
+						<File
+							RelativePath="..\Code\Hpbar.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Hpbar.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="02. MpBar"
+						>
+						<File
+							RelativePath="..\Code\MpBar.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\MpBar.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="04. Item"
+					>
+					<File
+						RelativePath="..\Code\Item.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Item.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="01. MultiObject"
@@ -282,12 +346,92 @@
 				<Filter
 					Name="01. Poketmon"
 					>
+					<File
+						RelativePath="..\Code\Poketmon.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Poketmon.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="96. Mgr"
 			>
+			<Filter
+				Name="00. CollosionMgr"
+				>
+				<File
+					RelativePath="..\Code\CollisionMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\CollisionMgr.h"
+					>
+				</File>
+				<Filter
+					Name="00. TerrainCol"
+					>
+					<File
+						RelativePath="..\Code\TerrainCol.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\TerrainCol.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="01. MouseCol"
+					>
+					<File
+						RelativePath="..\Code\MouseCol.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\MouseCol.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="02. Action"
+					>
+					<File
+						RelativePath="..\Code\Action.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Action.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="03. BoundCol"
+					>
+					<File
+						RelativePath="..\Code\BoundCol.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\BoundCol.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="01. ZFrustum"
+				>
+				<File
+					RelativePath="..\Code\ZFrustum.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\ZFrustum.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="97. Design"
@@ -301,6 +445,18 @@
 				</File>
 				<File
 					RelativePath="..\Code\CameraObserver.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="01. UIObserver"
+				>
+				<File
+					RelativePath="..\Code\UIObserver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\UIObserver.h"
 					>
 				</File>
 			</Filter>

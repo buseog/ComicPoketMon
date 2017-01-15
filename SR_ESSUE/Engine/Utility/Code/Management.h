@@ -16,6 +16,7 @@ private:
 	LPDIRECT3DDEVICE9		m_pDevice;
 	CRenderer*				m_pRenderer;
 	CScene*					m_pScene;
+	int						m_iScene;
 
 private:
 	void	Release(void);
@@ -23,13 +24,13 @@ private:
 public:
 	HRESULT	InitManagement(LPDIRECT3DDEVICE9	_pDevice);
 	void	Update(void);
-	void	Render(void);
+	void	Render(float fTime);
 	const Engine::VTXTEX*		GetTerrainVertex(const WORD& LayerID, const wstring& wstrObjKey);
 
 
 public:
 	template <typename T>
-	HRESULT SceneChange(T& Functor);
+	HRESULT SceneChange(T& Functor, int SceneID);
 
 private:
 	CManagement();
@@ -37,7 +38,7 @@ private:
 };
 
 template <typename T>
-HRESULT Engine::CManagement::SceneChange( T& Functor )
+HRESULT Engine::CManagement::SceneChange( T& Functor , int SceneID)
 {
 	if(NULL != m_pScene)
 		Engine::Safe_Delete(m_pScene);
@@ -45,6 +46,7 @@ HRESULT Engine::CManagement::SceneChange( T& Functor )
 	FAILED_CHECK(Functor(&m_pScene, m_pDevice));
 
 	m_pRenderer->SetScene(m_pScene);
+	m_iScene = SceneID;
 
 	return S_OK;
 }

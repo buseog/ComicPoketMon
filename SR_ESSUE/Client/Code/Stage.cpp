@@ -11,6 +11,11 @@
 #include "Component.h"
 #include "StaticCamera.h"
 #include "Transform.h"
+#include "CollisionMgr.h"
+#include "Inven.h"
+#include "SkyBox.h"
+#include "Item.h"
+
 CStage::CStage(LPDIRECT3DDEVICE9 pDevice)
 : Engine::CScene(pDevice)
 , m_pResourceMgr(Engine::Get_ResourceMgr())
@@ -25,43 +30,23 @@ CStage::~CStage(void)
 
 HRESULT CStage::InitScene(void)
 {
-	//m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-
+	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//m_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	HRESULT hr = NULL;
 
-	hr = m_pResourceMgr->AddBuffer(m_pDevice, 
-		Engine::RESOURCE_DYNAMIC, 
-		Engine::CVIBuffer::BUFFER_RCTEX, 
-		L"Buffer Player");
 
-	FAILED_CHECK_MSG(hr, L"Buffer Player Create Failed");
+	// Collision
 
-	// Player Texture
-	hr = m_pResourceMgr->AddTexture(m_pDevice, 
-		Engine::RESOURCE_DYNAMIC, 
-		Engine::TEX_NORMAL, 
-		L"Texture Player", 
-		L"../bin/Resources/Texture/Player%d.png", 
-		1);
-	FAILED_CHECK_MSG(hr, L"Texture Player Create Failed");
-
-
-	// Terrain Buffer
-	hr = m_pResourceMgr->AddBuffer(m_pDevice, 
-		Engine::RESOURCE_DYNAMIC, 
-		Engine::CVIBuffer::TERRAIN_TEX, 
-		L"Buffer Terrain", VTXCNTX, VTXCNTZ, VTXITV);
+	hr = CCollisionMgr::GetInstance()->AddColObject(CCollisionMgr::COL_TERRAIN);
+	FAILED_CHECK(hr);
+	
+	hr = CCollisionMgr::GetInstance()->AddColObject(CCollisionMgr::COL_MOUSE);
 	FAILED_CHECK(hr);
 
-	// Terrain Texture
-	hr = m_pResourceMgr->AddTexture(m_pDevice, 
-		Engine::RESOURCE_DYNAMIC, 
-		Engine::TEX_NORMAL, 
-		L"Texture Terrain", 
-		L"../bin/Resources/Texture/Terrain/Terrain%d.png", 
-		1);
-	FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
+	// Action
 
+	//hr = CCollisionMgr::GetInstance()->AddColObject(CCollisionMgr::COL_TERRAIN);
 	//FAILED_CHECK_MSG(Add_Environment_Layer(), L"Environment 레이어 초기화 실패");
 	FAILED_CHECK_MSG(Add_GameLogic_Layer(), L"GameLogic 레이어 초기화 실패");
 	FAILED_CHECK_MSG(Add_UI_Layer(), L"UI 레이어 초기화 실패");
@@ -108,6 +93,21 @@ HRESULT CStage::Add_GameLogic_Layer( void )
 	NULL_CHECK_RETURN(pGameObject, E_FAIL);
 	pLayer->AddObject(L"Terrain", pGameObject);
 
+	pGameObject = CInven::Create(m_pDevice);
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
+	pLayer->AddObject(L"Inven", pGameObject);
+
+
+	pGameObject = CSkyBox::Create(m_pDevice);
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
+	pLayer->AddObject(L"SkyBox", pGameObject);
+
+
+	pGameObject = CItem::Create(m_pDevice);
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
+	pLayer->AddObject(L"Item", pGameObject);
+
+
 	m_mapLayer.insert(MAPLAYER::value_type(LAYER_GAMELOGIC, pLayer));
 	return S_OK;
 
@@ -142,6 +142,7 @@ HRESULT CStage::Add_UI_Layer( void )
 
 void CStage::Release( void )
 {
+	CCollisionMgr::GetInstance()->DestroyInstance();
 	Engine::CInfoSubject::GetInstance()->DestroyInstance();
 }
 

@@ -37,9 +37,9 @@ using namespace std;
 
 #pragma warning(disable : 4251)
 
-//#ifdef _DEBUG
-//#define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
-//#endif
+#ifdef _DEBUG
+#define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#endif
 
 #include <crtdbg.h>
 

@@ -16,6 +16,7 @@
 #define enum_h__
 
 enum SCENEID { SC_LOGO, SC_STAGE, SC_END };
+enum DATAID { DT_STATUS, DT_MATRIX, DT_END};
 
 
 #endif // enum_h__

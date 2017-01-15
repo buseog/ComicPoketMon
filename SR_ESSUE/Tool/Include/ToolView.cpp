@@ -275,8 +275,8 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
-		//OnLButtonDown(nFlags, point);
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && m_eBACK == BK_MAP)
+		OnLButtonDown(nFlags, point);
 
 	CScrollView::OnMouseMove(nFlags, point);
 }

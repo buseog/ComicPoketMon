@@ -67,7 +67,7 @@ namespace Engine
 
 	typedef struct tagSaveFile
 	{
-		VTXCOL VtxInfo[8];
+		VTXCUBE VtxInfo[8];
 		wstring wstrName;
 	}SAVEFILE;
 
@@ -75,8 +75,9 @@ namespace Engine
 	{
 		wstring wstrStateKey;
 		wstring wstrPartsKey;
+		wstring wstrTexKey;
 		int		FrameKey;
-		VTXCOL	VtxInfo[8];
+		VTXCUBE	VtxInfo[8];
 	
 	}SAVEFRAME;
 

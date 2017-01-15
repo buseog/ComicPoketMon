@@ -20,6 +20,7 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CCollision
+	 : public CComponent
 {
 protected:
 	WORD*			m_pwRefCnt;

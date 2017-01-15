@@ -42,6 +42,7 @@ private:
 
 private:
 	void	SetTransform(void);
+	void	DataLoad(void);
 
 public:
 	static	CTerrain*	Create(LPDIRECT3DDEVICE9 pDevice);

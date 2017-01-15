@@ -5,11 +5,11 @@
  * \author ESSUE
  * Contact: user@company.com
  *
- * \brief 
+ * \brief 싱글 오브젝트 클래스
  *
  * TODO: long description
  *
- * \note
+ * \note 단일 버퍼를 가진 클래스들의 상위 클래스
 */
 
 #ifndef SingleGameObject_h__
@@ -31,7 +31,7 @@ public:
 public:
 	static	CSingleGameObject*	Create(LPDIRECT3DDEVICE9 pDevice, wstring wstrLoadKey);
 
-private:
+protected:
 	explicit	CSingleGameObject(LPDIRECT3DDEVICE9 pDevice);
 
 public:

@@ -3,7 +3,6 @@
 
 #include "Export_Function.h"
 #include "Include.h"
-#include "InfoSubject.h"
 
 CCameraObserver::CCameraObserver(void)
 : m_pInfoSubject(Engine::Get_InfoSubject())
@@ -16,12 +15,12 @@ CCameraObserver::~CCameraObserver(void)
 
 }
 
-const D3DXMATRIX* CCameraObserver::GetView(void)
+D3DXMATRIX* CCameraObserver::GetView(void)
 {
 	return &m_matView;
 }	
 
-const D3DXMATRIX* CCameraObserver::GetProj(void)
+D3DXMATRIX* CCameraObserver::GetProj(void)
 {
 	return &m_matProj;
 }

@@ -19,6 +19,6 @@
 #include "value.h"
 
 extern HWND g_hWnd;
-
+extern float g_fWheelControl;
 
 #endif // Include_h__
