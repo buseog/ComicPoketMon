@@ -54,15 +54,15 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 	pVtxCubeCol[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f);
 	pVtxCubeCol[7].dwColor = Green;
 
+	m_pVB->Unlock();
+
 	m_pOriginVertex = new VTXCOL[m_dwVtxCnt];
 	memcpy(m_pOriginVertex, pVtxCubeCol, m_dwVtxSize * m_dwVtxCnt);
-
-	m_pVB->Unlock();
 
 	Engine::INDEX32* pIndex = NULL;
 	m_pIB->Lock(0,0,(void**)&pIndex,0);
 
-	//x
+	// x+
 	pIndex[0]._1 = 1;
 	pIndex[0]._2 = 5;
 	pIndex[0]._3 = 6;
@@ -127,7 +127,7 @@ HRESULT Engine::CCubeCol::CreateBuffer( void )
 
 void Engine::CCubeCol::Release( void )
 {
-	
+
 }
 
 void Engine::CCubeCol::Render( void )

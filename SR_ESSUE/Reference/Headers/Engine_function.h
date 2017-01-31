@@ -19,6 +19,25 @@
 namespace Engine
 {
 	template<typename T>
+	float GetRandomFloat(T low, T high)
+	{
+		if (low >= high)
+			return low;
+
+		float fRandom = (float)(rand() % 10000) * 0.0001f;
+
+		return (fRandom * (high - low) + low);
+	}
+
+	template<typename T>
+	void GetRandomVector( T* out, T* min, T* max) 
+	{
+		out->x = GetRandomFloat(min->x, max->x);
+		out->y = GetRandomFloat(min->y, max->y);
+		out->z = GetRandomFloat(min->z, max->z);
+	}
+
+	template<typename T>
 	void Safe_Delete(T& Temp)
 	{
 		if(NULL != Temp)

@@ -59,10 +59,10 @@ HRESULT Engine::CCubeTex::CreateBuffer( const wstring& wstrKey)
 	pVtxCube[7].vPos = D3DXVECTOR3(-1.f, -1.f, 1.f);
 	pVtxCube[7].vTex = pVtxCube[7].vPos;
 
-	m_pOriginVertex = new VTXCUBE[m_dwVtxCnt];
-	memcpy(m_pOriginVertex, pVtxCube, sizeof(pVtxCube));
-
 	m_pVB->Unlock();
+
+	m_pOriginVertex = new VTXCUBE[m_dwVtxCnt];
+	memcpy(m_pOriginVertex, pVtxCube, m_dwVtxSize * m_dwVtxCnt);
 
 	INDEX32*		pIndex = NULL;
 
@@ -168,7 +168,7 @@ HRESULT Engine::CCubeTex::CreateBuffer( void)
 	pVtxCube[7].vTex = pVtxCube[7].vPos;
 
 	m_pOriginVertex = new VTXCUBE[m_dwVtxCnt];
-	memcpy(m_pOriginVertex, pVtxCube, sizeof(pVtxCube));
+	memcpy(m_pOriginVertex, pVtxCube, m_dwVtxSize * m_dwVtxCnt);
 
 	m_pVB->Unlock();
 
@@ -268,13 +268,6 @@ void Engine::CCubeTex::Render(void)
 		m_pTexture->Render(0);
 
 	CVIBuffer::Render();
-}
-
-Engine::CResources* Engine::CCubeTex::CloneResource(void)
-{
-	++(*m_pwRefCnt);
-
-	return new CCubeTex(*this);
 }
 
 void Engine::CCubeTex::SetTexutre( void )

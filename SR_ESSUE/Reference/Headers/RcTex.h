@@ -23,18 +23,25 @@ class ENGINE_DLL CRcTex
 	:public CVIBuffer
 {
 private:
-	void			Release(void);
+	wstring			m_wstrTexKey;
+	D3DXVECTOR3		m_vAddPos;
+	int				m_iTexCount;
 
+private:
+	void			Release(void);
+	
 public:
 	virtual HRESULT	CreateBuffer(void);
 	virtual void	Render(void);
+	wstring			GetKey(void);
+	int				GetTexCount(void);
 
 public:
 	static CRcTex*	Create(LPDIRECT3DDEVICE9 pDevice);
-
+	static CRcTex*	Create( LPDIRECT3DDEVICE9 pDevice, wstring _wstrTexKey, D3DXVECTOR3 vPos, int iTexCount );
 private:
 	explicit CRcTex(LPDIRECT3DDEVICE9 pDevice);
-
+			CRcTex(LPDIRECT3DDEVICE9 pDevice, wstring _wstrTexKey, D3DXVECTOR3 vPos = D3DXVECTOR3(0.f, 0.f, 0.f), int iTexCount = 0);
 public:
 	virtual ~CRcTex(void);
 };

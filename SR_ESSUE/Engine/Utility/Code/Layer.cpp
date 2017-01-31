@@ -23,9 +23,17 @@ void Engine::CLayer::Update(void)
 		OBJLIST::iterator		iterList	 = mapiter->second.begin();
 		OBJLIST::iterator		iterList_end = mapiter->second.end();
 
-		for(; iterList != iterList_end; ++iterList)
+		for(; iterList != iterList_end; )
 		{
 			(*iterList)->Update();
+
+			if ((*iterList)->GetDestroy() == true)
+			{
+				Engine::Safe_Delete(*iterList);
+				iterList = mapiter->second.erase(iterList);
+			}
+			else
+				++iterList;
 		}
 	}
 }
@@ -86,6 +94,16 @@ HRESULT Engine::CLayer::AddObject(const wstring& wstrObjKey, CGameObject* pGameO
 	}
 
 	return S_OK;
+}
+
+Engine::CLayer::OBJLIST* Engine::CLayer::GetComponentList( const wstring& wstrObjKey )
+{
+	MAPOBJLIST::iterator	mapiter = m_mapObjList.find(wstrObjKey);
+
+	if(mapiter == m_mapObjList.end())
+		return NULL;
+
+	return &mapiter->second;
 }
 
 const Engine::CComponent* Engine::CLayer::GetComponent(const wstring& wstrObjKey, 

@@ -19,7 +19,7 @@ void Engine::CRcCol::Release( void )
 HRESULT Engine::CRcCol::CreateBuffer( void )
 {
 	m_dwVtxSize = sizeof(VTXCOL);
-	m_dwVtxCnt = 6;
+	m_dwVtxCnt = 4;
 	m_dwVtxFVF = VTXFVF_COL;
 	m_dwTriCnt = 2;
 	m_dwIdxSize = sizeof(INDEX32);
@@ -51,9 +51,23 @@ HRESULT Engine::CRcCol::CreateBuffer( void )
 	pVtxCol[5].vPos = D3DXVECTOR3(-1.f, -1.f, 0.f);
 	pVtxCol[5].dwColor = D3DCOLOR_ARGB(255, 0, 125, 255);
 
-	m_pOriginVertex = new VTXCOL[m_dwVtxCnt];
-	memcpy(m_pOriginVertex, pVtxCol, sizeof(pVtxCol));
+	m_pOriginVertex = new VTXCUBE[m_dwVtxCnt];
+	memcpy(m_pOriginVertex, pVtxCol, m_dwVtxSize * m_dwVtxCnt);
 	m_pVB->Unlock();
+
+	INDEX32*		pIndex = NULL;
+
+	m_pIB->Lock(0, 0, (void**)&pIndex, 0);
+
+	pIndex[0]._1 = 0;
+	pIndex[0]._2 = 1;
+	pIndex[0]._3 = 2;
+
+	pIndex[1]._1 = 0;
+	pIndex[1]._2 = 2;
+	pIndex[1]._3 = 3;
+
+	m_pIB->Unlock();
 
 	return S_OK;
 }

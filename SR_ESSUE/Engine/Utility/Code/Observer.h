@@ -22,7 +22,7 @@ BEGIN(Engine)
 class ENGINE_DLL CObserver
 {
 public:
-	virtual void Update(int iMessage) PURE;
+	virtual void Update(int iMessage, void* pData) PURE;
 
 protected:
 	CObserver(void);

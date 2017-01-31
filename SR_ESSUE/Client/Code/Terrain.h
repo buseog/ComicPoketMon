@@ -1,57 +1,48 @@
-
-
-
 #ifndef Terrain_h__
 #define Terrain_h__
 
-#include "GameObject.h"
+#include "SingleGameObject.h"
+#include "ZQuadTree.h"
 
-namespace Engine
+class CTerrain 
+	: public CSingleGameObject
 {
-	class CTexture;
-	class CVIBuffer;
-	class CResourceMgr;
-	class CTimeMgr;
-	class CTransform;
-	class CInfoSubject;
-
-}
-class CCameraObserver;
-class CTerrain : public Engine::CGameObject
-{
+	// 컬링용
 private:
-	Engine::CResourceMgr*		m_pResourceMgr;
-	Engine::CTimeMgr*			m_pTimeMgr;
-	Engine::CTransform*			m_pInfo;
-	float						m_fSpeed;
+	int		m_IBCX;	// 인덱스 버퍼 가로
+	int		m_ICBY;	// 인덱스 버퍼 높이
+	int		m_IBCZ;	// 인덱스 버퍼 세로
 
-	Engine::CVIBuffer*			m_pBuffer;
-	Engine::CTexture*			m_pTexture;
+	D3DXVECTOR3	m_vScale; // 스케일
+	LPDIRECT3DVERTEXBUFFER9	m_pVB;	// 버텍스버퍼
+	LPDIRECT3DINDEXBUFFER9	m_pIB;	// 인덱스버퍼
+
+	int				m_iTriangles;	// 출력할 삼각형수
+	CZQuadTree*		m_pQuadTree;	// 쿼드트리
+	
+public:
+	HRESULT		BuildQuadTree(void);
+
 
 private:
 	Engine::VTXTEX*				m_pVertex;
 	Engine::VTXTEX*				m_pConvertVertex;
-	DWORD						m_dwVtxCnt;
-
-	Engine::CInfoSubject*		m_pInfoSubject;
-	CCameraObserver*			m_pCameraObserver;
 
 private:
-	HRESULT						Initialize(void);
-	void						SetDirection(void);
-
-private:
-	void	SetTransform(void);
-	void	DataLoad(void);
+	HRESULT				Initialize(void);
+	void				DataLoad(void);
+	void				SetTransform(void);
 
 public:
-	static	CTerrain*	Create(LPDIRECT3DDEVICE9 pDevice);
 	void				Update(void);
 	void				Render(void);
 	void				Release(void);
 	HRESULT				AddComponent(void);
+
+	virtual const Engine::VTXTEX* GetTerrainVertex(void);
+
 public:
-	virtual const Engine::VTXTEX*	GetTerrainVertex(void);
+	static	CTerrain*	Create(LPDIRECT3DDEVICE9 pDevice);
 
 private:
 	explicit	CTerrain(LPDIRECT3DDEVICE9 pDevice);

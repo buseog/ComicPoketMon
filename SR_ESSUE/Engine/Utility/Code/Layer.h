@@ -37,6 +37,7 @@ public:
 	void						Update(void);
 	void						Render(void);
 	HRESULT						AddObject(const wstring& wstrObjKey, CGameObject*	pGameObject);
+	OBJLIST*					GetComponentList(const wstring& wstrObjKey);
 	const CComponent*			GetComponent(const wstring& wstrObjKey, const wstring& wstrComponentKey);
 	const Engine::VTXTEX*		GetTerrainVertex(const wstring& wstrObjKey);
 

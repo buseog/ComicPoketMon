@@ -32,7 +32,7 @@ private:
 public:
 	virtual void Subscribe(CObserver* pObserver);
 	virtual void UnSubscribe(CObserver* pObserver);
-	virtual void Notify(int iMessage);
+	virtual void Notify(int iMessage, void* pData);
 
 protected:
 	CSubject(void);

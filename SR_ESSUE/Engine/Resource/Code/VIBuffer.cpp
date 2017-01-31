@@ -54,8 +54,11 @@ void Engine::CVIBuffer::Release( void )
 	{
 		Engine::Safe_Release(m_pVB);
 		Engine::Safe_Release(m_pIB);
-		Engine::Safe_Delete_Array(m_pOriginVertex);
-		Engine::Safe_Delete_Array(m_pOriginIndex);
+
+		if (m_pOriginVertex)
+			Engine::Safe_Delete_Array(m_pOriginVertex);
+		if (m_pOriginIndex)
+			Engine::Safe_Delete_Array(m_pOriginIndex);
 		Engine::CResources::Release();
 	}
 	else

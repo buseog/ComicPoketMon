@@ -5,6 +5,8 @@
 #include "Include.h"
 #include "Logo.h"
 #include "Stage.h"
+#include "Center.h"
+#include "Ending.h"
 
 class CSceneSelector
 {
@@ -26,6 +28,14 @@ public:
 
 		case SC_STAGE:
 			*ppScene = CStage::Create(pDevice);
+			break;
+
+		case SC_CENTER:
+			*ppScene = CCenter::Create(pDevice);
+			break;
+
+		case SC_ENDING:
+			*ppScene = CEnding::Create(pDevice);
 			break;
 		}
 

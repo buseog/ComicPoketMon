@@ -1,13 +1,27 @@
 #include "StdAfx.h"
 #include "MultiGameObject.h"
-#include "Resources.h"
-#include "VIBuffer.h"
 #include "Export_Function.h"
-#include "Texture.h"
-#include "Pipeline.h"
-	
+#include "CollisionMgr.h"
+#include "enum.h"
+#include "CameraObserver.h"
+#include "Transform.h"
 CMultiGameObject::CMultiGameObject( LPDIRECT3DDEVICE9 pDevice )
 :CGameObject(pDevice)
+, m_pResourceMgr(Engine::Get_ResourceMgr())
+, m_pTimeMgr(Engine::Get_TimeMgr())
+, m_pManagement(Engine::Get_Management())
+, m_pInfoSubject(Engine::Get_InfoSubject())
+, m_pCollisionMgr(CCollisionMgr::GetInstance())
+, m_pZFrustum(CZFrustum::GetInstance())
+, m_pInfo(NULL)
+, m_pStat(NULL)
+, m_pSprite(NULL)
+, m_pBox(NULL)
+, m_pResource(NULL)
+, m_pTerrainVtx(NULL)
+, m_pCameraObserver(NULL)
+, m_wstrStatekey(L"")
+, m_pSound(CSoundMgr::GetInstance())
 {
 
 }
@@ -19,11 +33,8 @@ CMultiGameObject::~CMultiGameObject( void )
 
 void CMultiGameObject::Release( void )
 {
-	for_each(m_vecVertex.begin(), m_vecVertex.end(), Engine::CDeleteObj());
-	m_vecVertex.clear();
+	
 }
-
-
 
 HRESULT CMultiGameObject::Initialize( void )
 {
@@ -32,53 +43,60 @@ HRESULT CMultiGameObject::Initialize( void )
 
 void CMultiGameObject::Update( D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj )
 {
-	Engine::VTXCUBE* pVertex			= new Engine::VTXCUBE[8];
-
-	/*m_pDevice->SetTransform(D3DTS_VIEW, matView);
-	m_pDevice->SetTransform(D3DTS_PROJECTION, matProj);*/
-
-	for (size_t i = 0; i < m_vecVertex.size(); ++i)
-	{
-		((Engine::CVIBuffer*)m_vecVertex[i])->GetOriginVtxInfo(pVertex);
-
-		for (int j = 0; j < 8; ++j)
-		{
-			Engine::MyTransformCoord(&pVertex[j].vPos, &pVertex[j].vPos,	matWorld);
-			Engine::MyTransformCoord(&pVertex[j].vPos, &pVertex[j].vPos,	matView);
-
-			if(pVertex[j].vPos.z < 1.f)
-				pVertex[j].vPos.z = 1.f;
-
-			Engine::MyTransformCoord(&pVertex[j].vPos, &pVertex[j].vPos,	matProj);
-		}
-
-		((Engine::CVIBuffer*)m_vecVertex[i])->SetVtxInfo(pVertex);
-	}
-
-	Engine::Safe_Delete_Array(pVertex);
 }
 
 void CMultiGameObject::Render( void )
 {
-	for (size_t i = 0; i < m_vecVertex.size(); ++i)
-	{
-		m_vecVertex[i]->Render();
-	}
-}
-
-CMultiGameObject* CMultiGameObject::Create( LPDIRECT3DDEVICE9 pDevice, wstring wstrLoadKey )
-{
-	CMultiGameObject* pMulti = new CMultiGameObject(pDevice);
-
-	if (FAILED(pMulti->Initialize()))
-		Engine::Safe_Delete(pMulti);
-
-	pMulti->LoadFile(wstrLoadKey);
-
-	return pMulti;
+	
 }
 
 void CMultiGameObject::LoadFile( wstring wstrLoadKey )
 {
 
+}
+
+void CMultiGameObject::SetPos( D3DXVECTOR3 vPos )
+{
+	m_pInfo->vPos = vPos;
+}
+void CMultiGameObject::SetHp( float Damage )
+{
+	m_pStat->fHp -= Damage;
+}
+
+void CMultiGameObject::SetSprite( wstring wstrStateKey )
+{
+	if (m_wstrStatekey == wstrStateKey)
+		return;
+
+	m_wstrStatekey = wstrStateKey;
+	m_pSprite->fSpriteCnt = 0.f;
+	m_pSprite->fSpriteMax = (float)m_pResource->GetSpriteCount(m_wstrStatekey);
+	
+	if (wstrStateKey == L"Attack" || wstrStateKey == L"Attack2" || wstrStateKey == L"Attack3" ||
+		wstrStateKey == L"Attack4")
+	{
+		m_pSprite->fSpriteSpeed = 2.f;
+	}
+	else if (wstrStateKey == L"Skill" || wstrStateKey == L"Death")
+	{
+		m_pSprite->fSpriteSpeed = 0.5f;
+	}
+	else
+		m_pSprite->fSpriteSpeed = 1.f;
+}
+
+std::wstring CMultiGameObject::GetObjKey( void )
+{
+	return m_wstrObjKey;
+}
+
+DWORD CMultiGameObject::GetType( void )
+{
+	return 0;
+}
+
+float CMultiGameObject::GetHp( void )
+{
+	return m_pStat->fHp;
 }

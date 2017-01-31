@@ -69,6 +69,7 @@
 #define IDC_BUTTON8                     1029
 #define IDC_BUTTON9                     1030
 #define IDC_EDIT13                      1031
+#define IDC_BUTTON13                    1031
 #define IDC_SLIDER2                     1032
 #define IDC_SLIDER3                     1033
 #define IDC_SLIDER4                     1034

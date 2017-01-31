@@ -17,19 +17,20 @@ Engine::CCubeObj::~CCubeObj( void )
 
 void Engine::CCubeObj::Update( D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj )
 {
+	D3DXMATRIX matPrint = (*matWorld) * (*matView);
+
 	for (size_t i = 0; i < m_vecCube.size(); ++i)
 	{
 		((Engine::CVIBuffer*)m_vecCube[i])->GetOriginVtxInfo(m_pVertex);
 
 		for (int j = 0; j < 8; ++j)
 		{
-			Engine::MyTransformCoord(&m_pVertex[j].vPos, &m_pVertex[j].vPos,	matWorld);
-			Engine::MyTransformCoord(&m_pVertex[j].vPos, &m_pVertex[j].vPos,	matView);
+			Engine::MyTransformCoord(&m_pVertex[j].vPos, &m_pVertex[j].vPos, &matPrint);
 
 			if(m_pVertex[j].vPos.z < 1.f)
 				m_pVertex[j].vPos.z = 1.f;
 
-			Engine::MyTransformCoord(&m_pVertex[j].vPos, &m_pVertex[j].vPos,	matProj);
+			Engine::MyTransformCoord(&m_pVertex[j].vPos, &m_pVertex[j].vPos, matProj);
 		}
 
 		((Engine::CVIBuffer*)m_vecCube[i])->SetVtxInfo(m_pVertex);
@@ -60,13 +61,13 @@ void Engine::CCubeObj::Release( void )
 
 	if (m_pVertex)
 		Engine::Safe_Delete_Array(m_pVertex);
+
+	Engine::CResources::Release();
 }
 
 Engine::CResources* Engine::CCubeObj::CloneResource( void )
 {
-	++(*m_pwRefCnt);
-
-	return new CCubeObj(*this);
+	return NULL;
 }
 
 void Engine::CCubeObj::AddFrame(SAVEFRAME* pSave )

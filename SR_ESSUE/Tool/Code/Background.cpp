@@ -15,6 +15,7 @@
 #include "CubeCol.h"
 
 #include "TerrainTex.h"
+#include "RcTex.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +42,15 @@ CBackground::~CBackground( void )
 
 void CBackground::Release( void )
 {
+	list<Engine::CComponent*>::iterator iter = m_Resorceslist.begin();
+	list<Engine::CComponent*>::iterator iter_end = m_Resorceslist.end();
+
+	for(; iter != iter_end; ++iter)
+	{
+		if((*iter) != NULL)
+			Engine::Safe_Delete((*iter));
+	}
+
 	m_pResourceMgr->DestroyInstance();
 	Engine::Safe_Delete_Array(m_pVertex);
 }
@@ -61,28 +71,40 @@ void CBackground::KeyCheck( void )
 		m_vEye = m_vAt * -m_fDistance;
 	}*/
 
+	if(GetAsyncKeyState('Q') & 0x8000)
+	{
+		m_fDistance -= 1.f;
+		m_vEye.y -= m_fDistance;
+	}
+
+	if(GetAsyncKeyState('E') & 0x8000)
+	{
+		m_fDistance += 1.f;
+		m_vEye.y += m_fDistance;
+	}
+
 	if(GetAsyncKeyState('W') & 0x8000)
 	{
-		m_vAt.z -= 5;
-		m_vEye.z -=5;
+		m_vAt.z += 5;
+		m_vEye.z +=5;
 	}
 
 	if(GetAsyncKeyState('S') & 0x8000)
 	{
-		m_vAt.z += 5;
-		m_vEye.z += 5;
+		m_vAt.z -= 5;
+		m_vEye.z -= 5;
 	}
 
 	if(GetAsyncKeyState('A') & 0x8000)
 	{
-		m_vAt.x += 5;
-		m_vEye.x +=5;
+		m_vAt.x -= 5;
+		m_vEye.x -=5;
 	}
 
 	if(GetAsyncKeyState('D') & 0x8000)
 	{
-		m_vAt.x -= 5;
-		m_vEye.x -=5;
+		m_vAt.x += 5;
+		m_vEye.x +=5;
 	}
 
 	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
@@ -143,8 +165,6 @@ void CBackground::Picking( void )
 	GetCursorPos(&pt);
 	ScreenToClient(g_hWnd, &pt);
 
-	D3DXMATRIX matRView, matRProj;
-
 	D3DXVECTOR3 vMouse;
 
 	vMouse.x = (float(pt.x)  / (WINCX / 2) - 1.f) / matProj._11;
@@ -153,13 +173,15 @@ void CBackground::Picking( void )
 
 	D3DXVECTOR3 vRayPos, vRayDir;
 	vRayPos = D3DXVECTOR3(0.f,0.f,0.f);
-	vRayDir = vMouse;
+	vRayDir = vMouse - vRayPos;
+	D3DXVec3Normalize(&vRayDir, &vRayDir);
+
+	D3DXMATRIX matRView, matRWorld;
 
 	D3DXMatrixInverse(&matRView, 0, &matView);
 	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRView);
 	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRView);
 
-	D3DXMATRIX matRWorld;
 	D3DXMatrixIdentity(&matRWorld);
 	D3DXMatrixInverse(&matRWorld, 0, &matRWorld);
 	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRWorld);
@@ -199,7 +221,7 @@ void CBackground::Picking( void )
 			}
 
 			// 왼쪽 아래
-			if(D3DXIntersectTri(&m_pVertex[iIndex].vPos,
+			else if(D3DXIntersectTri(&m_pVertex[iIndex].vPos,
 				&m_pVertex[iIndex + 1].vPos,
 				&m_pVertex[iIndex + VTXCNTX].vPos,
 				&vRayPos,
@@ -251,8 +273,16 @@ HRESULT CBackground::Initialize( void )
 		Engine::RESOURCE_DYNAMIC, 
 		Engine::TEX_NORMAL, 
 		L"Texture Terrain", 
-		L"../bin/Resources/Texture/Terrain/Terrain%d.png", 
-		3);
+		L"../bin/Resources/Texture/Terrain/Terrain_grass%d.png", 
+		2);
+
+	hr = m_pResourceMgr->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_DYNAMIC,
+		Engine::TEX_NORMAL,
+		L"Tree", 
+		L"../bin/Resources/Texture/Etc/tree0%d.png",
+		5);
+
 	FAILED_CHECK_MSG(hr, L"Texture Terrain Create Failed");
 
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -302,13 +332,32 @@ void CBackground::Update( void )
 
 void CBackground::Render( void )
 {
-	
 
 	if (m_pBuffer != NULL)
 	{
 		m_pTexture->Render(m_iIndex);
 		m_pBuffer->Render();
 		DrawLine();
+	}
+
+
+	list<Engine::CComponent*>::iterator iter = m_Resorceslist.begin();
+	list<Engine::CComponent*>::iterator iter_end = m_Resorceslist.end();
+	for(; iter != iter_end; ++iter)
+	{
+		if((*iter) != NULL)
+		{
+			Engine::CComponent*		pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_DYNAMIC, ((Engine::CRcTex*)(*iter))->GetKey());
+			if(pComponent == NULL)
+				return;
+
+			Engine::CTexture* m_pTexture = dynamic_cast<Engine::CTexture*>(pComponent);
+	
+			m_pTexture->Render(((Engine::CRcTex*)(*iter))->GetTexCount());
+			((Engine::CRcTex*)(*iter))->Render();
+
+			Engine::Safe_Delete(m_pTexture);
+		}
 	}
 }
 
@@ -365,6 +414,115 @@ void CBackground::DrawLine( void )
 }
 
 
+void CBackground::Picking_AddObject(void)
+{
+//
+	if (m_pVertex == NULL)
+		return;
+
+	POINT	pt;
+
+	GetCursorPos(&pt);
+	ScreenToClient(g_hWnd, &pt);
+
+	D3DXVECTOR3 vMouse;
+
+	vMouse.x = (float(pt.x)  / (WINCX / 2) - 1.f) / matProj._11;
+	vMouse.y = (float(-pt.y) / (WINCY / 2) + 1.f) / matProj._22;
+	vMouse.z = 1.f;
+
+	D3DXVECTOR3 vRayPos, vRayDir;
+	vRayPos = D3DXVECTOR3(0.f,0.f,0.f);
+	vRayDir = vMouse - vRayPos;
+	D3DXVec3Normalize(&vRayDir, &vRayDir);
+
+	D3DXMATRIX matRView, matRWorld;
+
+	D3DXMatrixInverse(&matRView, 0, &matView);
+	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRView);
+	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRView);
+
+	D3DXMatrixIdentity(&matRWorld);
+	D3DXMatrixInverse(&matRWorld, 0, &matRWorld);
+	D3DXVec3TransformCoord(&vRayPos, &vRayPos, &matRWorld);
+	D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matRWorld);
+
+
+
+
+	float	fU, fV, fDist;
+	int VTXCNTZ = 257;
+	int VTXCNTX = 257;
+	int iHeight = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pMap.m_iHeight;
+
+	D3DXVECTOR3 vOut;
+
+	for(int z = 0; z < VTXCNTZ - 1; ++z)
+	{
+		for(int x = 0; x < VTXCNTX - 1; ++x)
+		{
+			int iIndex = z * VTXCNTX + x;
+
+			// 오른쪽 위
+			if(D3DXIntersectTri(&m_pVertex[iIndex + VTXCNTX + 1].vPos,
+				&m_pVertex[iIndex + VTXCNTX].vPos,
+				&m_pVertex[iIndex + 1].vPos,
+				&vRayPos,
+				&vRayDir,
+				&fU, &fV, &fDist))
+			{
+				D3DXPLANE	plnPlane;
+
+				D3DXPlaneFromPoints(&plnPlane,
+					&m_pVertex[iIndex + VTXCNTX].vPos,
+					&m_pVertex[iIndex + VTXCNTX + 1].vPos,
+					&m_pVertex[iIndex + 1].vPos);
+
+				float fX = m_pVertex[iIndex + VTXCNTX + 1].vPos.x - fU;
+				float z = m_pVertex[iIndex + VTXCNTX + 1].vPos.z - fV;
+				float fHeight = (-plnPlane.a * x - plnPlane.c * z - plnPlane.d) / plnPlane.b;
+				D3DXVECTOR3 vObjectPos = D3DXVECTOR3((float)x, (float)fHeight + 1.f, (float)z);
+
+				AddObject(vObjectPos);
+
+				return;
+			}
+
+			// 왼쪽 아래
+			else if(D3DXIntersectTri(&m_pVertex[iIndex].vPos,
+				&m_pVertex[iIndex + 1].vPos,
+				&m_pVertex[iIndex + VTXCNTX].vPos,
+				&vRayPos,
+				&vRayDir,
+				&fU, &fV, &fDist))
+			{
+				D3DXPLANE	plnPlane;
+
+				D3DXPlaneFromPoints(&plnPlane,
+					&m_pVertex[iIndex + VTXCNTX].vPos,
+					&m_pVertex[iIndex + 1].vPos,
+					&m_pVertex[iIndex].vPos);
+
+				float x = m_pVertex[iIndex].vPos.x + fU;
+				float z = m_pVertex[iIndex].vPos.z + fV;
+				float fHeight = (-plnPlane.a * x - plnPlane.c * z - plnPlane.d) / plnPlane.b;
+
+				D3DXVECTOR3 vObjectPos = D3DXVECTOR3(x, fHeight + 1.f, z);
+
+				AddObject(vObjectPos);
+
+				return;
+			}
+
+		}
+	}
+}
+
+list<Engine::OBJINFO>* CBackground::GetObjList(void)
+{
+	return &m_ObjList;
+}
+
 void CBackground::SetIndex( int iIndex )
 {
 	m_iIndex = iIndex;
@@ -378,4 +536,18 @@ Engine::VTXTEX* CBackground::GetVtxcol( void )
 void CBackground::SetVtxcol( Engine::VTXTEX* pVertex )
 {
 	memcpy(m_pVertex, pVertex, sizeof(Engine::VTXTEX) * (257*257));
+}
+
+void CBackground::AddObject(D3DXVECTOR3 &vPos)
+{
+	Engine::CComponent*		pComponent = NULL;
+
+	int i = rand() % 5;
+	pComponent = Engine::CRcTex::Create(m_pDevice, L"Tree", vPos, i);
+	m_Resorceslist.push_back(dynamic_cast<Engine::CVIBuffer*>(pComponent));
+	Engine::OBJINFO tObjInfo;
+	tObjInfo.iTexCount = i;
+	tObjInfo.wstrTexKey = L"Tree";
+	tObjInfo.vPos = vPos;
+	m_ObjList.push_back(tObjInfo);
 }

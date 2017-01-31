@@ -28,7 +28,7 @@ protected:
 
 public:
 	virtual void Render(void) PURE;
-	virtual void Release(void) PURE;
+	virtual void Release(void);
 	virtual CResources* CloneResource(void) PURE;
 
 protected:

@@ -60,6 +60,7 @@ void Engine::CGraphicDev::SetParameters(D3DPRESENT_PARAMETERS& d3dpp,
 	d3dpp.BackBufferHeight = wSizeY;
 	d3dpp.BackBufferCount = 1;
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+	
 
 	d3dpp.MultiSampleQuality = 0;
 	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
@@ -68,7 +69,7 @@ void Engine::CGraphicDev::SetParameters(D3DPRESENT_PARAMETERS& d3dpp,
 	d3dpp.EnableAutoDepthStencil = TRUE;
 
 	d3dpp.hDeviceWindow = hWnd;
-	d3dpp.Windowed		= Mode;
+	d3dpp.Windowed		= FALSE;
 
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;

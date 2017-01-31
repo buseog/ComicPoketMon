@@ -62,6 +62,7 @@ BEGIN_MESSAGE_MAP(CAnimation, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON4, &CAnimation::OnLoad)
 	ON_LBN_SELCHANGE(IDC_LIST2, &CAnimation::OnFrameList)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON7, &CAnimation::OnArrange)
 END_MESSAGE_MAP()
 
 
@@ -247,8 +248,13 @@ BOOL CAnimation::OnInitDialog()
 	m_StateComboCtrl.AddString(L"Stand");
 	m_StateComboCtrl.AddString(L"Walk");
 	m_StateComboCtrl.AddString(L"Attack");
+	m_StateComboCtrl.AddString(L"Attack2");
+	m_StateComboCtrl.AddString(L"Attack3");
+	m_StateComboCtrl.AddString(L"Attack4");
+	m_StateComboCtrl.AddString(L"Attack5");
 	m_StateComboCtrl.AddString(L"Skill");
 	m_StateComboCtrl.AddString(L"Death");
+	m_StateComboCtrl.AddString(L"JubJub");
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -279,6 +285,7 @@ void CAnimation::OnStateList()
 	{
 		TCHAR szFrame[MAX_PATH] = L"";
 
+		((Engine::CCubeObj*)iter->second[i])->GetVecPart()->front()->FrameKey = i;
 		wsprintf(szFrame, L"%d", ((Engine::CCubeObj*)iter->second[i])->GetVecPart()->front()->FrameKey);
 
 		m_FrameListCtrl.AddString(szFrame);
@@ -406,7 +413,7 @@ void CAnimation::OnLoad()
 	m_FrameListCtrl.ResetContent();
 	m_StateListCtrl.ResetContent();
 	
-	m_pCubeMotion->Release();
+	//m_pCubeMotion->Release();
 
 	CFileDialog		Dlg(TRUE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
 
@@ -492,7 +499,7 @@ void CAnimation::OnFrameList()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 
-	if (m_StateListCtrl.GetCurSel() < 0)
+	if (m_FrameListCtrl.GetCurSel() < 0)
 		return;
 
 	UpdateData(TRUE);
@@ -567,4 +574,24 @@ void CAnimation::PlayAnimation( void )
 
 	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 	UpdateData(FALSE);
+}
+
+void CAnimation::OnArrange()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	map<wstring, vector<Engine::CCubeObj*>>* pSpriteMap = m_pCubeMotion->GetSpriteMap();
+
+	for (map<wstring, vector<Engine::CCubeObj*>>::iterator iter = pSpriteMap->begin(); iter != pSpriteMap->end(); ++iter)
+	{
+		for (size_t i = 0; i < iter->second.size(); ++i)
+		{
+			vector<Engine::SAVEFRAME*>* pVec = iter->second[i]->GetVecPart();
+
+			for (size_t j = 0; j < pVec->size(); ++j)
+			{
+				(*pVec)[j]->FrameKey = i;
+			}
+		}
+	}
 }

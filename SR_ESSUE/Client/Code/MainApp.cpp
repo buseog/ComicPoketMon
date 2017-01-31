@@ -3,6 +3,10 @@
 #include "GraphicDev.h"
 #include "Export_Function.h"
 #include "SceneSelector.h"
+#include "StatSubject.h"
+#include "ZFrustum.h"
+#include "CollisionMgr.h"
+#include "SoundMgr.h"
 
 CMainApp::CMainApp()
 : m_pGraphicDev(Engine::Get_GraphicDev())
@@ -20,6 +24,8 @@ CMainApp::~CMainApp()
 
 HRESULT CMainApp::Initialize( void )
 {
+	srand(unsigned(time(NULL)));
+
 	HRESULT hr = NULL;
 
 	hr = Engine::CGraphicDev::GetInstance()->InitGraphicDev
@@ -44,6 +50,12 @@ void CMainApp::Release( void )
 {
 	Engine::Safe_Single_Destory(m_pTimeMgr);
 	Engine::Safe_Single_Destory(m_pManagement);
+	CSoundMgr::GetInstance()->DestroyInstance();
+	CCollisionMgr::GetInstance()->DestroyInstance();
+	CZFrustum::GetInstance()->DestroyInstance();
+	Engine::CInfoSubject::GetInstance()->DestroyInstance();
+	Engine::CStatSubject::GetInstance()->DestroyInstance();
+	Engine::CKeyMgr::GetInstance()->DestroyInstance();
 	Engine::CResourceMgr::GetInstance()->DestroyInstance();
 	Engine::Safe_Single_Destory(m_pGraphicDev);
 }

@@ -21,6 +21,9 @@ public:
 	Engine::CTexture*	m_pTexture;
 
 	map<wstring, Engine::CResources*>	m_mapChar;
+	vector<Engine::CResources*>			m_vecObject;
+
+	DWORD		m_dwType;
 
 	float		m_fAngle[Engine::ANGLE_END];
 	float		m_fDistance;
@@ -28,7 +31,7 @@ public:
 	D3DXMATRIX	matView, matProj;
 	LPD3DXLINE	m_pLine;
 
-	Engine::VTXCUBE*		m_pVertex;
+	Engine::VTXCUBE*	m_pVertex;
 	Engine::INDEX32*	m_pIndex;
 
 public:
@@ -37,7 +40,8 @@ public:
 	void	DeletePicking(void);
 	void	SelectPicking(void);
 	void	AddPicking(void);
-	void	SetTransCube(D3DXVECTOR3 vPos, D3DXVECTOR3 vScale);
+	void	SetScaleCube( D3DXVECTOR3 vScale);
+	void	SetTransCube(D3DXVECTOR3 vPos);
 	void	SetRotationCube(int iFlag, float fAngle, D3DXVECTOR3 vPos);
 	void	SetApplyCube(void);
 	void	SetColor(DWORD dwColor);

@@ -3,6 +3,16 @@
 
 Engine::CRcTex::CRcTex(LPDIRECT3DDEVICE9 pDevice)
 : CVIBuffer(pDevice)
+, m_vAddPos(D3DXVECTOR3(0.f, 0.f, 0.f))
+{
+
+}
+
+Engine::CRcTex::CRcTex( LPDIRECT3DDEVICE9 pDevice, wstring _wstrTexKey, D3DXVECTOR3 vPos, int iTexCount)
+: CVIBuffer(pDevice)
+, m_wstrTexKey(_wstrTexKey)
+, m_vAddPos(vPos)
+, m_iTexCount(iTexCount)
 {
 
 }
@@ -27,22 +37,23 @@ HRESULT Engine::CRcTex::CreateBuffer(void)
 
 	m_pVB->Lock(0, 0 , (void**)&pVtxTex, 0);
 
-	pVtxTex[0].vPos = D3DXVECTOR3(-1.f, 1.f, 0.f);
+	pVtxTex[0].vPos = D3DXVECTOR3(-1.f, 1.f, 0.f) + m_vAddPos;
 	pVtxTex[0].vTex = D3DXVECTOR2(0.f, 0.f);
 
-	pVtxTex[1].vPos = D3DXVECTOR3(1.f, 1.f, 0.f);
+	pVtxTex[1].vPos = D3DXVECTOR3(1.f, 1.f, 0.f) + m_vAddPos;
 	pVtxTex[1].vTex = D3DXVECTOR2(1.f, 0.f);
 
-	pVtxTex[2].vPos = D3DXVECTOR3(1.f, -1.f, 0.f);
+	pVtxTex[2].vPos = D3DXVECTOR3(1.f, -1.f, 0.f) + m_vAddPos;
 	pVtxTex[2].vTex = D3DXVECTOR2(1.f, 1.f);
 
-	pVtxTex[3].vPos = D3DXVECTOR3(-1.f, -1.f, 0.f);
+	pVtxTex[3].vPos = D3DXVECTOR3(-1.f, -1.f, 0.f) + m_vAddPos;
 	pVtxTex[3].vTex = D3DXVECTOR2(0.f, 1.f);
 
 	m_pOriginVertex = new VTXTEX[m_dwVtxCnt];
-	memcpy(m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
+	memcpy(m_pOriginVertex, pVtxTex, m_dwVtxSize * m_dwVtxCnt);
 
 	m_pVB->Unlock();
+
 
 	INDEX32*		pIndex = NULL;
 
@@ -74,6 +85,16 @@ Engine::CRcTex* Engine::CRcTex::Create(LPDIRECT3DDEVICE9 pDevice)
 	return pRcTex;
 }
 
+Engine::CRcTex* Engine::CRcTex::Create( LPDIRECT3DDEVICE9 pDevice, wstring _wstrTexKey, D3DXVECTOR3 vPos, int iTexCount)
+{
+	CRcTex*	pRcTex = new CRcTex(pDevice, _wstrTexKey, vPos, iTexCount);
+
+	if(FAILED(pRcTex->CreateBuffer()))
+		Engine::Safe_Delete(pRcTex);
+
+	return pRcTex;
+}
+
 void Engine::CRcTex::Release(void)
 {
 
@@ -84,4 +105,12 @@ void Engine::CRcTex::Render(void)
 	CVIBuffer::Render();
 }
 
+std::wstring Engine::CRcTex::GetKey( void )
+{
+	return m_wstrTexKey;
+}
 
+int Engine::CRcTex::GetTexCount(void)
+{
+	return m_iTexCount;
+}

@@ -56,3 +56,10 @@ const Engine::VTXTEX* Engine::CScene::GetTerrainVertex(const WORD& LayerID,
 	return iter->second->GetTerrainVertex(wstrObjKey);
 }
 
+Engine::CLayer* Engine::CScene::GetLayer( int ikey )
+{
+	MAPLAYER::iterator	iter = m_mapLayer.find(ikey);
+
+	return iter->second;
+}
+

@@ -37,13 +37,14 @@ public:
 	void		AddSprite(const wstring& wstrName, Engine::CCubeObj* pComponent);
 	void		RemoveSprite(const wstring& wstrName);
 	MAPVECTOR*	GetSpriteMap(void);
+	int			GetSpriteCount( const wstring& wstrKey );
 
 public:
 	virtual void Update( const wstring& wstrStateKey, D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj );
 	void Render( const DWORD& Frame );
 	void Render( void );
 
-	virtual void Release( void );
+	void Release( void );
 	virtual CResources* CloneResource( void );
 
 public:

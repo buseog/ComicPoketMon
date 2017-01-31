@@ -46,7 +46,7 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 	}
 
 	m_pOriginVertex = new VTXTEX[m_dwVtxCnt];
-	memcpy(m_pOriginVertex, pVtxTex, sizeof(pVtxTex));
+	memcpy(m_pOriginVertex, pVtxTex, m_dwVtxSize * m_dwVtxCnt);
 
 	m_pVB->Unlock();
 
@@ -77,11 +77,6 @@ HRESULT Engine::CTerrainTex::CreateBuffer(const WORD& wCntX, const WORD& wCntZ, 
 	}
 
 	m_pIB->Unlock();
-
-	m_pOriginIndex = new INDEX32[m_dwTriCnt];
-	memcpy(m_pOriginIndex, pIndex, m_dwIdxSize * m_dwTriCnt);
-
-	//Engine::Safe_Delete_Array(pdwPixel);
 
 	return S_OK;
 

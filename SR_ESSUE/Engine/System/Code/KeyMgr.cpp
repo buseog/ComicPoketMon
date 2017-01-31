@@ -20,6 +20,7 @@ bool	Engine::CKeyMgr::StayKeyDown(int nKey)	// 쭉 누르고있을때
 
 	return false;	// if문에서 입력된걸 감지하지 않았음으로 눌리지 않았음. 펄스를 반환
 }
+
 bool	Engine::CKeyMgr::KeyDown(int nKey, int iIndex)	// 한번만 딱 눌렀을때
 {
 	if (GetAsyncKeyState(nKey) & 0x8000)	// 키가 입력됬는지 확인하고
@@ -38,6 +39,7 @@ bool	Engine::CKeyMgr::KeyDown(int nKey, int iIndex)	// 한번만 딱 눌렀을때
 
 	return false;						//	그냥 실패로간주
 }
+
 bool	Engine::CKeyMgr::KeyUp(int nKey, int iIndex)	// 눌렀다가 똇을때
 {
 	if (GetAsyncKeyState(nKey) & 0x8000)		// 눌렸는지 확인

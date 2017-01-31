@@ -9,11 +9,11 @@ Engine::CResources::CResources(LPDIRECT3DDEVICE9 pDevice)
 
 Engine::CResources::~CResources(void)
 {
-	
 }
 
 void Engine::CResources::Release(void)
 {
+	
 	if((*m_pwRefCnt) == 0)
 	{
 		Engine::Safe_Delete(m_pwRefCnt);

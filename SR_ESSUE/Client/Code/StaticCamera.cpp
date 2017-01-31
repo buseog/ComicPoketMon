@@ -1,14 +1,8 @@
 #include "stdafx.h"
 #include "StaticCamera.h"
 
-#include "Export_Function.h"
-#include "Transform.h"
-#include "TimeMgr.h"
-#include "Include.h"
-#include "InfoSubject.h"
-
 CStaticCamera::CStaticCamera(LPDIRECT3DDEVICE9 pDevice)
-: CCamera(pDevice)
+: CBasicCamera(pDevice)
 , m_pTimeMgr(Engine::Get_TimeMgr())
 , m_pInfoSubject(Engine::Get_InfoSubject())
 , m_pTargetInfo(NULL)
@@ -21,6 +15,8 @@ CStaticCamera::CStaticCamera(LPDIRECT3DDEVICE9 pDevice)
 , m_fNearDist(2.f)
 , m_fFarDist(50.f)
 , m_bRbuttonDown(false)
+, m_bKeyInput(false)
+, m_iKeyDown(0)
 {
 
 }
@@ -39,7 +35,7 @@ CStaticCamera* CStaticCamera::Create(LPDIRECT3DDEVICE9 pDevice,
 		Engine::Safe_Delete(pCamera);
 
 	pCamera->SetCameraTarget(pTargetInfo);
-	pCamera->SetProjectionMatrix(D3DXToRadian(45.f), float(WINCX) / WINCY, 1.f, 1000.f);
+	pCamera->SetProjectionMatrix(D3DXToRadian(45.f), float(WINCX) / WINCY, 0.1f, 1000.f);
 
 	return pCamera;
 }
@@ -62,16 +58,21 @@ HRESULT CStaticCamera::Initialize(void)
 	m_pInfoSubject->AddData(D3DTS_VIEW, &m_matView);
 	m_pInfoSubject->AddData(D3DTS_PROJECTION, &m_matProj);
 
+	
+
 	return S_OK;
 }
 
 void CStaticCamera::Update(void)
 {
+	if (m_eCamType != CAM_STATIC)
+		return;
+
 	KeyCheck();
 	TargetRenewal();
 
-	m_pInfoSubject->Notify(D3DTS_VIEW);
-	m_pInfoSubject->Notify(D3DTS_PROJECTION);
+	m_pInfoSubject->Notify(D3DTS_VIEW, &m_matView);
+	m_pInfoSubject->Notify(D3DTS_PROJECTION, &m_matProj);
 
 }
 
@@ -79,14 +80,14 @@ void CStaticCamera::KeyCheck(void)
 {
 	float		fTime = m_pTimeMgr->GetTime();
 
-	if(GetAsyncKeyState(VK_UP) & 0x8000)
+	if(GetAsyncKeyState('W') & 0x8000)
 	{
-		m_fAngle += D3DXToRadian(45.f) * fTime;
+		++m_iKeyDown;
 	}
 
-	if(GetAsyncKeyState(VK_DOWN) & 0x8000)
+	if(GetAsyncKeyState('S') & 0x8000)
 	{
-		m_fAngle -= D3DXToRadian(45.f) * fTime;
+		++m_iKeyDown;
 	}
 
 	if(GetAsyncKeyState('O') & 0x8000)
@@ -123,6 +124,12 @@ void CStaticCamera::KeyCheck(void)
 		m_bRbuttonDown = false;
 	}
 
+	if(m_iKeyDown)
+		m_bKeyInput = true;
+	else
+		m_bKeyInput = false;
+
+	m_iKeyDown = 0;
 }
 
 void CStaticCamera::TargetRenewal(void)
@@ -142,6 +149,9 @@ void CStaticCamera::TargetRenewal(void)
 	}
 	else
 	{
+		if(m_bKeyInput)
+			m_fAngleY = 0.f;
+
 		if(m_fAngleY < 0.f)
 			m_fAngleY += ((0.f - m_fAngleY) + 0.3f) * fTime;
 		if(m_fAngleY > 0.f)

@@ -3,6 +3,8 @@
 
 Engine::CGameObject::CGameObject(LPDIRECT3DDEVICE9 pDevice)
 : m_pDevice(pDevice)
+, m_bDestroy(false)
+, m_bCulling(false)
 {
 
 }
@@ -52,6 +54,16 @@ const Engine::CComponent* Engine::CGameObject::GetComponent(const wstring& wstrC
 const Engine::VTXTEX* Engine::CGameObject::GetTerrainVertex(void)
 {
 	return NULL;
+}
+
+bool Engine::CGameObject::GetDestroy( void )
+{
+	return m_bDestroy;
+}
+
+void Engine::CGameObject::SetDestroy( void )
+{
+	m_bDestroy = true;
 }
 
 

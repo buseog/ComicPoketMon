@@ -12,7 +12,7 @@ Engine::CInfoSubject::~CInfoSubject(void)
 	Release();
 }
 
-Engine::DATALIST* Engine::CInfoSubject::GetDataList(int iMessage)
+Engine::VECDATA* Engine::CInfoSubject::GetDataList(int iMessage)
 {
 	MAPDATALIST::iterator	iter = m_MapDataList.find(iMessage);
 
@@ -30,11 +30,11 @@ void Engine::CInfoSubject::AddData(int iMessage, void* pData)
 
 		if(iter == m_MapDataList.end())
 		{
-			m_MapDataList[iMessage] = DATALIST();
+			m_MapDataList[iMessage] = VECDATA();
 		}
 
 		m_MapDataList[iMessage].push_back(pData);
-		Notify(iMessage);
+		Notify(iMessage, pData);
 	}
 }
 
@@ -45,8 +45,8 @@ void Engine::CInfoSubject::RemoveData(int iMessage, void* pData)
 
 	if(mapiter != m_MapDataList.end())
 	{
-		DATALIST::iterator		iterList = mapiter->second.begin();
-		DATALIST::iterator		iterList_end = mapiter->second.end();
+		VECDATA::iterator		iterList = mapiter->second.begin();
+		VECDATA::iterator		iterList_end = mapiter->second.end();
 
 		for( ;iterList != iterList_end; ++iterList)
 		{

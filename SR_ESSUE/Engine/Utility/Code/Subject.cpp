@@ -20,6 +20,9 @@ void Engine::CSubject::Subscribe(CObserver* pObserver)
 
 void Engine::CSubject::UnSubscribe(CObserver* pObserver)
 {
+	if (m_ObserverList.empty())
+		return;
+
 	OBSERVERLIST::iterator		iter		= m_ObserverList.begin();
 	OBSERVERLIST::iterator		iter_end	= m_ObserverList.end();
 
@@ -27,7 +30,7 @@ void Engine::CSubject::UnSubscribe(CObserver* pObserver)
 	{
 		if((*iter) == pObserver)
 		{
-			m_ObserverList.erase(iter);
+			iter = m_ObserverList.erase(iter);
 			return;
 		}
 		else
@@ -35,14 +38,14 @@ void Engine::CSubject::UnSubscribe(CObserver* pObserver)
 	}
 }
 
-void Engine::CSubject::Notify(int iMessage)
+void Engine::CSubject::Notify(int iMessage, void* pData)
 {
 	OBSERVERLIST::iterator		iter		= m_ObserverList.begin();
 	OBSERVERLIST::iterator		iter_end	= m_ObserverList.end();
 
 	for( ; iter != iter_end; ++iter)
 	{
-		(*iter)->Update(iMessage);
+		(*iter)->Update(iMessage, pData);
 	}
 }
 

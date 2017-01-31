@@ -16,14 +16,13 @@ private:
 public:
 	virtual ~CCameraObserver(void);
 
-
 public:
 	D3DXMATRIX*	GetView(void);
 	D3DXMATRIX*	GetProj(void);
 	static CCameraObserver*	Create(void);
 
 public:
-	virtual void Update(int iMessage);
+	virtual void Update(int iMessage, void* pData);
 
 private:
 	Engine::CInfoSubject*		m_pInfoSubject;

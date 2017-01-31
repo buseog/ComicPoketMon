@@ -2,18 +2,25 @@
 #include "SingleGameObject.h"
 
 CSingleGameObject::CSingleGameObject( LPDIRECT3DDEVICE9 pDevice )
-:CGameObject(pDevice)
+: CGameObject(pDevice)
+, m_pResourceMgr(Engine::Get_ResourceMgr())
+, m_pTimeMgr(Engine::Get_TimeMgr())
+, m_pManagement(Engine::Get_Management())
+, m_pInfoSubject(Engine::Get_InfoSubject())
+, m_pCollisionMgr(CCollisionMgr::GetInstance())
+, m_pZFrustum(CZFrustum::GetInstance())
+, m_pBuffer(NULL)
+, m_pTexture(NULL)
+, m_pCameraObserver(NULL)
+, m_pBox(NULL)
 {
+
 
 }
 
 CSingleGameObject::~CSingleGameObject( void )
 {
 	Release();
-}
-void CSingleGameObject::Release( void )
-{
-
 }
 
 HRESULT CSingleGameObject::Initialize( void )
@@ -23,6 +30,7 @@ HRESULT CSingleGameObject::Initialize( void )
 
 void CSingleGameObject::Update( void )
 {
+
 }
 
 void CSingleGameObject::Render( void )
@@ -30,13 +38,7 @@ void CSingleGameObject::Render( void )
 
 }
 
-CSingleGameObject* CSingleGameObject::Create( LPDIRECT3DDEVICE9 pDevice, wstring wstrLoadKey )
+void CSingleGameObject::Release( void )
 {
-	CSingleGameObject* pSingle = new CSingleGameObject(pDevice);
 
-	if (FAILED(pSingle->Initialize()))
-		Engine::Safe_Delete(pSingle);
-
-	return pSingle;
 }
-

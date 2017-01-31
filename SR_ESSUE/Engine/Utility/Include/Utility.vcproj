@@ -194,10 +194,6 @@
 				RelativePath="..\Code\Renderer.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="02. SuperClass"
-			>
 			<Filter
 				Name="00. Scene"
 				>
@@ -222,6 +218,10 @@
 					</File>
 				</Filter>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="02. SuperClass"
+			>
 			<Filter
 				Name="01. GameObject"
 				>
@@ -282,7 +282,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="02. Infomation"
+					Name="02. Status"
 					>
 					<File
 						RelativePath="..\Code\Status.cpp"

@@ -20,19 +20,19 @@
 
 BEGIN(Engine)
 
-typedef	list<void*>				DATALIST;
-typedef map<int, DATALIST>		MAPDATALIST;
+typedef	vector<void*>			VECDATA;
+typedef map<int, VECDATA>		MAPDATALIST;
 
-class ENGINE_DLL CInfoSubject : public CSubject
+class ENGINE_DLL CInfoSubject 
+	: public CSubject
 {
 	DECLARE_SINGLETON(CInfoSubject)
 
 private:
-	CInfoSubject(void);
-	virtual ~CInfoSubject(void);
+	MAPDATALIST			m_MapDataList;
 
 public:
-	DATALIST*	GetDataList(int iMessage);
+	VECDATA*	GetDataList(int iMessage);
 
 public:
 	void	AddData(int iMessage, void* pData);
@@ -42,8 +42,8 @@ private:
 	void	Release(void);
 
 private:
-	MAPDATALIST			m_MapDataList;
-
+	CInfoSubject(void);
+	virtual ~CInfoSubject(void);
 };
 
 

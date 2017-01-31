@@ -22,6 +22,7 @@ CObjBack::CObjBack(LPDIRECT3DDEVICE9 pDevice)
 , m_pBuffer(NULL)
 , m_fDistance(0)
 , m_pVertex(NULL)
+, m_dwType(0)
 {
 
 }
@@ -35,6 +36,14 @@ void CObjBack::Release( void )
 {
 	for_each (m_mapChar.begin(), m_mapChar.end(), Engine::CDeleteMap());
 	m_mapChar.clear();
+
+	vector<Engine::CResources*>::iterator iter = m_vecObject.begin();
+	vector<Engine::CResources*>::iterator iter_End = m_vecObject.end();
+
+	for(; iter!=iter_End; ++iter)
+	{
+		Engine::Safe_Delete((*iter));
+	}
 
 	Engine::Safe_Delete_Array(m_pVertex);
 	Engine::Safe_Delete_Array(m_pIndex);
@@ -107,7 +116,7 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(-0.5f, 0.f, 0.f);
+				m_pVertex[i].vPos += D3DXVECTOR3(-0.1f, 0.f, 0.f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -120,7 +129,7 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(0.5f, 0.f, 0.f);
+				m_pVertex[i].vPos += D3DXVECTOR3(0.1f, 0.f, 0.f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -133,7 +142,7 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(0.f, -0.5f, 0.f);
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, -0.1f, 0.f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -146,7 +155,7 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.5f, 0.f);
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.1f, 0.f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -159,7 +168,7 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, 0.5f);
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, 0.1f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
@@ -172,12 +181,188 @@ void CObjBack::KeyCheck( void )
 
 			for (int i = 0; i < 8; ++i)
 			{
-				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, -0.5f);
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, -0.1f);
 			}
 
 			((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 			((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
 		}
+	}
+
+	if(GetAsyncKeyState('I') & 0x8000)
+	{
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.3f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('K') & 0x8000)
+	{
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, -.3f, 0.f);
+			}
+
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('U') & 0x8000)
+	{
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, 0.3f);
+			}
+
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('Y') & 0x8000)
+	{
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				m_pVertex[i].vPos += D3DXVECTOR3(0.f, 0.f, -0.3f);
+			}
+
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('J') & 0x8000)
+	{
+		D3DXMATRIX matRot;
+
+		D3DXMatrixRotationY(&matRot, D3DXToRadian(-3.f));
+
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			D3DXVECTOR3 vTemp;
+			vTemp.x = (m_pVertex[1].vPos.x - m_pVertex[0].vTex.x);
+			vTemp.y = (m_pVertex[0].vPos.y - m_pVertex[3].vPos.y);
+			vTemp.z = (m_pVertex[4].vPos.z - m_pVertex[0].vPos.z);
+			vTemp /= 3.f;
+
+			for (int i = 0; i < 8; ++i)
+			{
+				D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+			}
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('L') & 0x8000)
+	{
+		D3DXMATRIX matRot;
+
+		D3DXMatrixRotationY(&matRot, D3DXToRadian(3.f));
+
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			D3DXVECTOR3 vTemp;
+			vTemp.x = (m_pVertex[1].vPos.x - m_pVertex[0].vTex.x);
+			vTemp.y = (m_pVertex[0].vPos.y - m_pVertex[3].vPos.y);
+			vTemp.z = (m_pVertex[4].vPos.z - m_pVertex[0].vPos.z);
+			vTemp /= 3.f;
+
+			for (int i = 0; i < 8; ++i)
+			{
+				D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+			}
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('O') & 0x8000)
+	{
+		D3DXMATRIX matRot;
+
+		D3DXMatrixRotationX(&matRot, D3DXToRadian(3.f));
+
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			D3DXVECTOR3 vTemp;
+			vTemp.x = (m_pVertex[1].vPos.x - m_pVertex[0].vTex.x);
+			vTemp.y = (m_pVertex[0].vPos.y - m_pVertex[3].vPos.y);
+			vTemp.z = (m_pVertex[4].vPos.z - m_pVertex[0].vPos.z);
+			vTemp /= 3.f;
+
+			for (int i = 0; i < 8; ++i)
+			{
+				D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+			}
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+	if(GetAsyncKeyState('P') & 0x8000)
+	{
+		D3DXMATRIX matRot;
+
+		D3DXMatrixRotationX(&matRot, D3DXToRadian(-3.f));
+
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter!= m_mapChar.end(); ++iter )
+		{
+			((Engine::CVIBuffer*)iter->second)->GetVtxInfo(m_pVertex);
+
+			D3DXVECTOR3 vTemp;
+			vTemp.x = (m_pVertex[1].vPos.x - m_pVertex[0].vTex.x);
+			vTemp.y = (m_pVertex[0].vPos.y - m_pVertex[3].vPos.y);
+			vTemp.z = (m_pVertex[4].vPos.z - m_pVertex[0].vPos.z);
+			vTemp /= 3.f;
+
+			for (int i = 0; i < 8; ++i)
+			{
+				D3DXVec3TransformCoord(&m_pVertex[i].vPos, &m_pVertex[i].vPos, &matRot);
+			}
+			((Engine::CVIBuffer*)iter->second)->SetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)iter->second)->SetOriginVtxInfo(m_pVertex);
+		}
+	}
+
+
+	if (GetAsyncKeyState(VK_F11) & 0x8000)
+	{
+		m_dwType = 0;
+	}
+
+
+	if (GetAsyncKeyState(VK_F12) & 0x8000)
+	{
+		m_dwType = 1;
 	}
 
 	D3DXMatrixLookAtLH(&matView, &m_vEye, &m_vAt, &D3DXVECTOR3(0.f,1.f,0.f));
@@ -215,6 +400,27 @@ void CObjBack::DeletePicking( void )
 
 
 	float	fU, fV, fDist;
+
+	if (m_dwType == 1)
+	{
+		for (vector<Engine::CResources*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
+		{
+			((Engine::CVIBuffer*)*iter)->GetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)*iter)->GetIdxInfo(m_pIndex);
+
+			for (int j = 0; j < 12; ++j)
+			{
+				if(D3DXIntersectTri(&m_pVertex[m_pIndex[j]._2].vPos, &m_pVertex[m_pIndex[j]._1].vPos,	&m_pVertex[m_pIndex[j]._3].vPos,
+					&vRayPos, &vRayDir, &fU, &fV, &fDist))
+				{
+					Engine::Safe_Delete(*iter);
+					iter = m_vecObject.erase(iter);
+
+					return;
+				}
+			}
+		}
+	}
 
 	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
 	{
@@ -266,10 +472,97 @@ void CObjBack::AddPicking( void )
 
 
 	float	fU, fV, fDist;
-	
+
 
 	multimap<float, map<Engine::CComponent*, int>> multimapTemp; 
-	
+
+	wstring wstrTexKey = ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_wstrTexKey;
+	wstring wstrName = (LPWSTR)((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_TexKey.operator LPCWSTR();
+
+	CString strKey;
+	strKey = wstrName.c_str();
+	PathRemoveExtension((LPWSTR)strKey.operator LPCWSTR());
+	wstrName = (LPWSTR)strKey.operator LPCWSTR();
+
+	/// 오브젝트 피킹
+	if (m_dwType == 1)
+	{
+		for (size_t i = 0; i < m_vecObject.size(); ++i)
+		{
+			((Engine::CVIBuffer*)m_vecObject[i])->GetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)m_vecObject[i])->GetIdxInfo(m_pIndex);
+
+			for (int j = 0; j < 12; ++j)
+			{
+				if(D3DXIntersectTri(&m_pVertex[m_pIndex[j]._2].vPos, &m_pVertex[m_pIndex[j]._1].vPos,	&m_pVertex[m_pIndex[j]._3].vPos,
+					&vRayPos, &vRayDir, &fU, &fV, &fDist))
+				{
+					map<Engine::CComponent*, int> mapTemp;
+
+					mapTemp.insert(make_pair(m_vecObject[i], j));
+
+					multimapTemp.insert(make_pair(fDist, mapTemp));
+				}
+			}
+		}
+
+		if (multimapTemp.empty())
+			return;
+
+		map<Engine::CComponent*, int>::iterator		iter = multimapTemp.begin()->second.begin();
+
+		// 오브젝트 추가
+		m_vecObject.push_back(Engine::CCubeTex::Create(m_pDevice, wstrTexKey));
+
+		Engine::VTXCUBE*	pNew = new Engine::VTXCUBE[8];
+
+		((Engine::CVIBuffer*)iter->first)->GetVtxInfo(m_pVertex);
+		((Engine::CVIBuffer*)iter->first)->GetVtxInfo(pNew);
+
+		if (iter->second <= 1)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(2.f, 0.f, 0.f);
+		}
+		else if (iter->second <= 3)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(-2.f, 0.f, 0.f);
+		}
+
+		else if (iter->second <= 5)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 2.f, 0.f);
+		}
+
+		else if (iter->second <= 7)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, -2.f, 0.f);
+		}
+
+		else if (iter->second <= 9)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, 2.f);
+		}
+
+		else if (iter->second <= 11)
+		{
+			for (int p = 0; p < 8 ; ++p)
+				pNew[p].vPos = m_pVertex[p].vPos + D3DXVECTOR3(0.f, 0.f, -2.f);
+		}
+
+		((Engine::CVIBuffer*)m_vecObject.back())->SetVtxInfo(pNew);
+		((Engine::CVIBuffer*)m_vecObject.back())->SetOriginVtxInfo(pNew);
+
+		Engine::Safe_Delete_Array(pNew);
+
+		return;
+	}
+
+	// 유닛 충돌검사
 
 	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
 	{
@@ -293,9 +586,9 @@ void CObjBack::AddPicking( void )
 	if (multimapTemp.empty())
 		return;
 
-	 map<Engine::CComponent*, int>::iterator				iter = multimapTemp.begin()->second.begin();
+	 map<Engine::CComponent*, int>::iterator		iter = multimapTemp.begin()->second.begin();
 
-	wstring wstrName = (LPWSTR)((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_strKey.operator LPCWSTR();
+	/// 유닛 피킹
 
 	if (((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_iCubetype == 0)
 	{
@@ -349,7 +642,7 @@ void CObjBack::AddPicking( void )
 	}
 	else if (((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.m_iCubetype == 1)
 	{
- 		m_mapChar.insert(make_pair(wstrName, Engine::CCubeTex::Create(m_pDevice, ((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.wstrTexKey)));
+   		m_mapChar.insert(make_pair(wstrName, Engine::CCubeTex::Create(m_pDevice, wstrTexKey)));
 
 		Engine::VTXCUBE*	pNew = new Engine::VTXCUBE[8];
 
@@ -430,6 +723,32 @@ void CObjBack::SelectPicking( void )
 
 
 	float	fU, fV, fDist;
+
+	if (m_dwType == 1)
+	{
+		for (vector<Engine::CResources*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
+		{
+			((Engine::CVIBuffer*)*iter)->GetVtxInfo(m_pVertex);
+			((Engine::CVIBuffer*)*iter)->GetIdxInfo(m_pIndex);
+
+			for (int j = 0; j < 12; ++j)
+			{
+				if(D3DXIntersectTri(&m_pVertex[m_pIndex[j]._2].vPos, &m_pVertex[m_pIndex[j]._1].vPos,	&m_pVertex[m_pIndex[j]._3].vPos,
+					&vRayPos, &vRayDir, &fU, &fV, &fDist))
+				{
+					m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(*iter);
+					D3DXVECTOR3 vTemp;
+					vTemp.x = (m_pVertex[0].vPos.x + m_pVertex[1].vPos.x) / 2;
+					vTemp.y = (m_pVertex[0].vPos.y + m_pVertex[3].vPos.y) / 2;
+					vTemp.z = (m_pVertex[0].vPos.z + m_pVertex[5].vPos.z) / 2;
+
+					((CMainFrame*)AfxGetMainWnd())->m_pMainForm->m_pUnit.SetPos(vTemp, *m_pBuffer->GetScale());
+
+					return;
+				}
+			}
+		}
+	}
 	
 
 	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
@@ -456,28 +775,12 @@ void CObjBack::SelectPicking( void )
 	}
 }
 
-void CObjBack::SetTransCube( D3DXVECTOR3 vPos, D3DXVECTOR3 vScale )
+void CObjBack::SetScaleCube( D3DXVECTOR3 vScale )
 {
 	if (m_pBuffer == NULL)
 		return;
 
 	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
-
-	m_pVertex[0].vPos = D3DXVECTOR3(-1.f, 1.f, -1.f) + vPos;
-
-	m_pVertex[1].vPos = D3DXVECTOR3(1.f, 1.f ,-1.f) + vPos;
-
-	m_pVertex[2].vPos = D3DXVECTOR3(1.f, -1.f ,-1.f) + vPos;
-
-	m_pVertex[3].vPos = D3DXVECTOR3(-1.f, -1.f ,-1.f) + vPos;
-
-	m_pVertex[4].vPos = D3DXVECTOR3(-1.f, 1.f ,1.f) + vPos;
-
-	m_pVertex[5].vPos = D3DXVECTOR3(1.f, 1.f ,1.f) + vPos;
-
-	m_pVertex[6].vPos = D3DXVECTOR3(1.f, -1.f ,1.f) + vPos;
-
-	m_pVertex[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f) + vPos;
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -485,8 +788,46 @@ void CObjBack::SetTransCube( D3DXVECTOR3 vPos, D3DXVECTOR3 vScale )
 		m_pVertex[i].vPos.y *= vScale.y;
 		m_pVertex[i].vPos.z *= vScale.z;
 	}
-	
+
 	m_pBuffer->SetScale(vScale);
+	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
+	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
+}
+
+
+void CObjBack::SetTransCube( D3DXVECTOR3 vPos)
+{
+	if (m_pBuffer == NULL)
+		return;
+
+	((Engine::CVIBuffer*)m_pBuffer)->GetVtxInfo(m_pVertex);
+
+	D3DXVECTOR3 pScale = *((Engine::CVIBuffer*)m_pBuffer)->GetScale();
+
+	m_pVertex[0].vPos = D3DXVECTOR3(-1.f, 1.f, -1.f);
+
+	m_pVertex[1].vPos = D3DXVECTOR3(1.f, 1.f ,-1.f);
+
+	m_pVertex[2].vPos = D3DXVECTOR3(1.f, -1.f ,-1.f);
+
+	m_pVertex[3].vPos = D3DXVECTOR3(-1.f, -1.f ,-1.f);
+
+	m_pVertex[4].vPos = D3DXVECTOR3(-1.f, 1.f ,1.f);
+
+	m_pVertex[5].vPos = D3DXVECTOR3(1.f, 1.f ,1.f);
+
+	m_pVertex[6].vPos = D3DXVECTOR3(1.f, -1.f ,1.f);
+
+	m_pVertex[7].vPos = D3DXVECTOR3(-1.f, -1.f ,1.f);
+
+	for (int i = 0; i < 8; ++i)
+	{
+		m_pVertex[i].vPos.x *= pScale.x;
+		m_pVertex[i].vPos.y *= pScale.y;
+		m_pVertex[i].vPos.z *= pScale.z;
+		m_pVertex[i].vPos += vPos;
+	}
+
 	((Engine::CVIBuffer*)m_pBuffer)->SetVtxInfo(m_pVertex);
 	((Engine::CVIBuffer*)m_pBuffer)->SetOriginVtxInfo(m_pVertex);
 }
@@ -631,11 +972,15 @@ HRESULT CObjBack::Initialize( void )
 
 	m_pDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
+
 	Engine::CResources*		pResources = NULL;
-
 	pResources = Engine::CCubeTex::Create(m_pDevice);
-
 	m_mapChar.insert(make_pair(L"Default", pResources));	
+
+	pResources = NULL;
+	pResources = Engine::CCubeTex::Create(m_pDevice);
+	m_vecObject.push_back(pResources);
+
 
 	DrawLine();
 
@@ -651,11 +996,20 @@ void CObjBack::Update( void )
 
 void CObjBack::Render( void )
 {
-	for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
+	if (m_dwType == 0)
 	{
-		((Engine::CVIBuffer*)(iter->second))->Render();
+		for (map<wstring, Engine::CResources*>::iterator iter = m_mapChar.begin(); iter != m_mapChar.end(); ++iter)
+		{
+			((Engine::CVIBuffer*)(iter->second))->Render();
+		}
 	}
-
+	else if (m_dwType == 1)
+	{
+		for (size_t i = 0; i < m_vecObject.size(); ++i)
+		{
+			m_vecObject[i]->Render();
+		}
+	}
 	DrawLine();
 }
 
@@ -668,4 +1022,3 @@ CObjBack* CObjBack::Create( LPDIRECT3DDEVICE9 pDevice )
 
 	return pBack;
 }
-

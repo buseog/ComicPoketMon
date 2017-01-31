@@ -39,9 +39,9 @@ private:
 public:
 	virtual void Update( D3DXMATRIX* matWorld, D3DXMATRIX* matView, D3DXMATRIX* matProj );
 	virtual void Render( void );
-	virtual void Release( void );
 	virtual CResources* CloneResource( void );
 
+	void Release( void );
 	void AddCube(Engine::CVIBuffer* pCube);
 	void RemoveCube(Engine::CVIBuffer* pCube);
 

@@ -1,25 +1,11 @@
 #include "stdafx.h"
 #include "Terrain.h"
 
-#include "Export_Function.h"
-#include "ResourceMgr.h"
-#include "TimeMgr.h"
-#include "Include.h"
-#include "Texture.h"
-#include "Transform.h"
-#include "CameraObserver.h"
-#include "InfoSubject.h"
-#include "Pipeline.h"
-
 CTerrain::CTerrain(LPDIRECT3DDEVICE9 pDevice)
-: Engine::CGameObject(pDevice)
-, m_pResourceMgr(Engine::Get_ResourceMgr())
-, m_pTimeMgr(Engine::Get_TimeMgr())
-, m_pInfoSubject(Engine::Get_InfoSubject())
-, m_fSpeed(0.f)
+: CSingleGameObject(pDevice)
 , m_pVertex(NULL)
 , m_pConvertVertex(NULL)
-, m_pCameraObserver(NULL)
+, m_pQuadTree(NULL)
 {
 
 }
@@ -37,23 +23,36 @@ HRESULT CTerrain::Initialize(void)
 
 	FAILED_CHECK(AddComponent());
 
-	m_fSpeed = 100.f;
+	if(Engine::CManagement::m_iScene == SC_STAGE)
+	{
+		m_dwVtxCnt			=	VTXCNTX * VTXCNTZ;
+		m_pVertex			=	new Engine::VTXTEX[m_dwVtxCnt];
+		m_pConvertVertex	=	new Engine::VTXTEX[m_dwVtxCnt];
 
-	m_dwVtxCnt			=  VTXCNTX * VTXCNTZ;
-	m_pVertex			= new Engine::VTXTEX[m_dwVtxCnt];
-	m_pConvertVertex	= new Engine::VTXTEX[m_dwVtxCnt];
+		m_pResourceMgr->GetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer Terrain", m_pVertex);
 
-	m_pResourceMgr->GetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer Terrain", m_pVertex);
-	DataLoad();
+		/*m_pQuadTree = new CZQuadTree(257, 257);
+		BuildQuadTree();*/
+
+		DataLoad();
+
+	}
+
+	else if(Engine::CManagement::m_iScene == SC_CENTER)
+	{
+		m_dwVtxCnt			=	33 * 33;
+		m_pVertex			=	new Engine::VTXTEX[m_dwVtxCnt];
+		m_pConvertVertex	=	new Engine::VTXTEX[m_dwVtxCnt];
+
+		m_pResourceMgr->GetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer TerrainCenter", m_pVertex);
+
+		/*m_pQuadTree = new CZQuadTree(33, 33);
+		BuildQuadTree();*/
+	}
+	
 
 
 	return S_OK;
-}
-
-void CTerrain::SetDirection(void)
-{
-	D3DXVec3TransformNormal(&m_pInfo->vDir, &g_vLook, &m_pInfo->matWorld);
-	D3DXVec3Normalize(&m_pInfo->vDir, &m_pInfo->vDir);
 }
 
 CTerrain* CTerrain::Create(LPDIRECT3DDEVICE9 pDevice)
@@ -68,26 +67,28 @@ CTerrain* CTerrain::Create(LPDIRECT3DDEVICE9 pDevice)
 
 void CTerrain::Update(void)
 {
-	SetDirection();
-
 	Engine::CGameObject::Update();
-
 	SetTransform();
-
 }
 
 void CTerrain::Render(void)
 {
+	if(Engine::CManagement::m_iScene == SC_STAGE)
+		m_pResourceMgr->SetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer Terrain", m_pConvertVertex);
 
-	m_pResourceMgr->SetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer Terrain", m_pConvertVertex);
+	else if(Engine::CManagement::m_iScene == SC_CENTER)
+		m_pResourceMgr->SetVtxInfo(Engine::RESOURCE_STATIC, L"Buffer TerrainCenter", m_pConvertVertex);
 	
-	m_pTexture->Render(1);
+	m_pTexture->Render(Engine::CManagement::m_iScene);
 
 	m_pBuffer->Render();
+
 }
 
 void CTerrain::Release(void)
 {
+	Engine::Safe_Delete(m_pQuadTree);
+
 	if(m_pVertex)
 	{
 		Engine::Safe_Delete_Array(m_pVertex);
@@ -111,10 +112,23 @@ HRESULT CTerrain::AddComponent(void)
 	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Transform", pComponent));
 
 	// Buffer
-	pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_STATIC, L"Buffer Terrain");
-	m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pComponent);
-	NULL_CHECK_RETURN(m_pBuffer, E_FAIL);
-	m_mapComponent.insert(MAPCOMPONENT::value_type(L"Buffer", pComponent));
+	if(Engine::CManagement::m_iScene == SC_STAGE)
+	{
+		pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_STATIC, L"Buffer Terrain");
+		m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pComponent);
+		NULL_CHECK_RETURN(m_pBuffer, E_FAIL);
+		m_mapComponent.insert(MAPCOMPONENT::value_type(L"Buffer", pComponent));
+
+	}
+	else if(Engine::CManagement::m_iScene == SC_CENTER)
+	{
+		pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_STATIC, L"Buffer TerrainCenter");
+		m_pBuffer = dynamic_cast<Engine::CVIBuffer*>(pComponent);
+		NULL_CHECK_RETURN(m_pBuffer, E_FAIL);
+		m_mapComponent.insert(MAPCOMPONENT::value_type(L"Buffer", pComponent));
+
+	}
+	
 
 	//Texture
 	pComponent = m_pResourceMgr->CloneResource(Engine::RESOURCE_STATIC, L"Texture Terrain");
@@ -125,35 +139,6 @@ HRESULT CTerrain::AddComponent(void)
 	return S_OK;
 }
 
-void CTerrain::SetTransform(void)
-{
-	const D3DXMATRIX*		pMatView = m_pCameraObserver->GetView();
-	NULL_CHECK(pMatView);
-
-	D3DXMATRIX*		pMatProj = m_pCameraObserver->GetProj();
-	NULL_CHECK(pMatProj);
-
-	for(size_t i = 0; i < m_dwVtxCnt; ++i)
-	{
-		m_pConvertVertex[i] = m_pVertex[i];
-
-		Engine::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-			&m_pConvertVertex[i].vPos, 
-			&m_pInfo->matWorld);
-
-		Engine::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-			&m_pConvertVertex[i].vPos, 
-			pMatView);
-
-		if(m_pConvertVertex[i].vPos.z < 1.f)
-			m_pConvertVertex[i].vPos.z = 1.f;
-
-		Engine::MyTransformCoord(&m_pConvertVertex[i].vPos, 
-			&m_pConvertVertex[i].vPos, 
-			pMatProj);
-	}
-}
-
 void CTerrain::DataLoad(void)
 {
 
@@ -161,10 +146,11 @@ void CTerrain::DataLoad(void)
 
 	HANDLE	hFile  = NULL;
 
-	hFile = CreateFile(L"../../Data/test.dat",GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	hFile = CreateFile(L"../bin/Data/Stage.dat",GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 
 	Engine::VTXTEX*		pVTXCOL = new Engine::VTXTEX[257 * 257];
 	int i = 0;
+
 	while(true)
 	{
 
@@ -177,6 +163,8 @@ void CTerrain::DataLoad(void)
 		++i;
 	}
 
+	
+
 	m_pBuffer->SetVtxInfo(pVTXCOL);
 	m_pBuffer->SetOriginVtxInfo(pVTXCOL);
 
@@ -187,8 +175,40 @@ void CTerrain::DataLoad(void)
 	CloseHandle(hFile);
 }
 
+
 const Engine::VTXTEX* CTerrain::GetTerrainVertex(void)
 {
 	return m_pVertex;
+}
+
+void CTerrain::SetTransform( void )
+{
+	const D3DXMATRIX*		pMatView = m_pCameraObserver->GetView();
+	NULL_CHECK(pMatView);
+
+	const D3DXMATRIX*		pMatProj = m_pCameraObserver->GetProj();
+	NULL_CHECK(pMatProj);
+
+	D3DXMATRIX matPrint = m_pInfo->matWorld * (*pMatView);
+
+	for(size_t i = 0; i < m_dwVtxCnt; ++i)
+	{
+		m_pConvertVertex[i] = m_pVertex[i];
+
+		Engine::MyTransformCoord(&m_pConvertVertex[i].vPos, &m_pConvertVertex[i].vPos, &matPrint);
+
+		if (m_pConvertVertex[i].vPos.z < 1.f)
+			m_pConvertVertex[i].vPos.z = 1.f;
+	
+		Engine::MyTransformCoord(&m_pConvertVertex[i].vPos, 
+			&m_pConvertVertex[i].vPos, 
+			pMatProj);
+	}
+}
+
+HRESULT CTerrain::BuildQuadTree( void )
+{
+	m_pQuadTree->Build();
+	return S_OK;
 }
 

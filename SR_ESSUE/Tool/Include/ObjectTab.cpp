@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "Tool.h"
 #include "ObjectTab.h"
+#include "Engine_Include.h"
+#include "Background.h"
+#include "MainFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,4 +67,48 @@ BOOL CObjectTab::OnInitDialog()
 void CObjectTab::OnSaveData()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog		Dlg(FALSE,	// false - save, true - load
+		L"dat", // 파일의 확장자명
+		L"*.dat", // 최초에 띄워줄 파일 이름
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, 
+		L"*.dat", // 저장 시 밑에 띄워주는 파일 형식
+		this);
+
+	if(Dlg.DoModal() == IDCANCEL)
+		return;
+
+	TCHAR		szDirPath[MAX_PATH] = L"";
+
+	GetCurrentDirectory(sizeof(szDirPath), szDirPath);
+	SetCurrentDirectory(szDirPath);
+	PathRemoveFileSpec(szDirPath);
+	lstrcat(szDirPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szDirPath;	
+
+	DWORD	dwByte = 0;
+
+	HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
+		GENERIC_WRITE, 
+		0, 
+		NULL, 
+		CREATE_ALWAYS, 
+		FILE_ATTRIBUTE_NORMAL, 
+		NULL);
+
+	
+	list<Engine::OBJINFO>*	ObjList = ((CBackground*)((CMainFrame*)AfxGetMainWnd())->GetView()->m_pBackground[0])->GetObjList();
+
+
+	if(ObjList == NULL)
+		return;
+
+	list<Engine::OBJINFO>::iterator iter = ObjList->begin();
+	list<Engine::OBJINFO>::iterator iter_end = ObjList->end();
+	
+	for(iter; iter != iter_end ; ++iter)
+	{
+		WriteFile(hFile, &(*iter), sizeof(Engine::OBJINFO), &dwByte, NULL);
+	}
+	CloseHandle(hFile);
 }

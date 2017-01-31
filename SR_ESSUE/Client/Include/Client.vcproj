@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../Headers; ../Code; ../../Reference/Headers;"
+				AdditionalIncludeDirectories="../Headers; ../Code; ../../Reference/Headers; ../FmodLib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../Headers; ../Code; ../../Reference/Headers;"
+				AdditionalIncludeDirectories="../Headers; ../Code; ../../Reference/Headers; ../FmodLib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -216,6 +216,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="03. Center"
+				>
+				<File
+					RelativePath="..\Code\Center.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Center.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="04. Ending"
+				>
+				<File
+					RelativePath="..\Code\Ending.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Ending.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="02. Object"
@@ -232,28 +256,163 @@
 					>
 				</File>
 				<Filter
-					Name="01. StaticCamera"
+					Name="03. Missile"
+					>
+					<Filter
+						Name="00. MonsterBall"
+						>
+						<File
+							RelativePath="..\Code\MonsterBall.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\MonsterBall.h"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. DestroyBeam"
+						>
+						<File
+							RelativePath="..\Code\DestoryBeam.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\DestoryBeam.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="04. ItemParts"
 					>
 					<File
-						RelativePath="..\Code\StaticCamera.cpp"
+						RelativePath="..\Code\ItemParts.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Code\StaticCamera.h"
+						RelativePath="..\Code\ItemParts.h"
 						>
 					</File>
 				</Filter>
 				<Filter
-					Name="00. Terrain"
+					Name="05. Object"
 					>
 					<File
-						RelativePath="..\Code\Terrain.cpp"
+						RelativePath="..\Code\Sangpil.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Code\Terrain.h"
+						RelativePath="..\Code\Sangpil.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="06. Particle"
+					>
+					<Filter
+						Name="00. Snow"
+						>
+						<File
+							RelativePath="..\Code\Snow.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Snow.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. Firework"
+						>
+						<File
+							RelativePath="..\Code\Firework.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Firework.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="05. Hit"
+						>
+						<File
+							RelativePath="..\Code\Hit.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Hit.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="04. Bullet"
+						>
+						<File
+							RelativePath="..\Code\Bullet.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Bullet.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="02. Gather"
+						>
+						<File
+							RelativePath="..\Code\Gather.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Gather.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="03. Breath"
+						>
+						<File
+							RelativePath="..\Code\Breath.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Breath.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="06. Lightning"
+						>
+						<File
+							RelativePath="..\Code\Lightning.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Lightning.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="07. Flame"
+						>
+						<File
+							RelativePath="..\Code\Flame.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Flame.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="02. SkyBox"
@@ -268,54 +427,182 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="03. UI"
+					Name="00. Camera"
 					>
+					<File
+						RelativePath="..\Code\BasicCamera.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\BasicCamera.h"
+						>
+					</File>
 					<Filter
-						Name="00. Inven"
+						Name="00. StaticCamera"
 						>
 						<File
-							RelativePath="..\Code\Inven.cpp"
+							RelativePath="..\Code\StaticCamera.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\Code\Inven.h"
+							RelativePath="..\Code\StaticCamera.h"
 							>
 						</File>
 					</Filter>
 					<Filter
-						Name="01. HpBar"
+						Name="01. InsideCamera"
 						>
 						<File
-							RelativePath="..\Code\Hpbar.cpp"
+							RelativePath="..\Code\InsideCamera.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\Code\Hpbar.h"
+							RelativePath="..\Code\InsideCamera.h"
 							>
 						</File>
 					</Filter>
 					<Filter
-						Name="02. MpBar"
+						Name="02. EarthCamera"
 						>
 						<File
-							RelativePath="..\Code\MpBar.cpp"
+							RelativePath="..\Code\EarthCamera.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\Code\MpBar.h"
+							RelativePath="..\Code\EarthCamera.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="04. SwingCamera"
+						>
+						<File
+							RelativePath="..\Code\HighlightCamera.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\HighlightCamera.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. Terrain"
+						>
+						<File
+							RelativePath="..\Code\Terrain.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Terrain.h"
 							>
 						</File>
 					</Filter>
 				</Filter>
 				<Filter
-					Name="04. Item"
+					Name="07. PartsOfPokemon"
 					>
 					<File
-						RelativePath="..\Code\Item.cpp"
+						RelativePath="..\Code\PokemonParts.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Code\Item.h"
+						RelativePath="..\Code\PokemonParts.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="08. Effect"
+					>
+					<File
+						RelativePath="..\Code\Effect.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Effect.h"
+						>
+					</File>
+					<Filter
+						Name="00. FireEffect"
+						>
+						<File
+							RelativePath="..\Code\FireEffect.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\FireEffect.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. WaterEffect"
+						>
+						<File
+							RelativePath="..\Code\WaterEffect.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\WaterEffect.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="02. ElectricEffect"
+						>
+						<File
+							RelativePath="..\Code\ElectricEffect.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\ElectricEffect.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="09. Emanation"
+					>
+					<File
+						RelativePath="..\Code\Emanation.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Emanation.h"
+						>
+					</File>
+					<Filter
+						Name="00. 학원을 불태우는 불길"
+						>
+						<File
+							RelativePath="..\Code\Blaze.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\Blaze.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="01. WaterCanon"
+						>
+						<File
+							RelativePath="..\Code\WaterCannon.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Code\WaterCannon.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="10. Objects"
+					>
+					<File
+						RelativePath="..\Code\Objects.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Objects.h"
 						>
 					</File>
 				</Filter>
@@ -355,13 +642,85 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="03. Npc"
+					>
+					<File
+						RelativePath="..\Code\Npc.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Npc.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="02. Boss"
+					>
+					<File
+						RelativePath="..\Code\Boss.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Boss.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="02. Housing"
+				>
+				<File
+					RelativePath="..\Code\Housing.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Housing.h"
+					>
+				</File>
+				<Filter
+					Name="00. Wall"
+					>
+					<File
+						RelativePath="..\Code\Wall.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Wall.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="01. House"
+					>
+					<File
+						RelativePath="..\Code\House.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\House.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="02. Centerdesk"
+					>
+					<File
+						RelativePath="..\Code\Centerdesk.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Code\Centerdesk.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="96. Mgr"
 			>
 			<Filter
-				Name="00. CollosionMgr"
+				Name="01. CollosionMgr"
 				>
 				<File
 					RelativePath="..\Code\CollisionMgr.cpp"
@@ -421,7 +780,7 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="01. ZFrustum"
+				Name="02. ZFrustum"
 				>
 				<File
 					RelativePath="..\Code\ZFrustum.cpp"
@@ -429,6 +788,42 @@
 				</File>
 				<File
 					RelativePath="..\Code\ZFrustum.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="00. SoundMgr"
+				>
+				<File
+					RelativePath="..\Code\SoundMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\SoundMgr.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="03. ZQuadTree"
+				>
+				<File
+					RelativePath="..\Code\ZQuadTree.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\ZQuadTree.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="04. EffectMgr"
+				>
+				<File
+					RelativePath="..\Code\EffectMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\EffectMgr.h"
 					>
 				</File>
 			</Filter>
@@ -554,6 +949,82 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="03. UI"
+			>
+			<Filter
+				Name="00. Inven"
+				>
+				<File
+					RelativePath="..\Code\Inven.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Inven.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="01. HpBar"
+				>
+				<File
+					RelativePath="..\Code\Hpbar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Hpbar.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="02. MpBar"
+				>
+				<File
+					RelativePath="..\Code\MpBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\MpBar.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="03. Gauge"
+				>
+				<File
+					RelativePath="..\Code\Gauge.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\Gauge.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="04. Poketball"
+				>
+				<File
+					RelativePath="..\Code\PoketballUI.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Code\PoketballUI.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="04. Item"
+			>
+			<File
+				RelativePath="..\Code\Item.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Code\Item.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

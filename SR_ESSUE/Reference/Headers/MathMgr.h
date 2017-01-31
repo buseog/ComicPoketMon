@@ -22,7 +22,7 @@ BEGIN(Engine)
 class ENGINE_DLL CMathMgr
 {
 public:
-	static float			MyLength(D3DXVECTOR3* vDest, D3DXVECTOR3* vDepa);
+	static float			MyLength(const D3DXVECTOR3* vDest, const D3DXVECTOR3* vDepa);
 	static void				MyNormalize(D3DXVECTOR3* vOut, D3DXVECTOR3* vIn);
 	static float			MyDot(D3DXVECTOR3* vDest, D3DXVECTOR3* vDepa);
 	static D3DXVECTOR3		MyCross(D3DXVECTOR3* vDest, D3DXVECTOR3* vDepa);

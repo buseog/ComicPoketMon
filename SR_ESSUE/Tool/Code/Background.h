@@ -26,11 +26,14 @@ namespace Engine
 class CBackground :
 	public Engine::CGameObject
 {
-private:
+public:
 	//LPDIRECT3DDEVICE9	m_pDeivce;
 	Engine::CTexture*	m_pTexture;
 
 	list<Engine::CTexture*>	m_pObjectTexturelist;
+
+	list<Engine::CComponent*>	m_Resorceslist;
+	list<Engine::OBJINFO>		m_ObjList;
 
 	float		m_fAngle[Engine::ANGLE_END];
 	float		m_fDistance;
@@ -53,7 +56,9 @@ public:
 	void	KeyCheck(void);
 	void	Picking(void);
 	void	DrawLine(void);
+	void	Picking_AddObject(void);
 
+	list<Engine::OBJINFO>* GetObjList(void);
 public:
 	void	AddTerrain(int iX, int iZ);
 
@@ -61,6 +66,7 @@ public:
 
 	Engine::VTXTEX* GetVtxcol(void);
 	void			SetVtxcol(Engine::VTXTEX* pVertex);
+	void			AddObject(D3DXVECTOR3 &vPos);
 
 public:
 	virtual HRESULT Initialize( void );

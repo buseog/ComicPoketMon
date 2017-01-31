@@ -36,7 +36,6 @@ HRESULT Engine::CTexture::LoadTexture(TEXTURETYPE eTextureType, const wstring& w
 			hr = D3DXCreateCubeTextureFromFile(m_pDevice, szFullPath, (LPDIRECT3DCUBETEXTURE9*)&pTexture);
 			break;
 		}
-
 		FAILED_CHECK_MSG(hr, szFullPath);
 
 		m_vecTexture.push_back(pTexture);

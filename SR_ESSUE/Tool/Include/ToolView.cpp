@@ -161,6 +161,10 @@ void CToolView::SetBack( BACKID eBack )
 		m_eBACK = eBack;
 		break;
 
+	case BK_OBJ:
+		m_eBACK = eBack;
+		break;
+
 	case BK_UNIT:
 		if(m_pBackground[eBack] == NULL)
 		{
@@ -227,6 +231,9 @@ void CToolView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		((CBackground*)m_pBackground[m_eBACK])->KeyCheck();
 		break;
 
+	case BK_OBJ:
+		((CBackground*)m_pBackground[BK_MAP])->KeyCheck();
+		break;
 
 	case BK_UNIT:
 		((CObjBack*)m_pBackground[m_eBACK])->KeyCheck();
@@ -247,6 +254,10 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 	case BK_MAP:
 		((CBackground*)m_pBackground[m_eBACK])->Picking();
+		break;
+
+	case BK_OBJ:
+		((CBackground*)m_pBackground[BK_MAP])->Picking_AddObject();
 		break;
 
 	case BK_UNIT:
@@ -276,7 +287,7 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && m_eBACK == BK_MAP)
-		OnLButtonDown(nFlags, point);
+		//OnLButtonDown(nFlags, point);
 
 	CScrollView::OnMouseMove(nFlags, point);
 }

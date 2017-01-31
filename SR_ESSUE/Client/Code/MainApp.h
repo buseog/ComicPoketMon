@@ -8,6 +8,7 @@ namespace Engine
 	class CGraphicDev;
 	class CManagement;
 	class CTimeMgr;
+	class CKeyMgr;
 }
 
 class CMainApp

@@ -60,4 +60,5 @@ public:
 	afx_msg void OnTimer(UINT nIDEvent);
 	void	PlayAnimation(void);
 
+	afx_msg void OnArrange();
 };

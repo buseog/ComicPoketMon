@@ -24,6 +24,9 @@ public:
 public:
 	const Engine::VTXTEX*		GetTerrainVertex(const WORD& LayerID, const wstring& wstrObjKey);
 
+	Engine::CLayer*			GetLayer(int ikey);
+	
+
 protected:
 	explicit CScene(LPDIRECT3DDEVICE9 _pDeivce);
 public:

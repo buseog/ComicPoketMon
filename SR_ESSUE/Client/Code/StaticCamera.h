@@ -1,8 +1,7 @@
 #ifndef StaticCamera_h__
 #define StaticCamera_h__
 
-#include "Camera.h"
-
+#include "BasicCamera.h"
 
 namespace	Engine
 {
@@ -11,10 +10,12 @@ namespace	Engine
 	class CInfoSubject;
 }
 
-class CStaticCamera : public Engine::CCamera
+class CStaticCamera 
+	: public CBasicCamera
 {
 private:
 	explicit CStaticCamera(LPDIRECT3DDEVICE9 pDevice);
+
 public:
 	virtual ~CStaticCamera(void);
 
@@ -41,8 +42,8 @@ private:
 
 
 private:
-	bool							m_bRbuttonDown;
-	POINT							m_ptOriginPos;
+	bool		m_bRbuttonDown;
+	POINT		m_ptOriginPos;
 	float		m_fTargetDistance;
 	float       m_fCameraDistance;
 	float		m_fCameraSpeed;
@@ -51,6 +52,8 @@ private:
 	float		m_fMaxDitance;
 	float		m_fNearDist;
 	float		m_fFarDist;
+	bool		m_bKeyInput;
+	int			m_iKeyDown;
 };
 
 #endif // StaticCamera_h__

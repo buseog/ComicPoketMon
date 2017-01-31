@@ -8,7 +8,7 @@ Engine::CMathMgr::~CMathMgr(void)
 {
 }
 
-float Engine::CMathMgr::MyLength(D3DXVECTOR3* vDest, D3DXVECTOR3* vDepa)
+float Engine::CMathMgr::MyLength(const D3DXVECTOR3* vDest, const D3DXVECTOR3* vDepa)
 {
 	D3DXVECTOR3 vTemp = *vDest - *vDepa;
 

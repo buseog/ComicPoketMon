@@ -37,13 +37,10 @@ public:
 	static CCubeTex*	Create(LPDIRECT3DDEVICE9 pDevice, const wstring& wstrKey);
 
 	void	SetTexutre(void);
-
-private:
 	void Release(void);
 
 public:
 	virtual void Render(void);
-	virtual CResources* CloneResource(void);
 
 private:
 	explicit CCubeTex(LPDIRECT3DDEVICE9 pDevice);

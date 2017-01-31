@@ -6,11 +6,11 @@
 #include "RcTex.h"
 #include "TerrainTex.h"
 #include "CubeTex.h"
+#include "CubeCol.h"
 
 IMPLEMENT_SINGLETON(Engine::CResourceMgr)
 
 Engine::CResourceMgr::CResourceMgr(void)
-: m_pResource(NULL)
 {
 
 }
@@ -66,6 +66,10 @@ HRESULT Engine::CResourceMgr::AddBuffer(LPDIRECT3DDEVICE9 pDevice,
 
 	case CVIBuffer::BUFFER_CUBETEX:
 		pResources = CCubeTex::Create(pDevice); 
+		break;
+
+	case CVIBuffer::BUFFER_CUBECOL:
+		pResources = CCubeCol::Create(pDevice); 
 		break;
 	}
 	
@@ -173,6 +177,22 @@ void Engine::CResourceMgr::GetVtxInfo(RESOURCETYPE eResourceType,
 		return;
 	}
 
-	((CVIBuffer*)iter->second)->GetVtxInfo(pVertex);
+	((CVIBuffer*)iter->second)->GetOriginVtxInfo(pVertex);
+}
+
+HRESULT Engine::CResourceMgr::AddResource(RESOURCETYPE eResourceType, const wstring& wstrResourceKey, CResources* pResources )
+{
+	MAPRESOURCE::iterator	iter = m_MapResource[eResourceType].find(wstrResourceKey);
+
+	if(iter != m_MapResource[eResourceType].end())
+	{
+		TAGMSG_BOX(wstrResourceKey.c_str(), L"중복된 리소스");
+		return E_FAIL;
+	}
+
+	m_MapResource[eResourceType].insert(MAPRESOURCE::value_type(wstrResourceKey, pResources));
+
+	return S_OK;
+
 }
 

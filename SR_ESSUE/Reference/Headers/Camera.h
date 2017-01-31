@@ -36,6 +36,7 @@ public:
 
 protected:
 	explicit CCamera(LPDIRECT3DDEVICE9 pDevice);
+
 public:
 	virtual ~CCamera(void);
 

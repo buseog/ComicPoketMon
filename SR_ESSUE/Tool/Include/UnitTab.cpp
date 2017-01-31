@@ -25,7 +25,7 @@ CUnitTab::CUnitTab(CWnd* pParent /*=NULL*/)
 	: CDialog(CUnitTab::IDD, pParent)
 	, m_bStart(true)
 	, m_strKey(_T(""))
-	, wstrTexKey(L"")
+	, m_TexKey(L"")
 	, m_fScaleX(1.0f)
 	, m_fScaleY(1.0f)
 	, m_fScaleZ(1.0f)
@@ -95,6 +95,7 @@ BEGIN_MESSAGE_MAP(CUnitTab, CDialog)
 	ON_EN_CHANGE(IDC_EDIT15, &CUnitTab::OnEidtRotZ)
 	ON_EN_CHANGE(IDC_EDIT5, &CUnitTab::OnChangeName)
 	ON_WM_DROPFILES()
+	ON_BN_CLICKED(IDC_BUTTON13, &CUnitTab::OnTransApply)
 END_MESSAGE_MAP()
 
 
@@ -155,6 +156,342 @@ BOOL CUnitTab::OnInitDialog()
 	m_ZRotSlider.SetTicFreq(5);
 	m_ZRotSlider.SetPageSize(5);
 
+	HRESULT hr = NULL;
+
+	//지우
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"THead.dds", 
+		L"../bin/Resources/Texture/CubeTexture/THead.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"TBody.dds", 
+		L"../bin/Resources/Texture/CubeTexture/TBody.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"TArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/TArm.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"TArm1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/TArm1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"TLeg.dds", 
+		L"../bin/Resources/Texture/CubeTexture/TLeg.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"TLeg1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/TLeg1.dds", 
+		1);
+
+	// 꼬부기
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SHead.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SHead.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SBody.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SBody.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SArm.dds", 
+		1);
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SArm1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SArm1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SArm2.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SArm2.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"SArm3.dds", 
+		L"../bin/Resources/Texture/CubeTexture/SArm3.dds", 
+		1);
+
+	// 피카츄
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PHead.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PHead.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PEar.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PEar.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PEar1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PEar1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PBody.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PBody.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PArm.dds", 
+		1);
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PArm1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PArm1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PArm2.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PArm2.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"PArm3.dds", 
+		L"../bin/Resources/Texture/CubeTexture/PArm3.dds", 
+		1);
+
+	// 파이리
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CHead.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CHead.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CBody.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CBody.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CArm.dds", 
+		1);
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CArm1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CArm1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CArm2.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CArm2.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CArm3.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CArm3.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Charman.dds", 
+		L"../bin/Resources/Texture/CubeTexture/Charman.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Fire.dds", 
+		L"../bin/Resources/Texture/CubeTexture/Fire.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"CTail1.dds", 
+		L"../bin/Resources/Texture/CubeTexture/CTail1.dds", 
+		1);
+
+		// 건물 텍스쳐
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Cenmark.dds", 
+		L"../bin/Resources/Texture/Cube/Cenmark.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"RoofTex.dds", 
+		L"../bin/Resources/Texture/Cube/RoofTex.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Danger.dds", 
+		L"../bin/Resources/Texture/Cube/Danger.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"RedRoof.dds", 
+		L"../bin/Resources/Texture/Cube/RedRoof.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Wall_Wh.dds", 
+		L"../bin/Resources/Texture/Cube/Wall_Wh.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Wooden.dds", 
+		L"../bin/Resources/Texture/Cube/Wooden.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"Glass.dds", 
+		L"../bin/Resources/Texture/Cube/Glass.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"pokeball.dds", 
+		L"../bin/Resources/Texture/CubeTexture/pokeball.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"renga1.dds", 
+		L"../bin/Resources/Texture/Cube/renga1.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"renga2.dds", 
+		L"../bin/Resources/Texture/Cube/renga2.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MBody.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MBody.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MHead.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MHead.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MLArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MLArm.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MRArm.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MRArm.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MLWing.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MLWing.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MRWing.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MRWing.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MLLeg.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MLLeg.dds", 
+		1);
+
+	hr = Engine::Get_ResourceMgr()->AddTexture(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice,
+		Engine::RESOURCE_STATIC, 
+		Engine::TEX_CUBE, 
+		L"MRLeg.dds", 
+		L"../bin/Resources/Texture/CubeTexture/MRLeg.dds", 
+		1);
+
+
 	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -191,43 +528,94 @@ void CUnitTab::OnColorControl()
 void CUnitTab::OnSave()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
-	
-	CFileDialog		Dlg(FALSE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
+	DWORD dwType = ((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_dwType;
 
-	if(Dlg.DoModal() == IDCANCEL)
-		return;
-
-	TCHAR		szDirPath[MAX_PATH] = L"";
-
-	GetCurrentDirectory(sizeof(szDirPath), szDirPath);
-	SetCurrentDirectory(szDirPath);
-	PathRemoveFileSpec(szDirPath);
-
-	lstrcat(szDirPath, L"\\Data");
-
-	Dlg.m_ofn.lpstrInitialDir = szDirPath;	
-
-	DWORD	dwByte = 0;
-
-	HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
-		GENERIC_WRITE, 
-		0, 
-		NULL, 
-		CREATE_ALWAYS, 
-		FILE_ATTRIBUTE_NORMAL, 
-		NULL);
-
-	for (map<wstring, Engine::CResources*>::iterator iter = mapChar->begin();
-		iter != mapChar->end(); ++iter)
+	if (dwType == 0)
 	{
-		Engine::SAVEFILE tSave;
-		tSave.wstrName = iter->first;
-		((Engine::CVIBuffer*)iter->second)->GetOriginVtxInfo(&tSave.VtxInfo);
+		map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
+		
+		CFileDialog		Dlg(FALSE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
 
-		WriteFile(hFile, &tSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+		if(Dlg.DoModal() == IDCANCEL)
+			return;
+
+		TCHAR		szDirPath[MAX_PATH] = L"";
+
+		GetCurrentDirectory(sizeof(szDirPath), szDirPath);
+		SetCurrentDirectory(szDirPath);
+		PathRemoveFileSpec(szDirPath);
+
+		lstrcat(szDirPath, L"\\Data");
+
+		Dlg.m_ofn.lpstrInitialDir = szDirPath;	
+
+		DWORD	dwByte = 0;
+
+		HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
+			GENERIC_WRITE, 
+			0, 
+			NULL, 
+			CREATE_ALWAYS, 
+			FILE_ATTRIBUTE_NORMAL, 
+			NULL);
+
+		for (map<wstring, Engine::CResources*>::iterator iter = mapChar->begin();
+			iter != mapChar->end(); ++iter)
+		{
+			Engine::SAVEFILE tSave;
+			tSave.wstrName = iter->first;
+			((Engine::CVIBuffer*)iter->second)->GetOriginVtxInfo(&tSave.VtxInfo);
+
+			WriteFile(hFile, &tSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+		}
+		CloseHandle(hFile);
 	}
-	CloseHandle(hFile);
+	else if (dwType == 1)
+	{
+		vector<Engine::CResources*>* vecObject = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_vecObject;
+
+		CFileDialog		Dlg(FALSE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
+
+		if(Dlg.DoModal() == IDCANCEL)
+			return;
+
+		TCHAR		szDirPath[MAX_PATH] = L"";
+
+		GetCurrentDirectory(sizeof(szDirPath), szDirPath);
+		SetCurrentDirectory(szDirPath);
+		PathRemoveFileSpec(szDirPath);
+
+		lstrcat(szDirPath, L"\\Data");
+
+		Dlg.m_ofn.lpstrInitialDir = szDirPath;	
+
+		DWORD	dwByte = 0;
+
+		HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
+			GENERIC_WRITE, 
+			0, 
+			NULL, 
+			CREATE_ALWAYS, 
+			FILE_ATTRIBUTE_NORMAL, 
+			NULL);
+
+		for (size_t i = 0; i < vecObject->size(); ++i)
+		{
+			Engine::SAVEFILE tSave;
+
+			wstring wstrKey = ((Engine::CCubeTex*)(*vecObject)[i])->GetKey();
+			CString strKey;
+			strKey = wstrKey.c_str();
+			PathRemoveExtension((LPWSTR)strKey.operator LPCWSTR());
+			wstrKey = (LPWSTR)strKey.operator LPCWSTR();
+
+			tSave.wstrName = wstrKey;
+			((Engine::CVIBuffer*)(*vecObject)[i])->GetOriginVtxInfo(&tSave.VtxInfo);
+
+			WriteFile(hFile, &tSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+		}
+		CloseHandle(hFile);
+	}
 }
 
 void CUnitTab::OnLoad()
@@ -235,65 +623,138 @@ void CUnitTab::OnLoad()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
-	map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
+	DWORD dwType = ((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_dwType;
 
-	CFileDialog		Dlg(TRUE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
-
-	if(Dlg.DoModal() == IDCANCEL)
-		return;
-
-	Release();
-
-
-	TCHAR		szDirPath[MAX_PATH] = L"";
-
-	GetCurrentDirectory(sizeof(szDirPath), szDirPath);
-	SetCurrentDirectory(szDirPath);
-	PathRemoveFileSpec(szDirPath);
-	lstrcat(szDirPath, L"\\Data");
-
-	Dlg.m_ofn.lpstrInitialDir = szDirPath;	
-
-	DWORD	dwByte = 0;
-
-	HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
-		GENERIC_READ, 
-		0, 
-		NULL, 
-		OPEN_EXISTING, 
-		FILE_ATTRIBUTE_NORMAL, 
-		NULL);
-
-	Engine::VTXCUBE*		pVtx = new Engine::VTXCUBE[8];
-
-	while(true)
+	if (dwType == 0)
 	{
-		Engine::SAVEFILE* pSave = new Engine::SAVEFILE;
-		ReadFile(hFile, pSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+		map<wstring, Engine::CResources*>* mapChar = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_mapChar;
 
-		if(dwByte == 0)
+		CFileDialog		Dlg(TRUE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
+
+		if(Dlg.DoModal() == IDCANCEL)
+			return;
+
+		Release();
+
+
+		TCHAR		szDirPath[MAX_PATH] = L"";
+
+		GetCurrentDirectory(sizeof(szDirPath), szDirPath);
+		SetCurrentDirectory(szDirPath);
+		PathRemoveFileSpec(szDirPath);
+		lstrcat(szDirPath, L"\\Data");
+
+		Dlg.m_ofn.lpstrInitialDir = szDirPath;	
+
+		DWORD	dwByte = 0;
+
+		HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
+			GENERIC_READ, 
+			0, 
+			NULL, 
+			OPEN_EXISTING, 
+			FILE_ATTRIBUTE_NORMAL, 
+			NULL);
+
+		Engine::VTXCUBE*		pVtx = new Engine::VTXCUBE[8];
+
+		while(true)
 		{
+			Engine::SAVEFILE* pSave = new Engine::SAVEFILE;
+			ReadFile(hFile, pSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+
+			if(dwByte == 0)
+			{
+				Engine::Safe_Delete(pSave);
+				break;
+			}
+
+			TCHAR szBuf[255] = L"";
+			wsprintf(szBuf, L"%s%s", pSave->wstrName.c_str(), L".dds");
+
+			Engine::CResources* pResource = Engine::CCubeTex::Create(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice, szBuf);
+
+			for (int i = 0; i < 8; ++i)
+				pVtx[i] = pSave->VtxInfo[i];
+
+			((Engine::CVIBuffer*)pResource)->SetOriginVtxInfo(pVtx);
+			((Engine::CVIBuffer*)pResource)->SetVtxInfo(pVtx);
+
+			mapChar->insert(make_pair(pSave->wstrName, pResource));
 			Engine::Safe_Delete(pSave);
-			break;
+
 		}
 
-		Engine::CResources* pResource = Engine::CCubeTex::Create(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice);
+		CloseHandle(hFile);
+		Engine::Safe_Delete_Array(pVtx);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+	}
+	else if (dwType == 1)
+	{
+		vector<Engine::CResources*>* vecObject = &((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->m_vecObject;
 
-		for (int i = 0; i < 8; ++i)
-			pVtx[i] = pSave->VtxInfo[i];
+		CFileDialog		Dlg(TRUE, L"dat", L"*.dat", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"*.dat", this);
 
-		((Engine::CVIBuffer*)pResource)->SetOriginVtxInfo(pVtx);
-		((Engine::CVIBuffer*)pResource)->SetVtxInfo(pVtx);
+		if(Dlg.DoModal() == IDCANCEL)
+			return;
 
-		mapChar->insert(make_pair(pSave->wstrName, pResource));
-		Engine::Safe_Delete(pSave);
+		Release();
 
+
+		TCHAR		szDirPath[MAX_PATH] = L"";
+
+		GetCurrentDirectory(sizeof(szDirPath), szDirPath);
+		SetCurrentDirectory(szDirPath);
+		PathRemoveFileSpec(szDirPath);
+		lstrcat(szDirPath, L"\\Data");
+
+		Dlg.m_ofn.lpstrInitialDir = szDirPath;	
+
+		DWORD	dwByte = 0;
+
+		HANDLE	hFile  = CreateFile(Dlg.GetPathName(), 
+			GENERIC_READ, 
+			0, 
+			NULL, 
+			OPEN_EXISTING, 
+			FILE_ATTRIBUTE_NORMAL, 
+			NULL);
+
+		Engine::VTXCUBE*		pVtx = new Engine::VTXCUBE[8];
+
+		while(true)
+		{
+			Engine::SAVEFILE* pSave = new Engine::SAVEFILE;
+			ReadFile(hFile, pSave, sizeof(Engine::SAVEFILE), &dwByte, NULL);
+
+			if(dwByte == 0)
+			{
+				Engine::Safe_Delete(pSave);
+				break;
+			}
+			
+			TCHAR szBuf[255] = L"";
+			wsprintf(szBuf, L"%s%s", pSave->wstrName.c_str(), L".dds");
+
+			Engine::CResources* pResource = Engine::CCubeTex::Create(((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pDevice, szBuf);
+
+			for (int i = 0; i < 8; ++i)
+				pVtx[i] = pSave->VtxInfo[i];
+
+			((Engine::CVIBuffer*)pResource)->SetOriginVtxInfo(pVtx);
+			((Engine::CVIBuffer*)pResource)->SetVtxInfo(pVtx);
+
+			vecObject->push_back(pResource);
+			Engine::Safe_Delete(pSave);
+
+		}
+
+		CloseHandle(hFile);
+		Engine::Safe_Delete_Array(pVtx);
+		((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
 	}
 
-	CloseHandle(hFile);
-
-	Engine::Safe_Delete_Array(pVtx);
-	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+	
 	UpdateData(FALSE);
 }
 
@@ -318,11 +779,22 @@ void CUnitTab::OnSTApply()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
-	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetTransCube(D3DXVECTOR3(m_fPosX, m_fPosY, m_fPosZ), D3DXVECTOR3(m_fScaleX, m_fScaleY, m_fScaleZ));
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetScaleCube(D3DXVECTOR3(m_fScaleX, m_fScaleY, m_fScaleZ));
 	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
-
 	UpdateData(FALSE);
+	
 }
+
+void CUnitTab::OnTransApply()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	((CObjBack*)((CMainFrame*)AfxGetMainWnd())->m_pMainView->m_pBackground[2])->SetTransCube(D3DXVECTOR3(m_fPosX, m_fPosY, m_fPosZ));
+	((CMainFrame*)AfxGetMainWnd())->m_pMainView->Invalidate(FALSE);
+	UpdateData(FALSE);
+	
+}
+
 
 void CUnitTab::OnActionRadio(UINT msg)
 
@@ -544,11 +1016,13 @@ void CUnitTab::OnTextureListBox()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
-	CString strTemp;
+	m_TexListControl.GetText(m_TexListControl.GetCurSel(), m_TexKey);
 
-	m_TexListControl.GetText(m_TexListControl.GetCurSel(), strTemp);
+	m_strKey = m_TexKey;
+	m_wstrTexKey = (LPWSTR)m_TexKey.operator LPCWSTR();
+	PathRemoveExtension((LPWSTR)m_strKey.operator LPCWSTR());
 
-	wstrTexKey = (LPWSTR)strTemp.operator LPCWSTR();
+	
 
 	UpdateData(FALSE);
 }

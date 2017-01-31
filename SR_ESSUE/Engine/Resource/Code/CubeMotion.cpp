@@ -16,6 +16,11 @@ void Engine::CCubeMotion::Update( const wstring& wstrStateKey, D3DXMATRIX* matWo
 {
 	m_wstrKey = wstrStateKey;
 
+	MAPVECTOR::iterator iter = m_SpriteMap.find(m_wstrKey);
+
+	if (iter == m_SpriteMap.end())
+		return;
+
 	for (size_t i = 0; i < m_SpriteMap[m_wstrKey].size(); ++i)
 	{
 		m_SpriteMap[m_wstrKey][i]->Update(matWorld, matView, matProj);
@@ -24,10 +29,12 @@ void Engine::CCubeMotion::Update( const wstring& wstrStateKey, D3DXMATRIX* matWo
 
 void Engine::CCubeMotion::Render( const DWORD& Frame )
 {
-	for (size_t i = 0; i < m_SpriteMap[m_wstrKey].size(); ++i)
-	{
-		m_SpriteMap[m_wstrKey][i]->Render();
-	}
+	MAPVECTOR::iterator iter = m_SpriteMap.find(m_wstrKey);
+
+	if (iter == m_SpriteMap.end())
+		return;
+
+	m_SpriteMap[m_wstrKey][Frame]->Render();
 }
 
 void Engine::CCubeMotion::Render( void )
@@ -52,6 +59,8 @@ void Engine::CCubeMotion::Release( void )
 		iter->second.clear();
 	}
 	m_SpriteMap.clear();
+
+	Engine::CResources::Release();
 	
 }
 
@@ -86,4 +95,14 @@ Engine::CCubeMotion* Engine::CCubeMotion::Create( LPDIRECT3DDEVICE9 pDevice )
 Engine::CCubeMotion::MAPVECTOR* Engine::CCubeMotion::GetSpriteMap( void )
 {
 	return &m_SpriteMap;
+}
+
+int Engine::CCubeMotion::GetSpriteCount( const wstring& wstrKey )
+{
+	MAPVECTOR::iterator iter = m_SpriteMap.find(wstrKey);
+
+	if (iter == m_SpriteMap.end())
+		return NULL;
+
+	return iter->second.size();
 }

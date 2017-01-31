@@ -26,18 +26,22 @@ protected:
 	typedef	map<wstring, CComponent*>		MAPCOMPONENT;
 	MAPCOMPONENT							m_mapComponent;
 	LPDIRECT3DDEVICE9						m_pDevice;
-
-public:
-	virtual const Engine::VTXTEX*	GetTerrainVertex(void);
-
+	bool									m_bDestroy;
+	bool									m_bCulling;
 
 private:
 	void	Release(void);
 
 public:
+	void	SetDestroy(void);
+	bool	GetDestroy(void);
+
+public:
 	virtual HRESULT Initialize(void);
 	virtual void	Update(void);
 	virtual void	Render(void);
+	virtual const Engine::VTXTEX*	GetTerrainVertex(void);
+
 
 	const CComponent*	GetComponent(const wstring& wstrComponentKey);
 

@@ -26,9 +26,9 @@ public:
 	CFileInfo					m_FileInfo;
 	map<CString, CString>		m_mapPng;
 
-	wstring wstrTexKey;
-
+	wstring m_wstrTexKey;
 	CString m_strKey;
+	CString m_TexKey;
 	float m_fScaleX;
 	float m_fScaleY;
 	float m_fScaleZ;
@@ -86,4 +86,5 @@ public:
 	afx_msg void OnEidtRotZ();
 	afx_msg void OnChangeName();
 	afx_msg void OnDropFiles(HDROP hDropInfo);
+	afx_msg void OnTransApply();
 };

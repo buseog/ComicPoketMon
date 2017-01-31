@@ -22,6 +22,10 @@ namespace Engine
 	enum TEXTURETYPE	{ TEX_NORMAL, TEX_CUBE };
 
 	enum ANGLETYPE { ANGLE_X, ANGLE_Y, ANGLE_Z, ANGLE_END };
+
+	enum EFFECTTYPE	{ EFFECT_COLOR, EFFECT_TEXTURE };
+
+	enum EMANATIONID { EMID_FLAME, EMID_WATER, EMID_END };
 }
 
 #endif // Engine_enum_h__

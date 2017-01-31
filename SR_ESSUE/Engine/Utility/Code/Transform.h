@@ -23,10 +23,11 @@ class ENGINE_DLL CTransform
 	:public CComponent
 {
 public:
-	float		fAngle[ANGLE_END];
-	D3DXVECTOR3	vPos;
-	D3DXVECTOR3	vDir;
-	D3DXMATRIX	matWorld;
+	float			fAngle[ANGLE_END];
+	D3DXVECTOR3		vPos;
+	D3DXVECTOR3		vDir;
+	D3DXVECTOR3		vScale;
+	D3DXMATRIX		matWorld;
 
 public:
 	virtual void Update(void);

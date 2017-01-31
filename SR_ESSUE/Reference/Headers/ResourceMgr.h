@@ -1,7 +1,7 @@
 #ifndef ResourceMgr_h__
 #define ResourceMgr_h__
 
-#include "Engine_Include.h"
+
 #include "VIBuffer.h"
 
 BEGIN(Engine)
@@ -15,7 +15,6 @@ class ENGINE_DLL CResourceMgr
 private:
 	typedef	map<wstring, CResources*>		MAPRESOURCE;
 	MAPRESOURCE								m_MapResource[RESOURCE_END];
-	CResources*								m_pResource;
 
 private:
 	void	Release(void);
@@ -29,6 +28,8 @@ public:
 public:
 	HRESULT			AddBuffer(LPDIRECT3DDEVICE9 pDevice, RESOURCETYPE eResourceType, CVIBuffer::BUFFERTYPE eBufferType, const wstring& wstrResourceKey, const WORD& wCntX = 0, const WORD& wCntZ = 0, const WORD& wItv = 1);
 	HRESULT			AddTexture(LPDIRECT3DDEVICE9 pDevice, RESOURCETYPE eResourceType, TEXTURETYPE eTextureType, const wstring& wstrResourceKey,	const wstring& wstrFilePath, const WORD& wCnt);
+
+	HRESULT			AddResource(RESOURCETYPE eResourceType, const wstring& wstrResourceKey, CResources* pResources);
 	
 	CComponent*		CloneResource(RESOURCETYPE eResourceType, const wstring& wstrResourceKey);
 
